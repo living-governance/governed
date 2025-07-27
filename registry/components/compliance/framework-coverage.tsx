@@ -1,19 +1,29 @@
 // registry/components/compliance/framework-coverage.tsx
+"use client"
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { 
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { 
   frameworkCoverageKnowledge,
   getConfidenceStatus,
   getLatestChange 
 } from "../../knowledge/framework-coverage"
-import { AlertCircle, Clock, ExternalLink } from "lucide-react"
+import { AlertCircle, Clock, ExternalLink, Download, Share2, Link, Info, Cloud, TrendingUp } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useState } from "react"
 
 export function FrameworkCoverage() {
   const { frameworks, evaluation } = frameworkCoverageKnowledge
   const confidenceStatus = getConfidenceStatus(frameworkCoverageKnowledge)
+  const [expandedSection, setExpandedSection] = useState<string | null>(null)
   
   // Function to determine color based on coverage percentage
   const getProgressColor = (coverage: number) => {
@@ -37,6 +47,10 @@ export function FrameworkCoverage() {
     (frameworks.reduce((sum, f) => sum + f.aiCoverage.overall, 0) / frameworks.length) * 100
   )
   const withGuidance = frameworks.filter(f => f.status !== 'no-guidance').length
+  
+  const toggleSection = (section: string) => {
+    setExpandedSection(expandedSection === section ? null : section)
+  }
   
   return (
     <Card>
@@ -107,6 +121,172 @@ export function FrameworkCoverage() {
             <span> • Review in {confidenceStatus.daysUntilStale} days</span>
           )}
         </div>
+        
+        {/* Metadata access icons */}
+        <div className="flex items-center gap-1 pt-3 mt-3 border-t">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="h-8 w-8 p-0"
+                  onClick={() => toggleSection('methodology')}
+                >
+                  <Info className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Methodology</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="h-8 w-8 p-0"
+                  onClick={() => toggleSection('sources')}
+                >
+                  <Link className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Sources</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="h-8 w-8 p-0"
+                  onClick={() => toggleSection('cloud')}
+                >
+                  <Cloud className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Cloud Guidance</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="h-8 w-8 p-0"
+                  onClick={() => toggleSection('history')}
+                >
+                  <TrendingUp className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>History</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="h-8 w-8 p-0"
+                  onClick={() => toggleSection('download')}
+                >
+                  <Download className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Download</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="h-8 w-8 p-0"
+                  onClick={() => toggleSection('share')}
+                >
+                  <Share2 className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Share</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
+        
+        {/* Expanded sections */}
+        {expandedSection === 'methodology' && (
+          <div className="mt-3 p-3 bg-muted rounded-md text-sm">
+            <p className="font-medium mb-1">Evaluation Methodology</p>
+            <p className="text-muted-foreground">
+              [Placeholder: How we evaluate framework coverage - methodology from knowledge file]
+            </p>
+          </div>
+        )}
+        
+        {expandedSection === 'sources' && (
+          <div className="mt-3 p-3 bg-muted rounded-md text-sm">
+            <p className="font-medium mb-1">Sources</p>
+            <p className="text-muted-foreground">
+              [Placeholder: Links to framework documentation and references]
+            </p>
+          </div>
+        )}
+        
+        {expandedSection === 'cloud' && (
+          <div className="mt-3 p-3 bg-muted rounded-md text-sm">
+            <p className="font-medium mb-1">Cloud Provider Guidance</p>
+            <p className="text-muted-foreground">
+              [Placeholder: AWS, GCP, Azure specific implementation guidance]
+            </p>
+          </div>
+        )}
+        
+        {expandedSection === 'history' && (
+          <div className="mt-3 p-3 bg-muted rounded-md text-sm">
+            <p className="font-medium mb-1">Coverage Evolution</p>
+            <p className="text-muted-foreground">
+              [Placeholder: Timeline showing how framework coverage has evolved]
+            </p>
+          </div>
+        )}
+        
+        {expandedSection === 'download' && (
+          <div className="mt-3 p-3 bg-muted rounded-md text-sm">
+            <p className="font-medium mb-1">Download Options</p>
+            <p className="text-muted-foreground">
+              [Placeholder: Download as TypeScript, JSON, or Markdown report]
+            </p>
+          </div>
+        )}
+        
+        {expandedSection === 'share' && (
+          <div className="mt-3 p-3 bg-muted rounded-md text-sm">
+            <p className="font-medium mb-1">Share This Analysis</p>
+            <p className="text-muted-foreground">
+              [Placeholder: Copy link or share on social media]
+            </p>
+          </div>
+        )}
       </CardContent>
     </Card>
   )
