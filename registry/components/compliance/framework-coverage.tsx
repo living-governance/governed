@@ -105,11 +105,6 @@ export function FrameworkCoverage() {
                 <p className="font-medium text-foreground mb-1">Review Process</p>
                 <p className="whitespace-pre-line">{frameworkCoverageKnowledge.evaluation.methodology}</p>
               </div>
-              
-              <div>
-                <p className="font-medium text-foreground mb-1">Update Instructions</p>
-                <p className="whitespace-pre-line text-xs bg-muted p-3 rounded">{frameworkCoverageKnowledge.updateInstructions}</p>
-              </div>
             </div>
           </>
         )
