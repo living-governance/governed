@@ -8,7 +8,7 @@ import {
   getConfidenceStatus,
   getLatestChange 
 } from "../../knowledge/framework-coverage"
-import { AlertCircle, Clock } from "lucide-react"
+import { AlertCircle, Clock, ExternalLink } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 export function FrameworkCoverage() {
@@ -62,7 +62,15 @@ export function FrameworkCoverage() {
           <div key={framework.id} className="space-y-2">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span className="font-medium text-sm">{framework.name}</span>
+                <a 
+                  href={framework.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-sm hover:text-primary hover:underline transition-colors flex items-center gap-1"
+                >
+                  {framework.name}
+                  <ExternalLink className="h-3 w-3" />
+                </a>
                 <Badge variant={getStatusVariant(framework.status)} className="text-xs">
                   {framework.status.replace('-', ' ')}
                 </Badge>

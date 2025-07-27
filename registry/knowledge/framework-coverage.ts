@@ -4,6 +4,7 @@ export interface Framework {
   id: string;
   name: string;
   organization: string;
+  url: string;  // Official framework website
   aiCoverage: {
     overall: number;
     categories: {
@@ -100,6 +101,7 @@ export const frameworkCoverageKnowledge = {
       id: 'owasp-genai',
       name: 'OWASP GenAI Security Project',
       organization: 'OWASP Foundation',
+      url: 'https://genai.owasp.org/',
       aiCoverage: {
         overall: 0.50,
         categories: {
@@ -121,6 +123,7 @@ export const frameworkCoverageKnowledge = {
       id: 'nist-csf',
       name: 'NIST Cybersecurity Framework',
       organization: 'NIST (US)',
+      url: 'https://www.nist.gov/cyberframework',
       aiCoverage: {
         overall: 0.62,
         categories: {
@@ -142,6 +145,7 @@ export const frameworkCoverageKnowledge = {
       id: 'iso-27001',
       name: 'ISO 27001',
       organization: 'ISO',
+      url: 'https://www.iso.org/isoiec-27001-information-security.html',
       aiCoverage: {
         overall: 0.55,
         categories: {
@@ -163,6 +167,7 @@ export const frameworkCoverageKnowledge = {
       id: 'mitre-attack',
       name: 'MITRE ATT&CK',
       organization: 'MITRE Corporation',
+      url: 'https://attack.mitre.org/',
       aiCoverage: {
         overall: 0.0,
         categories: {
@@ -184,6 +189,7 @@ export const frameworkCoverageKnowledge = {
       id: 'cis-controls',
       name: 'CIS Controls',
       organization: 'Center for Internet Security',
+      url: 'https://www.cisecurity.org/controls',
       aiCoverage: {
         overall: 0.0,
         categories: {
