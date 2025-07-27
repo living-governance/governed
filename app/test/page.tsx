@@ -7,13 +7,25 @@ import { Moon, Sun, AlertCircle } from "lucide-react"
 import { useEffect, useState } from "react"
 
 export default function TestPage() {
-  const [isDark, setIsDark] = useState(false)
+  const [isDark, setIsDark] = useState(true) // Default to dark
+
+  useEffect(() => {
+    // Check localStorage on mount
+    const savedTheme = localStorage.getItem('theme')
+    if (savedTheme === 'light') {
+      setIsDark(false)
+    } else {
+      setIsDark(true) // Default to dark if no preference saved
+    }
+  }, [])
 
   useEffect(() => {
     if (isDark) {
       document.documentElement.classList.add('dark')
+      localStorage.setItem('theme', 'dark')
     } else {
       document.documentElement.classList.remove('dark')
+      localStorage.setItem('theme', 'light')
     }
   }, [isDark])
 
