@@ -8,13 +8,12 @@ import {
   getConfidenceStatus,
   getLatestChange 
 } from "../../knowledge/framework-coverage"
-import { AlertCircle, Clock, Info } from "lucide-react"
+import { AlertCircle, Clock } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 export function FrameworkCoverage() {
-  const { frameworks, insights, evaluation, timeline } = frameworkCoverageKnowledge
+  const { frameworks, evaluation } = frameworkCoverageKnowledge
   const confidenceStatus = getConfidenceStatus(frameworkCoverageKnowledge)
-  const latestChange = getLatestChange(frameworkCoverageKnowledge)
   
   // Function to determine color based on coverage percentage
   const getProgressColor = (coverage: number) => {
@@ -23,82 +22,82 @@ export function FrameworkCoverage() {
     return "[&>*]:bg-danger"
   }
   
-  // Badge color based on confidence
-  const getConfidenceBadgeVariant = (confidence: number) => {
-    if (confidence >= 0.7) return "default"
-    if (confidence >= 0.5) return "secondary"
-    return "destructive"
+  // Get status badge variant
+  const getStatusVariant = (status: string) => {
+    switch (status) {
+      case 'active': return 'default'
+      case 'applicable': return 'secondary'
+      case 'no-guidance': return 'outline'
+      default: return 'outline'
+    }
   }
+  
+  // Calculate summary statistics
+  const avgCoverage = Math.round(
+    (frameworks.reduce((sum, f) => sum + f.aiCoverage.overall, 0) / frameworks.length) * 100
+  )
+  const withGuidance = frameworks.filter(f => f.status !== 'no-guidance').length
   
   return (
     <Card>
       <CardHeader>
-        <div className="flex items-start justify-between">
-          <div className="space-y-1">
-            <CardTitle>Framework Coverage</CardTitle>
-            <CardDescription>
-              How well security frameworks address AI-specific threats
-            </CardDescription>
-          </div>
+        <div className="flex items-start justify-between mb-2">
+          <CardTitle>AI Security Framework Coverage</CardTitle>
           <Badge 
-            variant={getConfidenceBadgeVariant(confidenceStatus.confidence) as any}
+            variant={confidenceStatus.confidence >= 0.7 ? "default" : "secondary"}
             className="text-xs"
           >
             <Clock className="h-3 w-3 mr-1" />
             {confidenceStatus.status}
           </Badge>
         </div>
-        
-        {/* Living Knowledge metadata */}
-        <div className="mt-3 flex flex-wrap gap-2 text-xs text-muted-foreground">
-          <span className="flex items-center gap-1">
-            <Info className="h-3 w-3" />
-            Evaluated: {evaluation.date.toLocaleDateString()} by {evaluation.by}
-          </span>
-          {confidenceStatus.daysUntilStale > 0 && (
-            <span>
-              • Review in {confidenceStatus.daysUntilStale} days
-            </span>
-          )}
-          {timeline.length > 0 && (
-            <span className="block w-full mt-1 italic">
-              Latest: {latestChange}
-            </span>
-          )}
-        </div>
+        <CardDescription>
+          {withGuidance} of {frameworks.length} frameworks provide AI guidance • Average coverage: {avgCoverage}%
+        </CardDescription>
       </CardHeader>
+      
       <CardContent className="space-y-4">
+        {/* Framework list */}
         {frameworks.map((framework) => (
           <div key={framework.id} className="space-y-2">
-            <div className="flex justify-between text-sm">
-              <span className="font-medium">{framework.name}</span>
-              <span className="text-muted-foreground">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="font-medium text-sm">{framework.name}</span>
+                <Badge variant={getStatusVariant(framework.status)} className="text-xs">
+                  {framework.status.replace('-', ' ')}
+                </Badge>
+              </div>
+              <span className="text-sm text-muted-foreground">
                 {Math.round(framework.aiCoverage.overall * 100)}%
               </span>
             </div>
+            
             <Progress 
               value={framework.aiCoverage.overall * 100} 
               className={cn("h-2", getProgressColor(framework.aiCoverage.overall))}
             />
-            {framework.aiCoverage.overall < 0.4 && (
-              <p className="text-xs text-muted-foreground flex items-center gap-1">
-                <AlertCircle className="h-3 w-3 text-danger" />
-                {framework.gaps[0]}
+            
+            {/* Show most critical gap for low-coverage frameworks */}
+            {framework.aiCoverage.overall < 0.4 && framework.gaps.length > 0 && (
+              <p className="text-xs text-muted-foreground flex items-start gap-1">
+                <AlertCircle className="h-3 w-3 text-danger mt-0.5 flex-shrink-0" />
+                <span>{framework.gaps[0]}</span>
               </p>
             )}
+            
+            {/* Organization info */}
+            <p className="text-xs text-muted-foreground">
+              {framework.organization}
+            </p>
           </div>
         ))}
         
-        <div className="pt-4 border-t">
-          <p className="text-sm text-muted-foreground">
-            {insights[0]}
-          </p>
-          <a 
-            href="/patterns/compliance/framework-gaps" 
-            className="text-sm text-primary hover:underline"
-          >
-            View detailed gap analysis →
-          </a>
+        {/* Footer with evaluation info */}
+        <div className="pt-4 border-t text-xs text-muted-foreground">
+          Last evaluated: {evaluation.date.toLocaleDateString()} by {evaluation.by}
+          {confidenceStatus.daysUntilStale > 0 && (
+            <span> • Review in {confidenceStatus.daysUntilStale} days</span>
+          )}
         </div>
       </CardContent>
     </Card>
