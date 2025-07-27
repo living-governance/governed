@@ -84,8 +84,8 @@ export function FrameworkCoverage() {
     <div className="flex items-center gap-1">
       <IconButton icon={Home} view="main" label="Home" isActive={currentView === 'main'} />
       <div className="w-px h-6 bg-border mx-1" /> {/* Separator */}
-      <IconButton icon={Info} view="methodology" label="Methodology" isActive={currentView === 'methodology'} />
       <IconButton icon={Link} view="sources" label="Sources" isActive={currentView === 'sources'} />
+      <IconButton icon={Info} view="methodology" label="Methodology" isActive={currentView === 'methodology'} />
       <IconButton icon={Cloud} view="cloud" label="Cloud Guidance" isActive={currentView === 'cloud'} />
       <IconButton icon={TrendingUp} view="history" label="History" isActive={currentView === 'history'} />
       <IconButton icon={Download} view="download" label="Download" isActive={currentView === 'download'} />
@@ -100,18 +100,48 @@ export function FrameworkCoverage() {
         return (
           <>
             <p className="font-medium mb-2">Evaluation Methodology</p>
-            <p className="text-muted-foreground">
-              [Placeholder: How we evaluate framework coverage - methodology from knowledge file]
-            </p>
+            <div className="space-y-3 text-sm text-muted-foreground">
+              <div>
+                <p className="font-medium text-foreground mb-1">Review Process</p>
+                <p className="whitespace-pre-line">{frameworkCoverageKnowledge.evaluation.methodology}</p>
+              </div>
+              
+              <div>
+                <p className="font-medium text-foreground mb-1">Update Instructions</p>
+                <p className="whitespace-pre-line text-xs bg-muted p-3 rounded">{frameworkCoverageKnowledge.updateInstructions}</p>
+              </div>
+            </div>
           </>
         )
       case 'sources':
         return (
           <>
             <p className="font-medium mb-2">Sources</p>
-            <p className="text-muted-foreground">
-              [Placeholder: Links to framework documentation and references]
-            </p>
+            <div className="space-y-3">
+              {/* Group frameworks by unique organizations */}
+              {Array.from(new Set(frameworks.map(f => f.organization)))
+                .map(org => {
+                  const orgFrameworks = frameworks.filter(f => f.organization === org)
+                  return (
+                    <div key={org} className="text-sm">
+                      <p className="font-medium text-foreground">{org}</p>
+                      {orgFrameworks.map(framework => (
+                        <a 
+                          key={framework.id}
+                          href={framework.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-muted-foreground hover:text-primary hover:underline transition-colors flex items-center gap-1 ml-3 mt-1"
+                        >
+                          {framework.name}
+                          <ExternalLink className="h-3 w-3" />
+                        </a>
+                      ))}
+                    </div>
+                  )
+                })
+              }
+            </div>
           </>
         )
       case 'cloud':
@@ -191,9 +221,7 @@ export function FrameworkCoverage() {
                   {framework.name}
                   <ExternalLink className="h-3 w-3" />
                   </a>
-                  <span className="text-xs text-muted-foreground">
-                  {framework.organization}
-                  </span>
+
                     <Badge variant={getStatusVariant(framework.status)} className="text-xs">
                     {framework.status.replace('-', ' ')}
                   </Badge>
