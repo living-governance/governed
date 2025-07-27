@@ -112,21 +112,55 @@ export function FrameworkCoverage() {
         return (
           <>
             <p className="font-medium mb-2">Sources</p>
-            <div className="space-y-3">
-              {/* Group frameworks by unique organizations */}
+            <div className="space-y-3 text-sm">
+              {/* OWASP sources */}
+              <div>
+                <p className="font-medium text-muted-foreground text-xs uppercase tracking-wide mb-1">OWASP Foundation</p>
+                <div className="space-y-1">
+                  {frameworks.filter(f => f.organization === 'OWASP Foundation').map(framework => (
+                    <a 
+                      key={framework.id}
+                      href={framework.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-muted-foreground hover:text-primary hover:underline transition-colors flex items-center gap-1 ml-3"
+                    >
+                      {framework.name}
+                      <ExternalLink className="h-3 w-3" />
+                    </a>
+                  ))}
+                  {frameworkCoverageKnowledge.sources
+                    .filter(s => s.name.includes('OWASP') && s.url)
+                    .map((source, index) => (
+                      <a 
+                        key={`owasp-source-${index}`}
+                        href={source.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-muted-foreground hover:text-primary hover:underline transition-colors flex items-center gap-1 ml-3"
+                      >
+                        {source.name}
+                        <ExternalLink className="h-3 w-3" />
+                      </a>
+                    ))}
+                </div>
+              </div>
+              
+              {/* Other framework organizations */}
               {Array.from(new Set(frameworks.map(f => f.organization)))
+                .filter(org => org !== 'OWASP Foundation')
                 .map(org => {
                   const orgFrameworks = frameworks.filter(f => f.organization === org)
                   return (
-                    <div key={org} className="text-sm">
-                      <p className="font-medium text-foreground">{org}</p>
+                    <div key={org}>
+                      <p className="font-medium text-muted-foreground text-xs uppercase tracking-wide mb-1">{org}</p>
                       {orgFrameworks.map(framework => (
                         <a 
                           key={framework.id}
                           href={framework.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-muted-foreground hover:text-primary hover:underline transition-colors flex items-center gap-1 ml-3 mt-1"
+                          className="text-muted-foreground hover:text-primary hover:underline transition-colors flex items-center gap-1 ml-3"
                         >
                           {framework.name}
                           <ExternalLink className="h-3 w-3" />
@@ -134,8 +168,23 @@ export function FrameworkCoverage() {
                       ))}
                     </div>
                   )
-                })
-              }
+                })}
+              
+              {/* Other research sources without URLs */}
+              {frameworkCoverageKnowledge.sources
+                .filter(s => !s.name.includes('OWASP') && !s.url)
+                .length > 0 && (
+                <div>
+                  <p className="font-medium text-muted-foreground text-xs uppercase tracking-wide mb-1">Research Archives</p>
+                  {frameworkCoverageKnowledge.sources
+                    .filter(s => !s.name.includes('OWASP') && !s.url)
+                    .map((source, index) => (
+                      <div key={`research-${index}`} className="text-muted-foreground ml-3">
+                        {source.name}
+                      </div>
+                    ))}
+                </div>
+              )}
             </div>
           </>
         )
