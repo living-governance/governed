@@ -113,6 +113,11 @@ export const frameworkCoverageKnowledge = {
       date: new Date('2025-07-27'),
       by: '@assistant',
       change: 'Evaluated NIST AI RMF: 25/100 score - excellent general AI governance but zero agentic AI content. Updated coverage from 62% to 25%'
+    },
+    {
+      date: new Date('2025-07-28'),
+      by: '@tommy',
+      change: 'Replaced ISO/IEC 27001 (generic infosec) with ISO/IEC DIS 27090 (AI cybersecurity draft). ISO 42001:2023 excluded as pre-agentic era standard. Tracking 27090 draft status.'
     }
   ],
   
@@ -176,26 +181,26 @@ export const frameworkCoverageKnowledge = {
       lastFrameworkUpdate: '2024-07'  // GenAI Profile release
     },
     {
-      id: 'iso-27001',
-      name: 'ISO 27001',
-      organization: 'ISO',
-      url: 'https://www.iso.org/isoiec-27001-information-security.html',
+      id: 'iso-27090',
+      name: 'ISO/IEC DIS 27090 (Draft)',
+      organization: 'ISO/IEC',
+      url: 'https://www.iso.org/standard/56581.html',
       aiCoverage: {
-        overall: 0.55,
+        overall: 0.0,  // Unknown - draft status, but AI-security focused
         categories: {
-          'mcp-attacks': false,
+          'mcp-attacks': false,  // Draft status - content not publicly available
           'tool-poisoning': false,
           'prompt-injection': false,
           'agent-autonomy': false,
           'temporal-drift': false,
           'coordination-attacks': false,
-          'zero-trust': true,
-          'defense-in-depth': true
+          'zero-trust': false,
+          'defense-in-depth': false
         }
       },
-      status: 'applicable' as const,
-      gaps: ['No MCP guidance', 'AI-specific threats not addressed', 'ISO/IEC 27090 in development'],
-      lastFrameworkUpdate: '2022-10'
+      status: 'no-guidance' as const,  // Draft = not yet actionable
+      gaps: ['Draft International Standard - voting closes July 2025', 'Content not publicly available', 'Unknown coverage of agentic AI threats', 'First AI-specific cybersecurity ISO standard'],
+      lastFrameworkUpdate: '2025-07'
     },
     {
       id: 'mitre-attack',
@@ -244,9 +249,10 @@ export const frameworkCoverageKnowledge = {
   ] as Framework[],
   
   insights: [
-    'Tool poisoning attacks succeed 86% of the time - critical gap in most frameworks',
     'OWASP now provides 90% coverage with comprehensive Agentic AI Threats document',
     'NIST AI RMF has 0% agentic AI content despite being an AI-specific framework',
+    'ISO/IEC 27090 (AI cybersecurity) still in draft - first ISO standard targeting AI threats',
+    'ISO 42001:2023 predates agentic AI era - focuses on traditional AI governance only',
     'Only OWASP addresses multi-agent systems and MCP security',
     '80% of frameworks have zero guidance for autonomous agents'
   ],
