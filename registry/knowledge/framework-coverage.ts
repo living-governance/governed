@@ -23,6 +23,28 @@ export interface Framework {
   lastFrameworkUpdate: string;
 }
 
+// Add type for detailed evaluations
+export type DetailedEvaluationKey = 'owasp-agentic-threats-v1' | 'nist-ai-rmf-v1' | 'iso-27090-draft';
+
+export interface DetailedEvaluation {
+  frameworkName: string;
+  evaluationDate: Date;
+  evaluatedBy: string;
+  scores: {
+    threatIdentification: number;
+    practicalGuidance: number;
+    evidenceQuality: number;
+    completeness: number;
+    total: number;
+  };
+  breakdown: {
+    [key: string]: boolean | 'unknown';
+  };
+  strengths: string[];
+  weaknesses: string[];
+  verdict: string;
+}
+
 export const frameworkCoverageKnowledge = {
   id: 'framework-coverage-2025-q3',
   name: 'Security Framework AI Coverage Analysis',
@@ -97,9 +119,9 @@ export const frameworkCoverageKnowledge = {
       { category: 'completeness', name: 'Response procedures', points: 5, section: 'Completeness' }
     ],
     frameworks: {
-      owasp: 'owasp-agentic-threats-v1',
-      nist: 'nist-ai-rmf-v1',
-      iso: 'iso-27090-draft'
+      owasp: 'owasp-agentic-threats-v1' as DetailedEvaluationKey,
+      nist: 'nist-ai-rmf-v1' as DetailedEvaluationKey,
+      iso: 'iso-27090-draft' as DetailedEvaluationKey
     }
   },
   
@@ -496,7 +518,7 @@ export const frameworkCoverageKnowledge = {
       
       verdict: 'ISO/IEC 27090 represents the ISO community\'s response to AI security threats. However, as a draft standard with no public content, organizations cannot use it yet. Its relevance to agentic AI, multi-agent systems, and modern threats like MCP attacks remains unknown. Track its development but rely on OWASP for current guidance.'
     }
-  }
+  } as Record<DetailedEvaluationKey, DetailedEvaluation>
 }
 
 // Living Knowledge utility functions
