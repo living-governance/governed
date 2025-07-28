@@ -99,11 +99,151 @@ export function FrameworkCoverage() {
       case 'methodology':
         return (
           <>
-            <p className="font-medium mb-2">Evaluation Methodology</p>
-            <div className="space-y-3 text-sm text-muted-foreground">
+            <p className="font-medium mb-4">Evaluation Methodology</p>
+            <div className="space-y-6">
+              {/* Threat Identification */}
               <div>
-                <p className="font-medium text-foreground mb-1">Review Process</p>
-                <p className="whitespace-pre-line">{frameworkCoverageKnowledge.evaluation.methodology}</p>
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="font-medium text-sm">Threat Identification</h4>
+                  <span className="text-xs text-muted-foreground">40 points</span>
+                </div>
+                <div className="space-y-2">
+                  {[
+                    { name: 'Memory attacks', points: 5, owasp: true, nist: false },
+                    { name: 'Tool/API abuse', points: 5, owasp: true, nist: false },
+                    { name: 'Privilege escalation', points: 5, owasp: true, nist: false },
+                    { name: 'Multi-agent threats', points: 5, owasp: true, nist: false },
+                    { name: 'Temporal behaviors', points: 5, owasp: true, nist: false },
+                    { name: 'Human manipulation', points: 5, owasp: true, nist: false },
+                    { name: 'Communication poisoning', points: 5, owasp: true, nist: false },
+                    { name: 'Identity/auth threats', points: 5, owasp: true, nist: false }
+                  ].map(item => (
+                    <div key={item.name} className="grid grid-cols-12 gap-2 text-sm items-center">
+                      <span className="col-span-6 text-muted-foreground">• {item.name}</span>
+                      <span className="col-span-2 text-xs text-muted-foreground">{item.points}pts</span>
+                      <span className="col-span-2 text-center">{item.owasp ? '✓' : '✗'}</span>
+                      <span className="col-span-2 text-center">{item.nist ? '✓' : '✗'}</span>
+                    </div>
+                  ))}
+                  <div className="grid grid-cols-12 gap-2 text-sm font-medium pt-2 border-t">
+                    <span className="col-span-6">Subtotal</span>
+                    <span className="col-span-2"></span>
+                    <span className="col-span-2 text-center text-success">40/40</span>
+                    <span className="col-span-2 text-center text-danger">0/40</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Practical Guidance */}
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="font-medium text-sm">Practical Guidance</h4>
+                  <span className="text-xs text-muted-foreground">30 points</span>
+                </div>
+                <div className="space-y-2">
+                  {[
+                    { name: 'Clear patterns', points: 10, owasp: true, nist: true },
+                    { name: 'Specific tools', points: 5, owasp: true, nist: false },
+                    { name: 'Checklists', points: 5, owasp: true, nist: true },
+                    { name: 'Architecture diagrams', points: 5, owasp: true, nist: false },
+                    { name: 'Step-by-step instructions', points: 5, owasp: true, nist: true }
+                  ].map(item => (
+                    <div key={item.name} className="grid grid-cols-12 gap-2 text-sm items-center">
+                      <span className="col-span-6 text-muted-foreground">• {item.name}</span>
+                      <span className="col-span-2 text-xs text-muted-foreground">{item.points}pts</span>
+                      <span className="col-span-2 text-center">{item.owasp ? '✓' : '✗'}</span>
+                      <span className="col-span-2 text-center">{item.nist ? '✓' : '✗'}</span>
+                    </div>
+                  ))}
+                  <div className="grid grid-cols-12 gap-2 text-sm font-medium pt-2 border-t">
+                    <span className="col-span-6">Subtotal</span>
+                    <span className="col-span-2"></span>
+                    <span className="col-span-2 text-center text-success">30/30</span>
+                    <span className="col-span-2 text-center text-warning">20/30</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Evidence Quality */}
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="font-medium text-sm">Evidence Quality</h4>
+                  <span className="text-xs text-muted-foreground">20 points</span>
+                </div>
+                <div className="space-y-2">
+                  {[
+                    { name: 'Credible research', points: 5, owasp: true, nist: true },
+                    { name: 'Real incidents', points: 5, owasp: true, nist: false },
+                    { name: 'Attack patterns', points: 5, owasp: true, nist: false },
+                    { name: 'Detection guidance', points: 5, owasp: true, nist: false }
+                  ].map(item => (
+                    <div key={item.name} className="grid grid-cols-12 gap-2 text-sm items-center">
+                      <span className="col-span-6 text-muted-foreground">• {item.name}</span>
+                      <span className="col-span-2 text-xs text-muted-foreground">{item.points}pts</span>
+                      <span className="col-span-2 text-center">{item.owasp ? '✓' : '✗'}</span>
+                      <span className="col-span-2 text-center">{item.nist ? '✓' : '✗'}</span>
+                    </div>
+                  ))}
+                  <div className="grid grid-cols-12 gap-2 text-sm font-medium pt-2 border-t">
+                    <span className="col-span-6">Subtotal</span>
+                    <span className="col-span-2"></span>
+                    <span className="col-span-2 text-center text-success">20/20</span>
+                    <span className="col-span-2 text-center text-danger">5/20</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Completeness */}
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="font-medium text-sm">Completeness</h4>
+                  <span className="text-xs text-muted-foreground">10 points</span>
+                </div>
+                <div className="space-y-2">
+                  {[
+                    { name: 'Detection methods', points: 5, owasp: true, nist: false },
+                    { name: 'Response procedures', points: 5, owasp: true, nist: false }
+                  ].map(item => (
+                    <div key={item.name} className="grid grid-cols-12 gap-2 text-sm items-center">
+                      <span className="col-span-6 text-muted-foreground">• {item.name}</span>
+                      <span className="col-span-2 text-xs text-muted-foreground">{item.points}pts</span>
+                      <span className="col-span-2 text-center">{item.owasp ? '✓' : '✗'}</span>
+                      <span className="col-span-2 text-center">{item.nist ? '✓' : '✗'}</span>
+                    </div>
+                  ))}
+                  <div className="grid grid-cols-12 gap-2 text-sm font-medium pt-2 border-t">
+                    <span className="col-span-6">Subtotal</span>
+                    <span className="col-span-2"></span>
+                    <span className="col-span-2 text-center text-success">10/10</span>
+                    <span className="col-span-2 text-center text-danger">0/10</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Total Score */}
+              <div className="border-t pt-4">
+                <div className="grid grid-cols-12 gap-2 text-sm font-medium">
+                  <span className="col-span-6">Total Score</span>
+                  <span className="col-span-2"></span>
+                  <span className="col-span-2 text-center">
+                    <Badge variant="default" className="bg-success">100/100</Badge>
+                  </span>
+                  <span className="col-span-2 text-center">
+                    <Badge variant="outline" className="text-danger border-danger">25/100</Badge>
+                  </span>
+                </div>
+              </div>
+
+              {/* Legend */}
+              <div className="text-xs text-muted-foreground pt-4 space-y-1">
+                <div className="grid grid-cols-12 gap-2 font-medium">
+                  <span className="col-span-6"></span>
+                  <span className="col-span-2"></span>
+                  <span className="col-span-2 text-center">OWASP</span>
+                  <span className="col-span-2 text-center">NIST</span>
+                </div>
+                <p className="mt-2">✓ = Criteria met | ✗ = Criteria not met</p>
+                <p>Scores reflect coverage of agentic AI security threats specifically.</p>
               </div>
             </div>
           </>
