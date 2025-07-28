@@ -69,6 +69,40 @@ export const frameworkCoverageKnowledge = {
     - 0-29: No meaningful coverage`
   },
   
+  // Methodology comparison data for component
+  methodologyComparison: {
+    criteria: [
+      // Threat Identification (40 points)
+      { category: 'threatIdentification', name: 'Memory attacks', points: 5, section: 'Threat Identification' },
+      { category: 'threatIdentification', name: 'Tool/API abuse', points: 5, section: 'Threat Identification' },
+      { category: 'threatIdentification', name: 'Privilege escalation', points: 5, section: 'Threat Identification' },
+      { category: 'threatIdentification', name: 'Multi-agent threats', points: 5, section: 'Threat Identification' },
+      { category: 'threatIdentification', name: 'Temporal behaviors', points: 5, section: 'Threat Identification' },
+      { category: 'threatIdentification', name: 'Human manipulation', points: 5, section: 'Threat Identification' },
+      { category: 'threatIdentification', name: 'Communication poisoning', points: 5, section: 'Threat Identification' },
+      { category: 'threatIdentification', name: 'Identity/auth threats', points: 5, section: 'Threat Identification' },
+      // Practical Guidance (30 points)
+      { category: 'practicalGuidance', name: 'Clear patterns', points: 10, section: 'Practical Guidance' },
+      { category: 'practicalGuidance', name: 'Specific tools', points: 5, section: 'Practical Guidance' },
+      { category: 'practicalGuidance', name: 'Checklists', points: 5, section: 'Practical Guidance' },
+      { category: 'practicalGuidance', name: 'Architecture diagrams', points: 5, section: 'Practical Guidance' },
+      { category: 'practicalGuidance', name: 'Step-by-step instructions', points: 5, section: 'Practical Guidance' },
+      // Evidence Quality (20 points)
+      { category: 'evidenceQuality', name: 'Credible research', points: 5, section: 'Evidence Quality' },
+      { category: 'evidenceQuality', name: 'Real incidents', points: 5, section: 'Evidence Quality' },
+      { category: 'evidenceQuality', name: 'Attack patterns', points: 5, section: 'Evidence Quality' },
+      { category: 'evidenceQuality', name: 'Detection guidance', points: 5, section: 'Evidence Quality' },
+      // Completeness (10 points)
+      { category: 'completeness', name: 'Detection methods', points: 5, section: 'Completeness' },
+      { category: 'completeness', name: 'Response procedures', points: 5, section: 'Completeness' }
+    ],
+    frameworks: {
+      owasp: 'owasp-agentic-threats-v1',
+      nist: 'nist-ai-rmf-v1',
+      iso: 'iso-27090-draft'
+    }
+  },
+  
   // Update instructions for monthly review
   updateInstructions: `
     Monthly review process:
@@ -249,6 +283,7 @@ export const frameworkCoverageKnowledge = {
   ] as Framework[],
   
   insights: [
+    'Tool poisoning attacks succeed 86% of the time - critical gap in most frameworks',
     'OWASP now provides 90% coverage with comprehensive Agentic AI Threats document',
     'NIST AI RMF has 0% agentic AI content despite being an AI-specific framework',
     'ISO/IEC 27090 (AI cybersecurity) still in draft - first ISO standard targeting AI threats',
@@ -399,6 +434,67 @@ export const frameworkCoverageKnowledge = {
       ],
       
       verdict: 'NIST AI RMF provides solid governance for general AI systems but completely lacks agentic AI security content. Organizations building autonomous agents or multi-agent systems will find no specific guidance here and must look elsewhere for agentic threat coverage.'
+    },
+    
+    'iso-27090-draft': {
+      frameworkName: 'ISO/IEC DIS 27090 - AI Cybersecurity (Draft)',
+      evaluationDate: new Date('2025-07-28'),
+      evaluatedBy: '@tommy',
+      
+      scores: {
+        threatIdentification: 0,   // Unknown - draft content not available
+        practicalGuidance: 0,      // Unknown - draft content not available
+        evidenceQuality: 0,        // Unknown - draft content not available
+        completeness: 0,           // Unknown - draft content not available
+        total: 0                   // Cannot score until published
+      },
+      
+      // Detailed scoring breakdown - all unknown due to draft status
+      breakdown: {
+        // THREAT IDENTIFICATION (0/40) - Unknown
+        'memory-attacks': 'unknown' as any,
+        'tool-api-abuse': 'unknown' as any,
+        'privilege-escalation': 'unknown' as any,
+        'multi-agent-threats': 'unknown' as any,
+        'temporal-behaviors': 'unknown' as any,
+        'human-manipulation': 'unknown' as any,
+        'communication-poisoning': 'unknown' as any,
+        'identity-auth': 'unknown' as any,
+        
+        // PRACTICAL GUIDANCE (0/30) - Unknown
+        'clear-patterns': 'unknown' as any,
+        'specific-tools': 'unknown' as any,
+        'checklists': 'unknown' as any,
+        'architecture-diagrams': 'unknown' as any,
+        'step-by-step': 'unknown' as any,
+        
+        // EVIDENCE QUALITY (0/20) - Unknown
+        'credible-research': 'unknown' as any,
+        'real-incidents': 'unknown' as any,
+        'attack-patterns': 'unknown' as any,
+        'detection-guidance': 'unknown' as any,
+        
+        // COMPLETENESS (0/10) - Unknown
+        'detection-methods': 'unknown' as any,
+        'response-procedures': 'unknown' as any
+      },
+      
+      strengths: [
+        'First ISO standard specifically targeting AI cybersecurity',
+        'Addresses security threats to AI systems throughout lifecycle',
+        'Applicable to all organization types and sizes',
+        'ISO standardization brings global recognition and adoption'
+      ],
+      
+      weaknesses: [
+        'Still in Draft International Standard (DIS) stage',
+        'Content not publicly available for evaluation',
+        'Unknown coverage of agentic AI and multi-agent systems',
+        'Voting closes July 2025 - not yet actionable',
+        'May not address latest threats like MCP attacks or tool poisoning'
+      ],
+      
+      verdict: 'ISO/IEC 27090 represents the ISO community\'s response to AI security threats. However, as a draft standard with no public content, organizations cannot use it yet. Its relevance to agentic AI, multi-agent systems, and modern threats like MCP attacks remains unknown. Track its development but rely on OWASP for current guidance.'
     }
   }
 }

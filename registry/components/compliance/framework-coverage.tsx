@@ -26,7 +26,7 @@ import { useState } from "react"
 type ViewType = 'main' | 'methodology' | 'sources' | 'cloud' | 'history' | 'download' | 'share'
 
 export function FrameworkCoverage() {
-  const { frameworks, evaluation } = frameworkCoverageKnowledge
+  const { frameworks, evaluation, methodologyComparison, detailedEvaluations } = frameworkCoverageKnowledge
   const confidenceStatus = getConfidenceStatus(frameworkCoverageKnowledge)
   const [currentView, setCurrentView] = useState<ViewType>('main')
   
@@ -101,149 +101,107 @@ export function FrameworkCoverage() {
           <>
             <p className="font-medium mb-4">Evaluation Methodology</p>
             <div className="space-y-6">
-              {/* Threat Identification */}
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <h4 className="font-medium text-sm">Threat Identification</h4>
-                  <span className="text-xs text-muted-foreground">40 points</span>
-                </div>
-                <div className="space-y-2">
-                  {[
-                    { name: 'Memory attacks', points: 5, owasp: true, nist: false },
-                    { name: 'Tool/API abuse', points: 5, owasp: true, nist: false },
-                    { name: 'Privilege escalation', points: 5, owasp: true, nist: false },
-                    { name: 'Multi-agent threats', points: 5, owasp: true, nist: false },
-                    { name: 'Temporal behaviors', points: 5, owasp: true, nist: false },
-                    { name: 'Human manipulation', points: 5, owasp: true, nist: false },
-                    { name: 'Communication poisoning', points: 5, owasp: true, nist: false },
-                    { name: 'Identity/auth threats', points: 5, owasp: true, nist: false }
-                  ].map(item => (
-                    <div key={item.name} className="grid grid-cols-12 gap-2 text-sm items-center">
-                      <span className="col-span-6 text-muted-foreground">• {item.name}</span>
-                      <span className="col-span-2 text-xs text-muted-foreground">{item.points}pts</span>
-                      <span className="col-span-2 text-center">{item.owasp ? '✓' : '✗'}</span>
-                      <span className="col-span-2 text-center">{item.nist ? '✓' : '✗'}</span>
+              {/* Group criteria by section */}
+              {['Threat Identification', 'Practical Guidance', 'Evidence Quality', 'Completeness'].map(sectionName => {
+                const sectionCriteria = methodologyComparison.criteria.filter(c => c.section === sectionName)
+                const sectionPoints = sectionCriteria.reduce((sum, c) => sum + c.points, 0)
+                
+                // Get evaluations for each framework
+                const owaspEval = detailedEvaluations[methodologyComparison.frameworks.owasp]
+                const nistEval = detailedEvaluations[methodologyComparison.frameworks.nist]
+                const isoEval = detailedEvaluations[methodologyComparison.frameworks.iso]
+                
+                // Calculate section scores
+                const owaspSectionScore = sectionCriteria.reduce((sum, c) => {
+                  const key = c.name.toLowerCase().replace(/ /g, '-').replace(/\//g, '-')
+                  return sum + (owaspEval?.breakdown[key] === true ? c.points : 0)
+                }, 0)
+                
+                const nistSectionScore = sectionCriteria.reduce((sum, c) => {
+                  const key = c.name.toLowerCase().replace(/ /g, '-').replace(/\//g, '-')
+                  return sum + (nistEval?.breakdown[key] === true ? c.points : 0)
+                }, 0)
+                
+                return (
+                  <div key={sectionName}>
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className="font-medium text-sm">{sectionName}</h4>
+                      <span className="text-xs text-muted-foreground">{sectionPoints} points</span>
                     </div>
-                  ))}
-                  <div className="grid grid-cols-12 gap-2 text-sm font-medium pt-2 border-t">
-                    <span className="col-span-6">Subtotal</span>
-                    <span className="col-span-2"></span>
-                    <span className="col-span-2 text-center text-success">40/40</span>
-                    <span className="col-span-2 text-center text-danger">0/40</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Practical Guidance */}
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <h4 className="font-medium text-sm">Practical Guidance</h4>
-                  <span className="text-xs text-muted-foreground">30 points</span>
-                </div>
-                <div className="space-y-2">
-                  {[
-                    { name: 'Clear patterns', points: 10, owasp: true, nist: true },
-                    { name: 'Specific tools', points: 5, owasp: true, nist: false },
-                    { name: 'Checklists', points: 5, owasp: true, nist: true },
-                    { name: 'Architecture diagrams', points: 5, owasp: true, nist: false },
-                    { name: 'Step-by-step instructions', points: 5, owasp: true, nist: true }
-                  ].map(item => (
-                    <div key={item.name} className="grid grid-cols-12 gap-2 text-sm items-center">
-                      <span className="col-span-6 text-muted-foreground">• {item.name}</span>
-                      <span className="col-span-2 text-xs text-muted-foreground">{item.points}pts</span>
-                      <span className="col-span-2 text-center">{item.owasp ? '✓' : '✗'}</span>
-                      <span className="col-span-2 text-center">{item.nist ? '✓' : '✗'}</span>
+                    <div className="space-y-2">
+                      {sectionCriteria.map(criterion => {
+                        const key = criterion.name.toLowerCase().replace(/ /g, '-').replace(/\//g, '-')
+                        const owaspValue = owaspEval?.breakdown[key]
+                        const nistValue = nistEval?.breakdown[key]
+                        const isoValue = isoEval?.breakdown[key]
+                        
+                        return (
+                          <div key={criterion.name} className="grid grid-cols-14 gap-2 text-sm items-center">
+                            <span className="col-span-6 text-muted-foreground">• {criterion.name}</span>
+                            <span className="col-span-2 text-xs text-muted-foreground">{criterion.points}pts</span>
+                            <span className="col-span-2 text-center">{owaspValue === true ? '✓' : owaspValue === false ? '✗' : '?'}</span>
+                            <span className="col-span-2 text-center">{nistValue === true ? '✓' : nistValue === false ? '✗' : '?'}</span>
+                            <span className="col-span-2 text-center">{isoValue === true ? '✓' : isoValue === false ? '✗' : isoValue === 'unknown' ? '?' : '✗'}</span>
+                          </div>
+                        )
+                      })}
+                      <div className="grid grid-cols-14 gap-2 text-sm font-medium pt-2 border-t">
+                        <span className="col-span-6">Subtotal</span>
+                        <span className="col-span-2"></span>
+                        <span className={cn(
+                          "col-span-2 text-center",
+                          owaspSectionScore === sectionPoints && "text-success",
+                          owaspSectionScore > 0 && owaspSectionScore < sectionPoints && "text-warning",
+                          owaspSectionScore === 0 && "text-danger"
+                        )}>{owaspSectionScore}/{sectionPoints}</span>
+                        <span className={cn(
+                          "col-span-2 text-center",
+                          nistSectionScore === sectionPoints && "text-success",
+                          nistSectionScore > 0 && nistSectionScore < sectionPoints && "text-warning",
+                          nistSectionScore === 0 && "text-danger"
+                        )}>{nistSectionScore}/{sectionPoints}</span>
+                        <span className="col-span-2 text-center text-muted-foreground">Draft</span>
+                      </div>
                     </div>
-                  ))}
-                  <div className="grid grid-cols-12 gap-2 text-sm font-medium pt-2 border-t">
-                    <span className="col-span-6">Subtotal</span>
-                    <span className="col-span-2"></span>
-                    <span className="col-span-2 text-center text-success">30/30</span>
-                    <span className="col-span-2 text-center text-warning">20/30</span>
                   </div>
-                </div>
-              </div>
-
-              {/* Evidence Quality */}
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <h4 className="font-medium text-sm">Evidence Quality</h4>
-                  <span className="text-xs text-muted-foreground">20 points</span>
-                </div>
-                <div className="space-y-2">
-                  {[
-                    { name: 'Credible research', points: 5, owasp: true, nist: true },
-                    { name: 'Real incidents', points: 5, owasp: true, nist: false },
-                    { name: 'Attack patterns', points: 5, owasp: true, nist: false },
-                    { name: 'Detection guidance', points: 5, owasp: true, nist: false }
-                  ].map(item => (
-                    <div key={item.name} className="grid grid-cols-12 gap-2 text-sm items-center">
-                      <span className="col-span-6 text-muted-foreground">• {item.name}</span>
-                      <span className="col-span-2 text-xs text-muted-foreground">{item.points}pts</span>
-                      <span className="col-span-2 text-center">{item.owasp ? '✓' : '✗'}</span>
-                      <span className="col-span-2 text-center">{item.nist ? '✓' : '✗'}</span>
-                    </div>
-                  ))}
-                  <div className="grid grid-cols-12 gap-2 text-sm font-medium pt-2 border-t">
-                    <span className="col-span-6">Subtotal</span>
-                    <span className="col-span-2"></span>
-                    <span className="col-span-2 text-center text-success">20/20</span>
-                    <span className="col-span-2 text-center text-danger">5/20</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Completeness */}
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <h4 className="font-medium text-sm">Completeness</h4>
-                  <span className="text-xs text-muted-foreground">10 points</span>
-                </div>
-                <div className="space-y-2">
-                  {[
-                    { name: 'Detection methods', points: 5, owasp: true, nist: false },
-                    { name: 'Response procedures', points: 5, owasp: true, nist: false }
-                  ].map(item => (
-                    <div key={item.name} className="grid grid-cols-12 gap-2 text-sm items-center">
-                      <span className="col-span-6 text-muted-foreground">• {item.name}</span>
-                      <span className="col-span-2 text-xs text-muted-foreground">{item.points}pts</span>
-                      <span className="col-span-2 text-center">{item.owasp ? '✓' : '✗'}</span>
-                      <span className="col-span-2 text-center">{item.nist ? '✓' : '✗'}</span>
-                    </div>
-                  ))}
-                  <div className="grid grid-cols-12 gap-2 text-sm font-medium pt-2 border-t">
-                    <span className="col-span-6">Subtotal</span>
-                    <span className="col-span-2"></span>
-                    <span className="col-span-2 text-center text-success">10/10</span>
-                    <span className="col-span-2 text-center text-danger">0/10</span>
-                  </div>
-                </div>
-              </div>
+                )
+              })}
 
               {/* Total Score */}
               <div className="border-t pt-4">
-                <div className="grid grid-cols-12 gap-2 text-sm font-medium">
+                <div className="grid grid-cols-14 gap-2 text-sm font-medium">
                   <span className="col-span-6">Total Score</span>
                   <span className="col-span-2"></span>
                   <span className="col-span-2 text-center">
-                    <Badge variant="default" className="bg-success">100/100</Badge>
+                    <Badge variant="default" className="bg-success">
+                      {detailedEvaluations[methodologyComparison.frameworks.owasp]?.scores.total || 0}/100
+                    </Badge>
                   </span>
                   <span className="col-span-2 text-center">
-                    <Badge variant="outline" className="text-danger border-danger">25/100</Badge>
+                    <Badge variant="outline" className={cn(
+                      detailedEvaluations[methodologyComparison.frameworks.nist]?.scores.total === 0 && "text-danger border-danger"
+                    )}>
+                      {detailedEvaluations[methodologyComparison.frameworks.nist]?.scores.total || 0}/100
+                    </Badge>
+                  </span>
+                  <span className="col-span-2 text-center">
+                    <Badge variant="secondary">TBD</Badge>
                   </span>
                 </div>
               </div>
 
               {/* Legend */}
               <div className="text-xs text-muted-foreground pt-4 space-y-1">
-                <div className="grid grid-cols-12 gap-2 font-medium">
+                <div className="grid grid-cols-14 gap-2 font-medium">
                   <span className="col-span-6"></span>
                   <span className="col-span-2"></span>
                   <span className="col-span-2 text-center">OWASP</span>
                   <span className="col-span-2 text-center">NIST</span>
+                  <span className="col-span-2 text-center">ISO 27090</span>
                 </div>
-                <p className="mt-2">✓ = Criteria met | ✗ = Criteria not met</p>
+                <p className="mt-2">✓ = Criteria met | ✗ = Criteria not met | ? = Unknown (draft)</p>
                 <p>Scores reflect coverage of agentic AI security threats specifically.</p>
+                <p className="text-warning">ISO/IEC 27090 is in draft status - content not publicly available.</p>
               </div>
             </div>
           </>
