@@ -108,6 +108,11 @@ export const frameworkCoverageKnowledge = {
       date: new Date('2025-07-27'),
       by: '@assistant',
       change: 'Updated methodology to binary scoring framework (100 points), added detailed OWASP evaluation showing perfect 100/100 score'
+    },
+    {
+      date: new Date('2025-07-27'),
+      by: '@assistant',
+      change: 'Evaluated NIST AI RMF: 25/100 score - excellent general AI governance but zero agentic AI content. Updated coverage from 62% to 25%'
     }
   ],
   
@@ -149,26 +154,26 @@ export const frameworkCoverageKnowledge = {
       lastFrameworkUpdate: '2025-04'
     },
     {
-      id: 'nist-csf',
-      name: 'NIST Cybersecurity Framework',
+      id: 'nist-ai-rmf',
+      name: 'NIST AI Risk Management Framework',
       organization: 'NIST (US)',
-      url: 'https://www.nist.gov/cyberframework',
+      url: 'https://www.nist.gov/itl/ai-risk-management-framework',
       aiCoverage: {
-        overall: 0.62,
+        overall: 0.25,  // General AI governance only, no agentic-specific content
         categories: {
-          'mcp-attacks': false,  // No specific MCP guidance
-          'tool-poisoning': false,
-          'prompt-injection': true,
-          'agent-autonomy': false,
-          'temporal-drift': true,
-          'coordination-attacks': false,
-          'zero-trust': true,  // SP 800-207
-          'defense-in-depth': true  // SP 800-53 Rev 5
+          'mcp-attacks': false,      // No MCP coverage
+          'tool-poisoning': false,   // No tool manipulation coverage
+          'prompt-injection': false, // General AI risks only
+          'agent-autonomy': false,   // No agent-specific content
+          'temporal-drift': false,   // No agent behavioral drift
+          'coordination-attacks': false,  // No multi-agent coverage
+          'zero-trust': true,        // General security principles apply
+          'defense-in-depth': true   // General security principles apply
         }
       },
       status: 'applicable' as const,
-      gaps: ['No MCP-specific guidance', 'Tool poisoning not addressed'],
-      lastFrameworkUpdate: '2024-09'
+      gaps: ['No agentic AI content', 'No multi-agent systems coverage', 'No MCP or tool calling guidance', 'Framework addresses general AI only'],
+      lastFrameworkUpdate: '2024-07'  // GenAI Profile release
     },
     {
       id: 'iso-27001',
@@ -241,15 +246,17 @@ export const frameworkCoverageKnowledge = {
   insights: [
     'Tool poisoning attacks succeed 86% of the time - critical gap in most frameworks',
     'OWASP now provides 90% coverage with comprehensive Agentic AI Threats document',
-    'Only 20% of major frameworks have any MCP-specific guidance',
-    'OWASP leading industry response with both Agentic Threats guide and MCP Top 10 project'
+    'NIST AI RMF has 0% agentic AI content despite being an AI-specific framework',
+    'Only OWASP addresses multi-agent systems and MCP security',
+    '80% of frameworks have zero guidance for autonomous agents'
   ],
   
   recommendations: [
-    'Follow OWASP MCP Top 10 development closely',
-    'Apply NIST Zero Trust principles to all MCP deployments',
-    'Implement tool validation beyond what frameworks require',
-    'Monitor MITRE ATT&CK for future MCP techniques'
+    'Use OWASP Agentic AI Threats as primary reference for agent security',
+    'NIST AI RMF useful for general AI governance but not agentic systems',
+    'Implement tool validation beyond what any framework requires',
+    'Monitor OWASP MCP Top 10 development for protocol-specific guidance',
+    'Combine OWASP agentic guidance with NIST governance structure where applicable'
   ],
   
   sources: [
@@ -257,7 +264,9 @@ export const frameworkCoverageKnowledge = {
     { name: 'Security Frameworks MCP Analysis', date: new Date('2025-06-15') },
     { name: 'OWASP GenAI Project Site', url: 'https://genai.owasp.org/', date: new Date('2025-07-01') },
     { name: 'OWASP Agentic AI Threats and Mitigations v1.0a', url: 'https://genai.owasp.org/resource/agentic-ai-threats-and-mitigations/', date: new Date('2025-02-01') },
-    { name: 'OWASP MCP Top 10 (In Development)', url: 'https://owasp.org/www-project-mcp-top-10/', date: new Date('2025-07-01') }
+    { name: 'OWASP MCP Top 10 (In Development)', url: 'https://owasp.org/www-project-mcp-top-10/', date: new Date('2025-07-01') },
+    { name: 'NIST AI Risk Management Framework 1.0', url: 'https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.100-1.pdf', date: new Date('2023-01-26') },
+    { name: 'NIST Generative AI Profile', url: 'https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf', date: new Date('2024-07-26') }
   ],
   
   // Detailed framework evaluations using our binary scoring methodology
@@ -321,6 +330,69 @@ export const frameworkCoverageKnowledge = {
       ],
       
       verdict: 'OWASP\'s Agentic AI Threats document sets the gold standard for identifying and addressing agentic AI security risks. With perfect scores across all categories, it provides the most comprehensive threat taxonomy and practical guidance available today.'
+    },
+    
+    'nist-ai-rmf-v1': {
+      frameworkName: 'NIST AI Risk Management Framework 1.0 + GenAI Profile',
+      evaluationDate: new Date('2025-07-27'),
+      evaluatedBy: '@assistant',
+      
+      scores: {
+        threatIdentification: 0,   // No agentic-specific threats
+        practicalGuidance: 20,     // General AI guidance only
+        evidenceQuality: 5,        // Good references but not agentic
+        completeness: 0,           // No agentic lifecycle coverage
+        total: 25
+      },
+      
+      // Detailed scoring breakdown
+      breakdown: {
+        // THREAT IDENTIFICATION (0/40)
+        'memory-attacks': false,          // No agent memory poisoning
+        'tool-api-abuse': false,          // No tool calling/MCP coverage
+        'privilege-escalation': false,     // No agent privilege escalation
+        'multi-agent-threats': false,      // Zero multi-agent content
+        'temporal-behaviors': false,       // No agent behavioral evolution
+        'human-manipulation': false,       // General human-AI only
+        'communication-poisoning': false,  // No inter-agent communication
+        'identity-auth': false,           // No agent identity threats
+        
+        // PRACTICAL GUIDANCE (20/30)
+        'clear-patterns': true,           // Good general AI patterns
+        'specific-tools': false,          // No agentic tools
+        'checklists': true,              // General AI checklists
+        'architecture-diagrams': false,   // No threat diagrams
+        'step-by-step': true,            // General AI process
+        
+        // EVIDENCE QUALITY (5/20)
+        'credible-research': true,        // Good general AI research
+        'real-incidents': false,          // No agentic incidents
+        'attack-patterns': false,         // No agentic attacks
+        'detection-guidance': false,      // Not for agents
+        
+        // COMPLETENESS (0/10)
+        'detection-methods': false,       // Not agentic-specific
+        'response-procedures': false      // Not for agent threats
+      },
+      
+      strengths: [
+        'Excellent general AI governance framework',
+        'Strong lifecycle management approach',
+        'Good organizational risk management structure',
+        'Living document with regular updates',
+        'Comprehensive for traditional AI systems'
+      ],
+      
+      weaknesses: [
+        'Zero coverage of agentic AI or autonomous agents',
+        'No mention of multi-agent systems',
+        'No Model Context Protocol (MCP) guidance',
+        'No tool calling or function calling security',
+        'Does not address agent-specific threats',
+        'No coverage of temporal malicious evolution in agents'
+      ],
+      
+      verdict: 'NIST AI RMF provides solid governance for general AI systems but completely lacks agentic AI security content. Organizations building autonomous agents or multi-agent systems will find no specific guidance here and must look elsewhere for agentic threat coverage.'
     }
   }
 }
