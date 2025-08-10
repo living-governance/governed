@@ -5,6 +5,7 @@ export interface Framework {
   name: string;
   organization: string;
   url: string;  // Official framework website
+  dataSource?: string;  // Direct link to data/PDF/GitHub for evaluation
   aiCoverageScore: number;  // Score from detailed evaluation / 100
   status: 'active' | 'applicable' | 'no-guidance';
   gaps: string[];
@@ -120,8 +121,10 @@ export const frameworkCoverageKnowledge = {
   // Update instructions for monthly review
   updateInstructions: `
     Monthly review process:
-    1. Visit each framework's official site (URLs are in the frameworks array).
-       Check for updates to content, new versions, or new guidance.
+    1. Check each framework for updates:
+       - Use the dataSource link if available (GitHub repos, PDFs, data files)
+       - Fall back to the url (official website) if no dataSource
+       - Look for version changes, new releases, or content updates
     
     2. Re-evaluate each framework using the Binary Scoring Framework defined in
        evaluation.methodology above. Use the criteria listed in
@@ -138,6 +141,7 @@ export const frameworkCoverageKnowledge = {
     
     4. Update the frameworks array:
        - Set aiCoverageScore = total score / 100
+       - Update dataSource if a better evaluation source is found
        - Update gaps array based on evaluation findings
        - Update status ('active', 'applicable', or 'no-guidance')
        - Update lastFrameworkUpdate if framework was revised
@@ -189,6 +193,7 @@ export const frameworkCoverageKnowledge = {
       name: 'OWASP GenAI Security Project',
       organization: 'OWASP Foundation',
       url: 'https://genai.owasp.org/',
+      dataSource: 'https://genai.owasp.org/resource/agentic-ai-threats-and-mitigations/',  // Direct PDF link
       aiCoverageScore: 1.0,  // 100/100 from detailed evaluation
       status: 'active' as const,
       gaps: ['Quantitative metrics on attack success rates'],
@@ -199,6 +204,7 @@ export const frameworkCoverageKnowledge = {
       name: 'NIST AI Risk Management Framework',
       organization: 'NIST (US)',
       url: 'https://www.nist.gov/itl/ai-risk-management-framework',
+      dataSource: 'https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.100-1.pdf',  // PDF
       aiCoverageScore: 0.25,  // 25/100 from detailed evaluation
       status: 'applicable' as const,
       gaps: ['No agentic AI content', 'No multi-agent systems coverage', 'No MCP or tool calling guidance', 'Framework addresses general AI only'],
@@ -209,6 +215,7 @@ export const frameworkCoverageKnowledge = {
       name: 'ISO/IEC DIS 27090 (Draft)',
       organization: 'ISO/IEC',
       url: 'https://www.iso.org/standard/56581.html',
+      // No dataSource - draft not publicly available
       aiCoverageScore: 0.0,  // Unknown - draft status
       status: 'no-guidance' as const,  // Draft = not yet actionable
       gaps: ['Draft International Standard - voting closes July 2025', 'Content not publicly available', 'Unknown coverage of agentic AI threats', 'First AI-specific cybersecurity ISO standard'],
@@ -219,6 +226,7 @@ export const frameworkCoverageKnowledge = {
       name: 'ISO/IEC 42001:2023 AI Management Systems',
       organization: 'ISO/IEC',
       url: 'https://www.iso.org/standard/42001',
+      // No dataSource - ISO standards are paywalled
       aiCoverageScore: 0.35,  // 35/100 from detailed evaluation
       status: 'applicable' as const,
       gaps: ['Published before agentic AI emergence', 'No MCP or tool calling security', 'Focuses on traditional AI risks', 'Limited technical security controls'],
@@ -229,6 +237,7 @@ export const frameworkCoverageKnowledge = {
       name: 'MITRE ATT&CK',
       organization: 'MITRE Corporation',
       url: 'https://attack.mitre.org/',
+      dataSource: 'https://github.com/mitre-attack/attack-data-model',  // GitHub data
       aiCoverageScore: 0.0,  // 0/100 from detailed evaluation
       status: 'no-guidance' as const,
       gaps: ['Traditional IT focus only', 'No AI/ML coverage', 'Use MITRE ATLAS for AI threats'],
@@ -239,6 +248,7 @@ export const frameworkCoverageKnowledge = {
       name: 'MITRE ATLAS',
       organization: 'MITRE Corporation',
       url: 'https://atlas.mitre.org/',
+      dataSource: 'https://github.com/mitre-atlas/atlas-data',  // GitHub data
       aiCoverageScore: 0.75,  // 75/100 from detailed evaluation
       status: 'active' as const,
       gaps: ['No MCP/Model Context Protocol', 'Limited multi-agent scenarios', 'No agent behavioral drift'],
@@ -249,6 +259,7 @@ export const frameworkCoverageKnowledge = {
       name: 'CIS Controls',
       organization: 'Center for Internet Security',
       url: 'https://www.cisecurity.org/controls',
+      dataSource: 'https://www.cisecurity.org/controls/cis-controls-list',  // Controls list
       aiCoverageScore: 0.25,  // 25/100 from detailed evaluation
       status: 'no-guidance' as const,
       gaps: ['No AI or ML security coverage', '18 controls don\'t address agent threats'],
@@ -277,8 +288,6 @@ export const frameworkCoverageKnowledge = {
   ],
   
   sources: [
-    { name: 'MCP Security Research Archive', date: new Date('2025-06-01') },
-    { name: 'Security Frameworks MCP Analysis', date: new Date('2025-06-15') },
     { name: 'OWASP GenAI Project Site', url: 'https://genai.owasp.org/', date: new Date('2025-07-01') },
     { name: 'OWASP Agentic AI Threats and Mitigations v1.0a', url: 'https://genai.owasp.org/resource/agentic-ai-threats-and-mitigations/', date: new Date('2025-02-01') },
     { name: 'OWASP MCP Top 10 (In Development)', url: 'https://owasp.org/www-project-mcp-top-10/', date: new Date('2025-07-01') },

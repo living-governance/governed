@@ -316,80 +316,76 @@ export function FrameworkCoverage({ initialView = 'main' }: FrameworkCoveragePro
       case 'sources':
         return (
           <>
-            <p className="font-medium mb-2">Sources</p>
-            <div className="space-y-3 text-sm">
-              {/* OWASP sources */}
-              <div>
-                <p className="font-medium text-muted-foreground text-xs uppercase tracking-wide mb-1">OWASP Foundation</p>
-                <div className="space-y-1">
-                  {frameworks.filter(f => f.organization === 'OWASP Foundation').map(framework => (
-                    <a 
-                      key={framework.id}
-                      href={framework.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-muted-foreground hover:text-primary hover:underline transition-colors flex items-center gap-1 ml-3"
-                    >
-                      {framework.name}
-                      <ExternalLink className="h-3 w-3" />
-                    </a>
-                  ))}
-                  {frameworkCoverageKnowledge.sources
-                    .filter(s => s.name.includes('OWASP') && s.url)
-                    .map((source, index) => (
+            <p className="font-medium mb-4">Framework Sources</p>
+            <div className="space-y-4">
+              {frameworks.map(framework => {
+                // Collect all sources for this framework
+                const frameworkSources = [];
+                
+                // Add data source if available
+                if (framework.dataSource) {
+                  frameworkSources.push({
+                    url: framework.dataSource,
+                    label: framework.dataSource.includes('github') ? 'GitHub Data' :
+                           framework.dataSource.includes('.pdf') ? 'PDF Document' :
+                           'Data Source'
+                  });
+                }
+                
+                // Add additional sources from the sources array that match this framework
+                const additionalSources = frameworkCoverageKnowledge.sources
+                  .filter(s => s.url && (
+                    (framework.id === 'owasp-genai' && s.name.includes('OWASP')) ||
+                    (framework.id === 'nist-ai-rmf' && s.name.includes('NIST'))
+                  ))
+                  .map(s => ({ url: s.url, label: s.name }));
+                
+                frameworkSources.push(...additionalSources);
+                
+                return (
+                  <div key={framework.id} className="space-y-2">
+                    <div className="flex items-center justify-between">
                       <a 
-                        key={`owasp-source-${index}`}
-                        href={source.url}
+                        href={framework.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-muted-foreground hover:text-primary hover:underline transition-colors flex items-center gap-1 ml-3"
+                        className="font-medium text-sm hover:text-primary hover:underline transition-colors flex items-center gap-1"
                       >
-                        {source.name}
+                        {framework.name}
                         <ExternalLink className="h-3 w-3" />
                       </a>
-                    ))}
-                </div>
-              </div>
-              
-              {/* Other framework organizations */}
-              {Array.from(new Set(frameworks.map(f => f.organization)))
-                .filter(org => org !== 'OWASP Foundation')
-                .map(org => {
-                  const orgFrameworks = frameworks.filter(f => f.organization === org)
-                  return (
-                    <div key={org}>
-                      <p className="font-medium text-muted-foreground text-xs uppercase tracking-wide mb-1">{org}</p>
-                      {orgFrameworks.map(framework => (
-                        <a 
-                          key={framework.id}
-                          href={framework.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-muted-foreground hover:text-primary hover:underline transition-colors flex items-center gap-1 ml-3"
-                        >
-                          {framework.name}
-                          <ExternalLink className="h-3 w-3" />
-                        </a>
-                      ))}
+                      <Badge variant="outline" className="text-xs">
+                        {framework.organization}
+                      </Badge>
                     </div>
-                  )
-                })}
-              
-              {/* Other research sources without URLs */}
-              {frameworkCoverageKnowledge.sources
-                .filter(s => !s.name.includes('OWASP') && !s.url)
-                .length > 0 && (
-                <div>
-                  <p className="font-medium text-muted-foreground text-xs uppercase tracking-wide mb-1">Research Archives</p>
-                  {frameworkCoverageKnowledge.sources
-                    .filter(s => !s.name.includes('OWASP') && !s.url)
-                    .map((source, index) => (
-                      <div key={`research-${index}`} className="text-muted-foreground ml-3">
-                        {source.name}
+                    
+                    {frameworkSources.length > 0 ? (
+                      <div className="ml-4 space-y-1">
+                        {frameworkSources.map((source, idx) => (
+                          <a
+                            key={idx}
+                            href={source.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-xs text-muted-foreground hover:text-primary hover:underline transition-colors flex items-center gap-1"
+                          >
+                            • {source.label}
+                            <ExternalLink className="h-2.5 w-2.5" />
+                          </a>
+                        ))}
                       </div>
-                    ))}
-                </div>
-              )}
+                    ) : (
+                      <div className="ml-4">
+                        <span className="text-xs text-muted-foreground/60 italic">
+                          {framework.id === 'iso-27090' ? '• Draft not publicly available' :
+                           framework.id === 'iso-42001' ? '• ISO standard (paywalled)' :
+                           '• No additional sources'}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </>
         )
