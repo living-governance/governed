@@ -5,19 +5,7 @@ export interface Framework {
   name: string;
   organization: string;
   url: string;  // Official framework website
-  aiCoverage: {
-    overall: number;
-    categories: {
-      'mcp-attacks': boolean;
-      'tool-poisoning': boolean;
-      'prompt-injection': boolean;
-      'agent-autonomy': boolean;
-      'temporal-drift': boolean;
-      'coordination-attacks': boolean;
-      'zero-trust': boolean;
-      'defense-in-depth': boolean;
-    };
-  };
+  aiCoverageScore: number;  // Score from detailed evaluation / 100
   status: 'active' | 'applicable' | 'no-guidance';
   gaps: string[];
   lastFrameworkUpdate: string;
@@ -132,73 +120,53 @@ export const frameworkCoverageKnowledge = {
   // Update instructions for monthly review
   updateInstructions: `
     Monthly review process:
-    1. Visit each framework's official site:
-       - OWASP GenAI: https://genai.owasp.org/
-       - NIST: https://www.nist.gov/itl/ai-risk-management-framework
-       - ISO: Check for updates to ISO/IEC 27090 (AI cybersecurity)
-       - MITRE ATT&CK: https://attack.mitre.org/
-       - CIS Controls: https://www.cisecurity.org/controls
-    2. Search for new sections covering:
-       - MCP (Model Context Protocol) specific guidance
-       - Tool poisoning attacks (86% success rate threat)
-       - Agent autonomy security
-       - Multi-agent coordination threats
-    3. Check commercial vendors (Palo Alto, AWS, Microsoft) for new guidance
-    4. Update coverage percentages and add timeline entry
+    1. Visit each framework's official site (URLs are in the frameworks array).
+       Check for updates to content, new versions, or new guidance.
+    
+    2. Re-evaluate each framework using the Binary Scoring Framework defined in
+       evaluation.methodology above. Use the criteria listed in
+       methodologyComparison.criteria for scoring.
+    
+    3. Update the detailedEvaluations section with:
+       - New scores for each category (see evaluation.methodology for points)
+       - Updated breakdown with true/false for each criterion
+       - Criterion keys must match methodologyComparison.criteria names
+         (converted to lowercase with spaces→hyphens)
+       - New strengths and weaknesses
+       - Updated verdict
+       - Set evaluationDate to review date
+    
+    4. Update the frameworks array:
+       - Set aiCoverageScore = total score / 100
+       - Update gaps array based on evaluation findings
+       - Update status ('active', 'applicable', or 'no-guidance')
+       - Update lastFrameworkUpdate if framework was revised
+    
+    5. If a framework has a new version or major update, add timeline entry:
+       - date: Framework release/update date
+       - framework: Framework name
+       - change: What the framework added/changed (not our evaluation)
+    
+    6. Update insights and recommendations based on new findings
   `,
   
-  // Recent changes timeline
+  // Framework evolution timeline
+  // TODO: Verify actual release dates before populating
   timeline: [
     {
-      date: new Date('2025-01-15'),
-      by: '@tsynode',
-      change: 'Initial framework analysis - No MCP coverage in any framework'
+      date: new Date('2023-01-26'),
+      framework: 'NIST AI RMF',
+      change: 'NIST AI Risk Management Framework 1.0 released - VERIFIED'
     },
-    {
-      date: new Date('2025-04-15'),
-      by: '@tsynode',
-      change: 'OWASP announces MCP Top 10 project, begins active development'
-    },
-    {
-      date: new Date('2025-07-24'),
-      by: '@tsynode',
-      change: 'Updated with verified research: OWASP MCP Top 10 in development, removed EU AI Act (regulation not framework), added MITRE ATT&CK and CIS Controls'
-    },
-    {
-      date: new Date('2025-07-27'),
-      by: '@tsynode',
-      change: 'Updated methodology to binary scoring framework (100 points), added detailed OWASP evaluation showing perfect 100/100 score'
-    },
-    {
-      date: new Date('2025-07-27'),
-      by: '@tsynode',
-      change: 'Evaluated NIST AI RMF: 25/100 score - excellent general AI governance but zero agentic AI content. Updated coverage from 62% to 25%'
-    },
-    {
-      date: new Date('2025-07-28'),
-      by: '@tsynode',
-      change: 'Replaced ISO/IEC 27001 (generic infosec) with ISO/IEC DIS 27090 (AI cybersecurity draft). ISO 42001:2023 excluded as pre-agentic era standard. Tracking 27090 draft status.'
-    },
-    {
-      date: new Date('2025-08-10'),
-      by: '@tsynode',
-      change: 'Added ISO/IEC 42001:2023 evaluation: 35/100 score. Good AI governance framework but zero agentic AI security content. Published pre-MCP era, focuses on bias/transparency over agent threats.'
-    },
-    {
-      date: new Date('2025-08-10'),
-      by: '@tsynode',
-      change: 'Evaluated MITRE ATLAS: 65/100 score. Best ML/AI threat framework but limited agentic coverage. Strong on prompt injection and LLM threats, missing MCP and multi-agent scenarios. Updated ATT&CK entry to clarify it has no AI coverage.'
-    },
-    {
-      date: new Date('2025-08-10'),
-      by: '@tsynode',
-      change: 'Updated ATLAS evaluation to 75/100 after analyzing data files. Found extensive LLM coverage including RAG poisoning, 32 case studies, and April 2025 updates. Still missing MCP and multi-agent coordination.'
-    },
-    {
-      date: new Date('2025-08-10'),
-      by: '@tsynode',
-      change: 'Evaluated CIS Controls v8.1: 25/100 score. Excellent general cybersecurity but zero AI content. 18 controls don\'t recognize AI as distinct asset class. Traditional IT focus only.'
-    }
+    // PLACEHOLDER: Need to verify actual dates for:
+    // - ISO/IEC 42001:2023 publication date
+    // - OWASP Top 10 for LLM Applications v1.0 release
+    // - OWASP Agentic AI Threats v1.0a release  
+    // - CIS Controls v8.1 release date
+    // - NIST GenAI Profile release date
+    // - MITRE ATLAS version history
+    // - ISO/IEC 27090 draft milestones
+    // Only add entries with verified dates and framework changes
   ],
   
   // Self-documenting metadata
@@ -221,19 +189,7 @@ export const frameworkCoverageKnowledge = {
       name: 'OWASP GenAI Security Project',
       organization: 'OWASP Foundation',
       url: 'https://genai.owasp.org/',
-      aiCoverage: {
-        overall: 0.90,  // Updated based on comprehensive Agentic AI Threats document
-        categories: {
-          'mcp-attacks': true,  // MCP Top 10 in development + Agentic Threats covers
-          'tool-poisoning': true,  // T2: Tool Misuse extensively covered
-          'prompt-injection': true,  // T6: Intent Breaking & Goal Manipulation
-          'agent-autonomy': true,  // T6, T7: Autonomy manipulation covered
-          'temporal-drift': true,  // T7: Misaligned & Deceptive Behaviors
-          'coordination-attacks': true,  // T12, T13, T14: Multi-agent threats
-          'zero-trust': true,
-          'defense-in-depth': true
-        }
-      },
+      aiCoverageScore: 1.0,  // 100/100 from detailed evaluation
       status: 'active' as const,
       gaps: ['Quantitative metrics on attack success rates'],
       lastFrameworkUpdate: '2025-04'
@@ -243,19 +199,7 @@ export const frameworkCoverageKnowledge = {
       name: 'NIST AI Risk Management Framework',
       organization: 'NIST (US)',
       url: 'https://www.nist.gov/itl/ai-risk-management-framework',
-      aiCoverage: {
-        overall: 0.25,  // General AI governance only, no agentic-specific content
-        categories: {
-          'mcp-attacks': false,      // No MCP coverage
-          'tool-poisoning': false,   // No tool manipulation coverage
-          'prompt-injection': false, // General AI risks only
-          'agent-autonomy': false,   // No agent-specific content
-          'temporal-drift': false,   // No agent behavioral drift
-          'coordination-attacks': false,  // No multi-agent coverage
-          'zero-trust': true,        // General security principles apply
-          'defense-in-depth': true   // General security principles apply
-        }
-      },
+      aiCoverageScore: 0.25,  // 25/100 from detailed evaluation
       status: 'applicable' as const,
       gaps: ['No agentic AI content', 'No multi-agent systems coverage', 'No MCP or tool calling guidance', 'Framework addresses general AI only'],
       lastFrameworkUpdate: '2024-07'  // GenAI Profile release
@@ -265,19 +209,7 @@ export const frameworkCoverageKnowledge = {
       name: 'ISO/IEC DIS 27090 (Draft)',
       organization: 'ISO/IEC',
       url: 'https://www.iso.org/standard/56581.html',
-      aiCoverage: {
-        overall: 0.0,  // Unknown - draft status, but AI-security focused
-        categories: {
-          'mcp-attacks': false,  // Draft status - content not publicly available
-          'tool-poisoning': false,
-          'prompt-injection': false,
-          'agent-autonomy': false,
-          'temporal-drift': false,
-          'coordination-attacks': false,
-          'zero-trust': false,
-          'defense-in-depth': false
-        }
-      },
+      aiCoverageScore: 0.0,  // Unknown - draft status
       status: 'no-guidance' as const,  // Draft = not yet actionable
       gaps: ['Draft International Standard - voting closes July 2025', 'Content not publicly available', 'Unknown coverage of agentic AI threats', 'First AI-specific cybersecurity ISO standard'],
       lastFrameworkUpdate: '2025-07'
@@ -287,19 +219,7 @@ export const frameworkCoverageKnowledge = {
       name: 'ISO/IEC 42001:2023 AI Management Systems',
       organization: 'ISO/IEC',
       url: 'https://www.iso.org/standard/42001',
-      aiCoverage: {
-        overall: 0.35,  // General AI management, limited agentic coverage
-        categories: {
-          'mcp-attacks': false,      // Pre-MCP era (2023)
-          'tool-poisoning': false,   // No specific tool security
-          'prompt-injection': false, // General risk management only
-          'agent-autonomy': false,   // Pre-agentic AI focus
-          'temporal-drift': false,   // No behavioral evolution coverage
-          'coordination-attacks': false,  // Single AI system focus
-          'zero-trust': true,        // General security principles via Annex A
-          'defense-in-depth': true   // Risk-based approach throughout
-        }
-      },
+      aiCoverageScore: 0.35,  // 35/100 from detailed evaluation
       status: 'applicable' as const,
       gaps: ['Published before agentic AI emergence', 'No MCP or tool calling security', 'Focuses on traditional AI risks', 'Limited technical security controls'],
       lastFrameworkUpdate: '2023-12'
@@ -309,19 +229,7 @@ export const frameworkCoverageKnowledge = {
       name: 'MITRE ATT&CK',
       organization: 'MITRE Corporation',
       url: 'https://attack.mitre.org/',
-      aiCoverage: {
-        overall: 0.0,
-        categories: {
-          'mcp-attacks': false,
-          'tool-poisoning': false,
-          'prompt-injection': false,
-          'agent-autonomy': false,
-          'temporal-drift': false,
-          'coordination-attacks': false,
-          'zero-trust': false,
-          'defense-in-depth': false
-        }
-      },
+      aiCoverageScore: 0.0,  // 0/100 from detailed evaluation
       status: 'no-guidance' as const,
       gaps: ['Traditional IT focus only', 'No AI/ML coverage', 'Use MITRE ATLAS for AI threats'],
       lastFrameworkUpdate: '2025-01'
@@ -331,19 +239,7 @@ export const frameworkCoverageKnowledge = {
       name: 'MITRE ATLAS',
       organization: 'MITRE Corporation',
       url: 'https://atlas.mitre.org/',
-      aiCoverage: {
-        overall: 0.75,  // Excellent ML/AI coverage, strong LLM coverage
-        categories: {
-          'mcp-attacks': false,      // No MCP-specific coverage found
-          'tool-poisoning': true,    // LLM Plugin Compromise (T0053)
-          'prompt-injection': true,  // AML.T0051 - Direct and Indirect
-          'agent-autonomy': true,    // LLM Jailbreak, system prompt extraction
-          'temporal-drift': false,   // No behavioral drift coverage
-          'coordination-attacks': false,  // Single AI focus
-          'zero-trust': true,        // Security principles throughout
-          'defense-in-depth': true   // Comprehensive threat matrix
-        }
-      },
+      aiCoverageScore: 0.75,  // 75/100 from detailed evaluation
       status: 'active' as const,
       gaps: ['No MCP/Model Context Protocol', 'Limited multi-agent scenarios', 'No agent behavioral drift'],
       lastFrameworkUpdate: '2025-04'  // Latest techniques from April 2025
@@ -353,31 +249,20 @@ export const frameworkCoverageKnowledge = {
       name: 'CIS Controls',
       organization: 'Center for Internet Security',
       url: 'https://www.cisecurity.org/controls',
-      aiCoverage: {
-        overall: 0.0,
-        categories: {
-          'mcp-attacks': false,
-          'tool-poisoning': false,
-          'prompt-injection': false,
-          'agent-autonomy': false,
-          'temporal-drift': false,
-          'coordination-attacks': false,
-          'zero-trust': false,
-          'defense-in-depth': false
-        }
-      },
+      aiCoverageScore: 0.25,  // 25/100 from detailed evaluation
       status: 'no-guidance' as const,
-      gaps: ['No AI or MCP considerations', '18 controls don\'t address agent threats'],
+      gaps: ['No AI or ML security coverage', '18 controls don\'t address agent threats'],
       lastFrameworkUpdate: '2024-05'
     }
   ] as Framework[],
   
   insights: [
     'Tool poisoning attacks succeed 86% of the time - critical gap in most frameworks',
-    'OWASP leads with 90% coverage through comprehensive Agentic AI Threats document',
+    'OWASP leads with 100% coverage through comprehensive Agentic AI Threats document',
     'MITRE ATLAS scores 75% - excellent LLM coverage but no MCP or multi-agent',
     'ISO/IEC 42001:2023 scores 35% - good governance but predates agentic AI',
-    'NIST AI RMF has 0% agentic AI content despite being AI-specific',
+    'NIST AI RMF has 25% score but zero agentic AI content despite being AI-specific',
+    'CIS Controls scores 25% - good general security but zero AI content',
     'Only OWASP addresses multi-agent systems and MCP security',
     'ATLAS has 32 real-world case studies including ChatGPT attacks'
   ],
@@ -409,31 +294,31 @@ export const frameworkCoverageKnowledge = {
       evaluatedBy: '@tsynode',
       
       scores: {
-        threatIdentification: 40,  // Perfect score - all 15 threats covered
+        threatIdentification: 40,  // All 8 threats covered
         practicalGuidance: 30,     // Full marks - playbooks and patterns
         evidenceQuality: 20,       // Full marks - credible sources
         completeness: 10,          // Full marks - detect/respond covered
-        total: 100
+        total: 100                 // Perfect score
       },
       
       // Detailed scoring breakdown
       breakdown: {
         // THREAT IDENTIFICATION (40/40)
         'memory-attacks': true,           // T1: Memory Poisoning
-        'tool-api-abuse': true,          // T2: Tool Misuse
+        'tool-api-abuse': true,           // T2: Tool Misuse  
         'privilege-escalation': true,     // T3: Privilege Compromise
         'multi-agent-threats': true,      // T12, T13, T14
         'temporal-behaviors': true,       // T7: Misaligned & Deceptive
         'human-manipulation': true,       // T15: Human Manipulation
         'communication-poisoning': true,  // T12: Agent Communication Poisoning
-        'identity-auth': true,           // T9: Identity Spoofing
+        'identity-auth-threats': true,   // T9: Identity Spoofing (fixed key name)
         
         // PRACTICAL GUIDANCE (30/30)
-        'clear-patterns': true,          // 6 detailed playbooks
-        'specific-tools': true,          // MCP-scan, frameworks mentioned
-        'checklists': true,             // Step-by-step playbooks
-        'architecture-diagrams': true,   // Threat model diagram page 16
-        'step-by-step': true,           // Proactive/reactive/detective steps
+        'clear-patterns': true,           // 6 detailed playbooks
+        'specific-tools': true,           // MCP-scan, frameworks mentioned
+        'checklists': true,               // Step-by-step playbooks
+        'architecture-diagrams': true,    // Threat model diagram page 16
+        'step-by-step-instructions': true, // Proactive/reactive/detective steps
         
         // EVIDENCE QUALITY (20/20)
         'credible-research': true,       // NIST, CSA, academic sources
@@ -487,14 +372,14 @@ export const frameworkCoverageKnowledge = {
         'temporal-behaviors': false,       // No agent behavioral evolution
         'human-manipulation': false,       // General human-AI only
         'communication-poisoning': false,  // No inter-agent communication
-        'identity-auth': false,           // No agent identity threats
+        'identity-auth-threats': false,   // No agent identity threats
         
         // PRACTICAL GUIDANCE (20/30)
         'clear-patterns': true,           // Good general AI patterns
         'specific-tools': false,          // No agentic tools
         'checklists': true,              // General AI checklists
         'architecture-diagrams': false,   // No threat diagrams
-        'step-by-step': true,            // General AI process
+        'step-by-step-instructions': true, // General AI process
         
         // EVIDENCE QUALITY (5/20)
         'credible-research': true,        // Good general AI research
@@ -550,14 +435,14 @@ export const frameworkCoverageKnowledge = {
         'temporal-behaviors': 'unknown' as any,
         'human-manipulation': 'unknown' as any,
         'communication-poisoning': 'unknown' as any,
-        'identity-auth': 'unknown' as any,
+        'identity-auth-threats': 'unknown' as any,
         
         // PRACTICAL GUIDANCE (0/30) - Unknown
         'clear-patterns': 'unknown' as any,
         'specific-tools': 'unknown' as any,
         'checklists': 'unknown' as any,
         'architecture-diagrams': 'unknown' as any,
-        'step-by-step': 'unknown' as any,
+        'step-by-step-instructions': 'unknown' as any,
         
         // EVIDENCE QUALITY (0/20) - Unknown
         'credible-research': 'unknown' as any,
@@ -611,14 +496,14 @@ export const frameworkCoverageKnowledge = {
         'temporal-behaviors': false,       // No coverage of behavioral drift
         'human-manipulation': false,       // Ethics covered, not manipulation
         'communication-poisoning': false,  // No inter-agent communication
-        'identity-auth': false,           // No AI identity management
+        'identity-auth-threats': false,   // No AI identity management
         
         // PRACTICAL GUIDANCE (25/30)
         'clear-patterns': true,           // PDCA methodology, Annex A controls
         'specific-tools': false,          // No specific security tools
         'checklists': true,              // Annex A provides control checklist
         'architecture-diagrams': false,   // No security architecture diagrams
-        'step-by-step': true,            // Clear implementation steps via PDCA
+        'step-by-step-instructions': true, // Clear implementation steps via PDCA
         
         // EVIDENCE QUALITY (10/20)
         'credible-research': true,        // References ISO standards
@@ -675,14 +560,14 @@ export const frameworkCoverageKnowledge = {
         'temporal-behaviors': false,       // No behavioral drift coverage
         'human-manipulation': true,        // Phishing via LLM (T0052)
         'communication-poisoning': true,   // RAG Poisoning (T0070)
-        'identity-auth': true,            // System prompt extraction (T0056)
+        'identity-auth-threats': true,    // System prompt extraction (T0056)
         
         // PRACTICAL GUIDANCE (20/30)
         'clear-patterns': true,           // Matrix of tactics/techniques
         'specific-tools': false,          // No tool recommendations
         'checklists': false,             // Tactics not prescriptive
         'architecture-diagrams': true,    // Attack flow diagrams
-        'step-by-step': false,           // High-level techniques only
+        'step-by-step-instructions': false, // High-level techniques only
         
         // EVIDENCE QUALITY (20/20)
         'credible-research': true,        // Academic partnerships
@@ -739,14 +624,14 @@ export const frameworkCoverageKnowledge = {
         'temporal-behaviors': false,       // No behavioral evolution
         'human-manipulation': false,       // General phishing only
         'communication-poisoning': false,  // Traditional network focus
-        'identity-auth': false,           // Traditional IAM only
+        'identity-auth-threats': false,   // Traditional IAM only
         
         // PRACTICAL GUIDANCE (15/30)
         'clear-patterns': true,           // 18 controls with safeguards
         'specific-tools': false,          // No AI-specific tools
         'checklists': true,              // Implementation groups (IG1/2/3)
         'architecture-diagrams': false,   // No AI threat architecture
-        'step-by-step': true,            // Clear control implementation
+        'step-by-step-instructions': true, // Clear control implementation
         
         // EVIDENCE QUALITY (10/20)
         'credible-research': true,        // Community consensus process
@@ -803,14 +688,14 @@ export const frameworkCoverageKnowledge = {
         'temporal-behaviors': false,       // No AI coverage
         'human-manipulation': false,       // Traditional phishing only
         'communication-poisoning': false,  // No AI coverage
-        'identity-auth': false,           // Traditional IT only
+        'identity-auth-threats': false,   // Traditional IT only
         
         // PRACTICAL GUIDANCE (0/30)
         'clear-patterns': false,          // Not for AI
         'specific-tools': false,          // Not for AI
         'checklists': false,              // Not for AI
         'architecture-diagrams': false,   // Not for AI
-        'step-by-step': false,            // Not for AI
+        'step-by-step-instructions': false, // Not for AI
         
         // EVIDENCE QUALITY (0/20)
         'credible-research': false,       // Not for AI

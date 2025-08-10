@@ -25,10 +25,14 @@ import { useState } from "react"
 
 type ViewType = 'main' | 'methodology' | 'sources' | 'cloud' | 'history' | 'download' | 'share'
 
-export function FrameworkCoverage() {
+interface FrameworkCoverageProps {
+  initialView?: ViewType
+}
+
+export function FrameworkCoverage({ initialView = 'main' }: FrameworkCoverageProps = {}) {
   const { frameworks, evaluation, methodologyComparison, detailedEvaluations } = frameworkCoverageKnowledge
   const confidenceStatus = getConfidenceStatus(frameworkCoverageKnowledge)
-  const [currentView, setCurrentView] = useState<ViewType>('main')
+  const [currentView, setCurrentView] = useState<ViewType>(initialView)
   
   // Get the most recent evaluation date from all evaluations
   const getMostRecentEvaluation = () => {
@@ -62,11 +66,11 @@ export function FrameworkCoverage() {
   }
   
   // Sort frameworks by coverage (highest to lowest)
-  const rankedFrameworks = [...frameworks].sort((a, b) => b.aiCoverage.overall - a.aiCoverage.overall)
+  const rankedFrameworks = [...frameworks].sort((a, b) => b.aiCoverageScore - a.aiCoverageScore)
   
   // Calculate summary statistics
   const avgCoverage = Math.round(
-    (frameworks.reduce((sum, f) => sum + f.aiCoverage.overall, 0) / frameworks.length) * 100
+    (frameworks.reduce((sum, f) => sum + f.aiCoverageScore, 0) / frameworks.length) * 100
   )
   const withGuidance = frameworks.filter(f => f.status !== 'no-guidance').length
   
@@ -473,17 +477,17 @@ export function FrameworkCoverage() {
                   </Badge>
                 </div>
                   <span className="text-sm text-muted-foreground">
-                    {Math.round(framework.aiCoverage.overall * 100)}%
+                    {Math.round(framework.aiCoverageScore * 100)}%
                   </span>
                 </div>
                 
                 <Progress 
-                  value={framework.aiCoverage.overall * 100} 
-                  className={cn("h-2", getProgressColor(framework.aiCoverage.overall))}
+                  value={framework.aiCoverageScore * 100} 
+                  className={cn("h-2", getProgressColor(framework.aiCoverageScore))}
                 />
                 
                 {/* Show most critical gap for low-coverage frameworks */}
-                {framework.aiCoverage.overall < 0.4 && framework.gaps.length > 0 && (
+                {framework.aiCoverageScore < 0.4 && framework.gaps.length > 0 && (
                   <p className="text-xs text-muted-foreground flex items-start gap-1">
                     <AlertCircle className="h-3 w-3 text-danger mt-0.5 flex-shrink-0" />
                     <span>{framework.gaps[0]}</span>

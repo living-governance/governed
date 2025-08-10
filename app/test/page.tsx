@@ -33,17 +33,17 @@ export default function TestPage() {
     <>
       {/* Mockup Warning Banner */}
       <div className="w-full bg-red-600 text-white px-4 py-3">
-        <div className="container max-w-6xl mx-auto flex items-center justify-center gap-2 text-sm font-medium">
+        <div className="container mx-auto flex items-center justify-center gap-2 text-sm font-medium">
           <AlertCircle className="h-4 w-4" />
           <span>This is a mockup site with example data. Production launch expected in August 2025.</span>
         </div>
       </div>
 
-      <div className="container max-w-6xl py-8">
-        <div className="mb-8 flex justify-between items-center">
+      <div className="container mx-auto py-8">
+        <div className="mb-8 flex justify-between items-center px-4 md:px-8">
           <div>
             <h1 className="text-3xl font-bold tracking-tight">Living Governance Components</h1>
-            <p className="text-muted-foreground mt-2">Preview of governance components with living knowledge</p>
+            <p className="text-muted-foreground mt-2">Security framework analysis for AI and MCP threats</p>
           </div>
           <button
             onClick={() => setIsDark(!isDark)}
@@ -53,16 +53,20 @@ export default function TestPage() {
           </button>
         </div>
         
-        <div className="max-w-2xl">
-          <section className="space-y-4">
-            <div>
-              <h2 className="text-lg font-semibold">Framework Coverage</h2>
-              <p className="text-sm text-muted-foreground">
-                Security framework analysis for AI and MCP threats
-              </p>
+        <div className="px-4 md:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Left component - starts with Home view */}
+            <div className="space-y-2">
+              <h2 className="text-sm font-medium text-muted-foreground">Main View</h2>
+              <FrameworkCoverage />
             </div>
-            <FrameworkCoverage />
-          </section>
+            
+            {/* Right component - starts with Methodology view */}
+            <div className="space-y-2">
+              <h2 className="text-sm font-medium text-muted-foreground">Methodology View</h2>
+              <FrameworkCoverage initialView="methodology" />
+            </div>
+          </div>
         </div>
       </div>
     </>
