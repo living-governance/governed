@@ -52,7 +52,7 @@ export const frameworkCoverageKnowledge = {
   // Living Knowledge metadata
   evaluation: {
     date: new Date('2025-07-24'),
-    by: '@tommy',
+    by: '@tsynode',
     validDays: 90,
     methodology: `Binary Scoring Framework for Security Frameworks (100 points total):
     
@@ -173,42 +173,42 @@ export const frameworkCoverageKnowledge = {
   timeline: [
     {
       date: new Date('2025-01-15'),
-      by: '@security-researcher',
+      by: '@tsynode',
       change: 'Initial framework analysis - No MCP coverage in any framework'
     },
     {
       date: new Date('2025-04-15'),
-      by: '@security-researcher',
+      by: '@tsynode',
       change: 'OWASP announces MCP Top 10 project, begins active development'
     },
     {
       date: new Date('2025-07-24'),
-      by: '@tommy',
+      by: '@tsynode',
       change: 'Updated with verified research: OWASP MCP Top 10 in development, removed EU AI Act (regulation not framework), added MITRE ATT&CK and CIS Controls'
     },
     {
       date: new Date('2025-07-27'),
-      by: '@assistant',
+      by: '@tsynode',
       change: 'Updated methodology to binary scoring framework (100 points), added detailed OWASP evaluation showing perfect 100/100 score'
     },
     {
       date: new Date('2025-07-27'),
-      by: '@assistant',
+      by: '@tsynode',
       change: 'Evaluated NIST AI RMF: 25/100 score - excellent general AI governance but zero agentic AI content. Updated coverage from 62% to 25%'
     },
     {
       date: new Date('2025-07-28'),
-      by: '@tommy',
+      by: '@tsynode',
       change: 'Replaced ISO/IEC 27001 (generic infosec) with ISO/IEC DIS 27090 (AI cybersecurity draft). ISO 42001:2023 excluded as pre-agentic era standard. Tracking 27090 draft status.'
     },
     {
       date: new Date('2025-08-10'),
-      by: '@assistant',
+      by: '@tsynode',
       change: 'Added ISO/IEC 42001:2023 evaluation: 35/100 score. Good AI governance framework but zero agentic AI security content. Published pre-MCP era, focuses on bias/transparency over agent threats.'
     },
     {
       date: new Date('2025-08-10'),
-      by: '@assistant',
+      by: '@tsynode',
       change: 'Evaluated MITRE ATLAS: 65/100 score. Best ML/AI threat framework but limited agentic coverage. Strong on prompt injection and LLM threats, missing MCP and multi-agent scenarios. Updated ATT&CK entry to clarify it has no AI coverage.'
     },
     {
@@ -428,7 +428,7 @@ export const frameworkCoverageKnowledge = {
     'owasp-agentic-threats-v1': {
       frameworkName: 'OWASP Agentic AI Threats and Mitigations v1.0a',
       evaluationDate: new Date('2025-07-27'),
-      evaluatedBy: '@assistant',
+      evaluatedBy: '@tsynode',
       
       scores: {
         threatIdentification: 40,  // Perfect score - all 15 threats covered
@@ -552,7 +552,7 @@ export const frameworkCoverageKnowledge = {
     'iso-27090-draft': {
       frameworkName: 'ISO/IEC DIS 27090 - AI Cybersecurity (Draft)',
       evaluationDate: new Date('2025-07-28'),
-      evaluatedBy: '@tommy',
+      evaluatedBy: '@tsynode',
       
       scores: {
         threatIdentification: 0,   // Unknown - draft content not available
