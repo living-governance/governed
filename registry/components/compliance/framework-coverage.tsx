@@ -399,12 +399,137 @@ export function FrameworkCoverage({ initialView = 'main' }: FrameworkCoveragePro
           </>
         )
       case 'history':
+        // Get timeline data from knowledge
+        const timeline = frameworkCoverageKnowledge.timeline || []
+        
+        // Group events by year
+        const eventsByYear: Record<number, typeof timeline> = {}
+        timeline.forEach(event => {
+          const year = event.date.getFullYear()
+          if (!eventsByYear[year]) eventsByYear[year] = []
+          eventsByYear[year].push(event)
+        })
+        
+        // Sort events within each year
+        Object.values(eventsByYear).forEach(events => {
+          events.sort((a, b) => a.date.getTime() - b.date.getTime())
+        })
+        
+        // Get framework colors
+        const getFrameworkColor = (framework: string): string => {
+          if (framework.includes('OWASP')) return 'text-blue-600 dark:text-blue-400'
+          if (framework.includes('NIST')) return 'text-green-600 dark:text-green-400'
+          if (framework.includes('ISO')) return 'text-purple-600 dark:text-purple-400'
+          if (framework.includes('MITRE')) return 'text-orange-600 dark:text-orange-400'
+          if (framework.includes('Model Context Protocol') || framework.includes('MCP')) return 'text-pink-600 dark:text-pink-400'
+          if (framework.includes('CIS')) return 'text-gray-600 dark:text-gray-400'
+          return 'text-foreground'
+        }
+        
+        // Get confidence indicator
+        const getConfidenceIndicator = (confidence?: string) => {
+          if (!confidence) return '●'
+          switch (confidence) {
+            case 'high': return '●'
+            case 'medium': return '○'
+            case 'low': return '◌'
+            default: return '●'
+          }
+        }
+        
         return (
           <>
-            <p className="font-medium mb-2">Coverage Evolution</p>
-            <p className="text-muted-foreground">
-              [Placeholder: Timeline showing how framework coverage has evolved]
-            </p>
+            <p className="font-medium mb-4">Framework Evolution Timeline</p>
+            <div className="space-y-6">
+              {/* Timeline by year */}
+              {Object.keys(eventsByYear)
+                .sort((a, b) => Number(b) - Number(a)) // Most recent first
+                .map(year => (
+                  <div key={year} className="relative">
+                    {/* Year header */}
+                    <div className="sticky top-0 bg-background z-10 pb-2">
+                      <h3 className="text-lg font-semibold">{year}</h3>
+                      <div className="h-px bg-border mt-2" />
+                    </div>
+                    
+                    {/* Events for this year */}
+                    <div className="space-y-3 mt-3">
+                      {eventsByYear[Number(year)].map((event, idx) => (
+                        <div key={idx} className="flex gap-3 relative">
+                          {/* Date column */}
+                          <div className="w-20 flex-shrink-0 text-sm text-muted-foreground">
+                            {event.date.toLocaleDateString('en-US', { 
+                              month: 'short',
+                              day: event.date.getDate() === 1 ? undefined : 'numeric'
+                            })}
+                          </div>
+                          
+                          {/* Timeline line and dot */}
+                          <div className="relative flex flex-col items-center">
+                            <span className={cn(
+                              "text-lg leading-none",
+                              getFrameworkColor(event.framework)
+                            )}>
+                              {getConfidenceIndicator((event as any).confidence)}
+                            </span>
+                            {idx < eventsByYear[Number(year)].length - 1 && (
+                              <div className="w-px h-full bg-border absolute top-4" />
+                            )}
+                          </div>
+                          
+                          {/* Event content */}
+                          <div className="flex-1 pb-4">
+                            <div className="flex items-start gap-2">
+                              <Badge 
+                                variant="outline" 
+                                className={cn(
+                                  "text-xs",
+                                  getFrameworkColor(event.framework)
+                                )}
+                              >
+                                {event.framework}
+                              </Badge>
+                              {(event as any).confidence === 'medium' && (
+                                <TooltipProvider>
+                                  <Tooltip>
+                                    <TooltipTrigger>
+                                      <Badge variant="secondary" className="text-xs">
+                                        <AlertCircle className="h-3 w-3" />
+                                      </Badge>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      <p>Medium confidence - month/quarter confirmed</p>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TooltipProvider>
+                              )}
+                            </div>
+                            <p className="text-sm mt-1">{event.change}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              
+              {/* Legend */}
+              <div className="border-t pt-4 mt-6 text-xs text-muted-foreground space-y-1">
+                <p className="font-medium text-foreground">Legend:</p>
+                <div className="flex gap-4">
+                  <span>● High confidence</span>
+                  <span>○ Medium confidence</span>
+                  <span>◌ Draft/Low confidence</span>
+                </div>
+                <div className="grid grid-cols-2 gap-2 mt-2">
+                  <span className="text-blue-600 dark:text-blue-400">■ OWASP</span>
+                  <span className="text-green-600 dark:text-green-400">■ NIST</span>
+                  <span className="text-purple-600 dark:text-purple-400">■ ISO</span>
+                  <span className="text-orange-600 dark:text-orange-400">■ MITRE</span>
+                  <span className="text-pink-600 dark:text-pink-400">■ MCP</span>
+                  <span className="text-gray-600 dark:text-gray-400">■ CIS</span>
+                </div>
+              </div>
+            </div>
           </>
         )
       case 'download':
