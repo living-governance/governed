@@ -30,6 +30,20 @@ export function FrameworkCoverage() {
   const confidenceStatus = getConfidenceStatus(frameworkCoverageKnowledge)
   const [currentView, setCurrentView] = useState<ViewType>('main')
   
+  // Get the most recent evaluation date from all evaluations
+  const getMostRecentEvaluation = () => {
+    const evaluationDates = Object.values(detailedEvaluations).map(e => ({
+      date: e.evaluationDate,
+      by: e.evaluatedBy
+    }))
+    const mostRecent = evaluationDates.reduce((latest, current) => 
+      current.date > latest.date ? current : latest
+    )
+    return mostRecent
+  }
+  
+  const latestEvaluation = getMostRecentEvaluation()
+  
   // Function to determine color based on coverage percentage
   const getProgressColor = (coverage: number) => {
     if (coverage >= 0.7) return "[&>*]:bg-success"
@@ -87,10 +101,10 @@ export function FrameworkCoverage() {
     <div className="flex items-center gap-1">
       <IconButton icon={Home} view="main" label="Home" isActive={currentView === 'main'} />
       <div className="w-px h-6 bg-border mx-1" /> {/* Separator */}
-      <IconButton icon={Link} view="sources" label="Sources" isActive={currentView === 'sources'} />
       <IconButton icon={Info} view="methodology" label="Methodology" isActive={currentView === 'methodology'} />
       <IconButton icon={Cloud} view="cloud" label="Cloud Guidance" isActive={currentView === 'cloud'} />
       <IconButton icon={TrendingUp} view="history" label="History" isActive={currentView === 'history'} />
+      <IconButton icon={Link} view="sources" label="Sources" isActive={currentView === 'sources'} />
       <IconButton icon={Download} view="download" label="Download" isActive={currentView === 'download'} />
       <IconButton icon={Share2} view="share" label="Share" isActive={currentView === 'share'} />
     </div>
@@ -115,6 +129,18 @@ export function FrameworkCoverage() {
           <>
             <p className="font-medium mb-4">Evaluation Methodology</p>
             <div className="space-y-6">
+              {/* Framework names header */}
+              <div className="grid grid-cols-11 gap-1 text-xs font-medium border-b pb-2">
+                <span className="col-span-3"></span>
+                <span className="col-span-1 text-center">OWASP</span>
+                <span className="col-span-1 text-center">ATLAS</span>
+                <span className="col-span-1 text-center">ISO42k</span>
+                <span className="col-span-1 text-center">NIST</span>
+                <span className="col-span-1 text-center">CIS</span>
+                <span className="col-span-1 text-center">ATT&CK</span>
+                <span className="col-span-1 text-center">ISO27k</span>
+              </div>
+              
               {/* Group criteria by section */}
               {['Threat Identification', 'Practical Guidance', 'Evidence Quality', 'Completeness'].map(sectionName => {
                 const sectionCriteria = methodologyComparison.criteria.filter(c => c.section === sectionName)
@@ -207,10 +233,10 @@ export function FrameworkCoverage() {
                         )}>{cisSectionScore}/{sectionPoints}</span>
                         <span className={cn(
                           "col-span-1 text-center",
-                          attackEval && calculateSectionScore(attackEval) === sectionPoints && "text-success",
-                          attackEval && calculateSectionScore(attackEval) > 0 && calculateSectionScore(attackEval) < sectionPoints && "text-warning",
-                          (!attackEval || calculateSectionScore(attackEval) === 0) && "text-danger"
-                        )}>{calculateSectionScore(attackEval)}/{sectionPoints}</span>
+                          attackSectionScore === sectionPoints && "text-success",
+                          attackSectionScore > 0 && attackSectionScore < sectionPoints && "text-warning",
+                          attackSectionScore === 0 && "text-danger"
+                        )}>{attackSectionScore}/{sectionPoints}</span>
                         <span className="col-span-1 text-center text-muted-foreground">Draft</span>
                       </div>
                     </div>
@@ -472,7 +498,7 @@ export function FrameworkCoverage() {
           {/* Footer - always at bottom */}
           <div className="flex-shrink-0 space-y-3 pt-4">
             <div className="border-t pt-3 text-xs text-muted-foreground">
-              Last evaluated: {evaluation.date.toLocaleDateString()} by {evaluation.by}
+              Last evaluated: {latestEvaluation.date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })} by {latestEvaluation.by}
               {confidenceStatus.daysUntilStale > 0 && (
                 <span> • Review in {confidenceStatus.daysUntilStale} days</span>
               )}

@@ -856,7 +856,13 @@ export function getConfidenceStatus(knowledge: typeof frameworkCoverageKnowledge
   status: string;
   daysUntilStale: number;
 } {
-  const daysSince = (Date.now() - new Date(knowledge.evaluation.date).getTime()) / (1000 * 60 * 60 * 24);
+  // Get the most recent evaluation date from all evaluations
+  const evaluationDates = Object.values(knowledge.detailedEvaluations).map(e => e.evaluationDate)
+  const mostRecentDate = evaluationDates.reduce((latest, current) => 
+    current > latest ? current : latest
+  )
+  
+  const daysSince = (Date.now() - new Date(mostRecentDate).getTime()) / (1000 * 60 * 60 * 24);
   const validDays = knowledge.evaluation.validDays || 90;
   const daysUntilStale = Math.max(0, Math.floor(validDays - daysSince));
   
