@@ -533,12 +533,184 @@ export function FrameworkCoverage({ initialView = 'main' }: FrameworkCoveragePro
           </>
         )
       case 'download':
+        // Generate download functions
+        const downloadJSON = () => {
+          const data = {
+            metadata: {
+              generated: new Date().toISOString(),
+              evaluationDate: latestEvaluation.date.toISOString(),
+              evaluatedBy: latestEvaluation.by,
+              confidence: confidenceStatus,
+              description: 'AI Security Framework Coverage Analysis'
+            },
+            summary: {
+              frameworksEvaluated: frameworks.length,
+              averageCoverage: avgCoverage,
+              withGuidance: withGuidance,
+              topFramework: rankedFrameworks[0]?.name,
+              criticalGaps: ['Tool poisoning (86% success rate)', 'MCP security', 'Multi-agent threats']
+            },
+            frameworks: rankedFrameworks.map(f => ({
+              ...f,
+              coveragePercent: Math.round(f.aiCoverageScore * 100)
+            })),
+            detailedEvaluations: detailedEvaluations,
+            timeline: frameworkCoverageKnowledge.timeline,
+            insights: frameworkCoverageKnowledge.insights,
+            recommendations: frameworkCoverageKnowledge.recommendations,
+            methodology: evaluation.methodology
+          }
+          
+          const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
+          const url = URL.createObjectURL(blob)
+          const a = document.createElement('a')
+          a.href = url
+          a.download = `ai-framework-coverage-${new Date().toISOString().split('T')[0]}.json`
+          a.click()
+        }
+        
+        const downloadMarkdown = () => {
+          const md = `# AI Security Framework Coverage Analysis
+
+**Generated:** ${new Date().toLocaleDateString()}
+**Evaluation:** ${latestEvaluation.by} on ${latestEvaluation.date.toLocaleDateString()}
+**Status:** ${confidenceStatus.status}
+
+## Summary
+
+**${rankedFrameworks[0]?.name}** leads with ${Math.round(rankedFrameworks[0]?.aiCoverageScore * 100)}% coverage of AI threats.
+
+Only ${withGuidance} of ${frameworks.length} frameworks provide AI-specific guidance.
+
+## Top 3 Frameworks
+
+${rankedFrameworks.slice(0, 3).map((f, i) => 
+`**${i + 1}. ${f.name}** - ${Math.round(f.aiCoverageScore * 100)}%
+   ${f.gaps[0] ? `Gap: ${f.gaps[0]}` : 'Comprehensive coverage'}`
+).join('\n\n')}
+
+## Critical Gaps Across Industry
+
+- **Tool poisoning** attacks succeed 86% of the time
+- **MCP security** only addressed by OWASP (draft)
+- **Multi-agent threats** largely ignored
+- **Temporal behaviors** (agent drift) not covered
+
+## Recommendations
+
+1. Use OWASP Agentic AI Threats as primary reference
+2. Supplement with MITRE ATLAS for ML/LLM patterns
+3. Monitor OWASP MCP Top 10 development
+4. Implement tool validation beyond framework requirements
+
+---
+
+*Full data available at living-governance.com*
+`
+          
+          const blob = new Blob([md], { type: 'text/markdown' })
+          const url = URL.createObjectURL(blob)
+          const a = document.createElement('a')
+          a.href = url
+          a.download = `ai-framework-summary-${new Date().toISOString().split('T')[0]}.md`
+          a.click()
+        }
+        
+        const copyCliCommand = () => {
+          const command = `npx @governed/cli add framework-coverage`
+          navigator.clipboard.writeText(command).then(() => {
+            console.log('CLI command copied')
+          })
+        }
+        
+        const copyNpmCommand = () => {
+          // Package names are by category, not component
+          const command = `npm install @governed/frameworks`
+          navigator.clipboard.writeText(command).then(() => {
+            console.log('NPM command copied')
+          })
+        }
+        
         return (
           <>
-            <p className="font-medium mb-2">Download Options</p>
-            <p className="text-muted-foreground">
-              [Placeholder: Download as TypeScript, JSON, or Markdown report]
-            </p>
+            <p className="font-medium mb-4">Get This Component</p>
+            <div className="space-y-4">
+              {/* Primary Distribution Methods */}
+              <div className="grid grid-cols-1 gap-2">
+                <div className="bg-muted p-3 rounded-md">
+                  <div className="flex justify-between items-start mb-1">
+                    <span className="text-xs font-medium">Full Component</span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-6 text-xs -mt-1"
+                      onClick={copyCliCommand}
+                    >
+                      Copy
+                    </Button>
+                  </div>
+                  <code className="font-mono text-xs">npx @governed/cli add framework-coverage</code>
+                  <p className="text-xs text-muted-foreground mt-1">Copy source into your project</p>
+                </div>
+                
+                <div className="bg-muted p-3 rounded-md">
+                  <div className="flex justify-between items-start mb-1">
+                    <span className="text-xs font-medium">Just the Data</span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-6 text-xs -mt-1"
+                      onClick={copyNpmCommand}
+                    >
+                      Copy
+                    </Button>
+                  </div>
+                  <code className="font-mono text-xs">npm install @governed/frameworks</code>
+                  <p className="text-xs text-muted-foreground mt-1">Framework coverage data package</p>
+                </div>
+              </div>
+              
+              <div className="border-t pt-3" />
+              
+              {/* Export Options */}
+              <div className="space-y-2">
+                <h4 className="text-sm font-medium">Export Current Analysis</h4>
+                <div className="grid grid-cols-2 gap-2">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={downloadJSON}
+                    className="justify-start"
+                  >
+                    <Download className="h-3 w-3 mr-2" />
+                    JSON Data
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={downloadMarkdown}
+                    className="justify-start"
+                  >
+                    <Download className="h-3 w-3 mr-2" />
+                    Summary
+                  </Button>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  JSON for AI/analysis tools • Markdown for reports
+                </p>
+              </div>
+              
+              {/* Use Cases */}
+              <div className="border-t pt-3">
+                <p className="text-xs text-muted-foreground">
+                  <span className="font-medium">Common uses:</span><br />
+                  • Feed JSON to your AI assistant for analysis<br />
+                  • Import component for security dashboards<br />
+                  • Share summary with leadership<br />
+                  • Fork and customize for your org
+                </p>
+              </div>
+            </div>
           </>
         )
       case 'share':

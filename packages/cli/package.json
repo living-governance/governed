@@ -1,0 +1,35 @@
+{
+  "name": "@governed/cli",
+  "version": "0.0.1",
+  "description": "CLI for adding living governance components to your project",
+  "main": "dist/index.js",
+  "bin": {
+    "governed": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "echo 'CLI coming soon'",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "cli",
+    "ai-security",
+    "governance",
+    "components",
+    "living-governance"
+  ],
+  "author": "living-governance.com",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/governed/living-governance.git",
+    "directory": "packages/cli"
+  },
+  "homepage": "https://living-governance.com",
+  "publishConfig": {
+    "access": "public"
+  }
+}
