@@ -100,6 +100,17 @@ export function FrameworkCoverage() {
   const renderMetadataContent = () => {
     switch (currentView) {
       case 'methodology':
+        // Create ranking for all frameworks
+        const methodologyRanking = [
+          { key: 'owasp', label: 'OWASP', score: 100 },
+          { key: 'atlas', label: 'ATLAS', score: 75 },
+          { key: 'iso42001', label: 'ISO42k', score: 35 },
+          { key: 'nist', label: 'NIST', score: 25 },
+          { key: 'cis', label: 'CIS', score: 25 },
+          { key: 'attack', label: 'ATT&CK', score: 0 },
+          { key: 'iso27090', label: 'ISO27k', score: 0 }
+        ]
+        
         return (
           <>
             <p className="font-medium mb-4">Evaluation Methodology</p>
@@ -150,21 +161,20 @@ export function FrameworkCoverage() {
                         const cisValue = cisEval?.breakdown[key]
                         
                         return (
-                          <div key={criterion.name} className="grid grid-cols-12 gap-1 text-xs items-center">
+                          <div key={criterion.name} className="grid grid-cols-11 gap-1 text-xs items-center">
                             <span className="col-span-3 text-muted-foreground truncate">• {criterion.name}</span>
-                            <span className="col-span-1 text-xs text-muted-foreground text-center">{criterion.points}</span>
                             <span className="col-span-1 text-center font-mono">{owaspValue === true ? '✓' : owaspValue === false ? '✗' : '?'}</span>
                             <span className="col-span-1 text-center font-mono">{atlasValue === true ? '✓' : atlasValue === false ? '✗' : '?'}</span>
                             <span className="col-span-1 text-center font-mono">{iso42001Value === true ? '✓' : iso42001Value === false ? '✗' : '?'}</span>
                             <span className="col-span-1 text-center font-mono">{nistValue === true ? '✓' : nistValue === false ? '✗' : '?'}</span>
                             <span className="col-span-1 text-center font-mono">{cisValue === true ? '✓' : cisValue === false ? '✗' : '?'}</span>
+                            <span className="col-span-1 text-center font-mono">{attackEval?.breakdown[key] === true ? '✓' : attackEval?.breakdown[key] === false ? '✗' : '?'}</span>
                             <span className="col-span-1 text-center font-mono">{iso27090Value === true ? '✓' : iso27090Value === false ? '✗' : iso27090Value === 'unknown' ? '?' : '✗'}</span>
                           </div>
                         )
                       })}
-                      <div className="grid grid-cols-12 gap-1 text-xs font-medium pt-2 border-t">
-                        <span className="col-span-3">Subtotal</span>
-                        <span className="col-span-1"></span>
+                      <div className="grid grid-cols-11 gap-1 text-xs font-medium pt-2 border-t">
+                        <span className="col-span-3">Subtotal ({sectionPoints} pts)</span>
                         <span className={cn(
                           "col-span-1 text-center",
                           owaspSectionScore === sectionPoints && "text-success",
@@ -195,6 +205,12 @@ export function FrameworkCoverage() {
                           cisSectionScore > 0 && cisSectionScore < sectionPoints && "text-warning",
                           cisSectionScore === 0 && "text-danger"
                         )}>{cisSectionScore}/{sectionPoints}</span>
+                        <span className={cn(
+                          "col-span-1 text-center",
+                          attackEval && calculateSectionScore(attackEval) === sectionPoints && "text-success",
+                          attackEval && calculateSectionScore(attackEval) > 0 && calculateSectionScore(attackEval) < sectionPoints && "text-warning",
+                          (!attackEval || calculateSectionScore(attackEval) === 0) && "text-danger"
+                        )}>{calculateSectionScore(attackEval)}/{sectionPoints}</span>
                         <span className="col-span-1 text-center text-muted-foreground">Draft</span>
                       </div>
                     </div>
@@ -204,9 +220,8 @@ export function FrameworkCoverage() {
 
               {/* Total Score */}
               <div className="border-t pt-4">
-                <div className="grid grid-cols-12 gap-1 text-xs font-medium">
-                  <span className="col-span-3">Total Score</span>
-                  <span className="col-span-1"></span>
+                <div className="grid grid-cols-11 gap-1 text-xs font-medium">
+                  <span className="col-span-3">Total Score (100 pts)</span>
                   <span className="col-span-1 text-center">
                     <Badge variant="default" className="bg-success text-xs px-1">
                       {detailedEvaluations[methodologyComparison.frameworks.owasp]?.scores.total || 0}
@@ -236,6 +251,14 @@ export function FrameworkCoverage() {
                     </Badge>
                   </span>
                   <span className="col-span-1 text-center">
+                    <Badge variant="outline" className={cn(
+                      "text-xs px-1",
+                      "text-danger border-danger"
+                    )}>
+                      {detailedEvaluations[methodologyComparison.frameworks.attack]?.scores.total || 0}
+                    </Badge>
+                  </span>
+                  <span className="col-span-1 text-center">
                     <Badge variant="secondary" className="text-xs px-1">?</Badge>
                   </span>
                 </div>
@@ -243,20 +266,19 @@ export function FrameworkCoverage() {
 
               {/* Legend */}
               <div className="text-xs text-muted-foreground pt-4 space-y-1">
-                <div className="grid grid-cols-12 gap-1 font-medium">
-                  <span className="col-span-3"></span>
-                  <span className="col-span-1"></span>
+                <div className="grid grid-cols-11 gap-1 font-medium">
+                  <span className="col-span-3">Frameworks (ranked)</span>
                   <span className="col-span-1 text-center">OWASP</span>
                   <span className="col-span-1 text-center">ATLAS</span>
-                  <span className="col-span-1 text-center">ISO-42k</span>
+                  <span className="col-span-1 text-center">ISO42k</span>
                   <span className="col-span-1 text-center">NIST</span>
                   <span className="col-span-1 text-center">CIS</span>
-                  <span className="col-span-1 text-center">ISO-27k</span>
+                  <span className="col-span-1 text-center">ATT&CK</span>
+                  <span className="col-span-1 text-center">ISO27k</span>
                 </div>
                 <p className="mt-2">✓ = Criteria met | ✗ = Criteria not met | ? = Unknown</p>
-                <p>Scores out of 100 points total. Higher = better agentic AI threat coverage.</p>
-                <p className="text-warning">ISO-27k (ISO/IEC 27090) is draft - content not available.</p>
-                <p className="text-muted-foreground text-xs">Note: MITRE ATT&CK (0%) not shown due to space - see main view.</p>
+                <p>Scores out of 100 points total. Ranked from highest to lowest coverage.</p>
+                <p className="text-warning">ISO27k (ISO/IEC 27090) is draft - content not available.</p>
               </div>
             </div>
           </>

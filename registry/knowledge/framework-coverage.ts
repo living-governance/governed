@@ -95,29 +95,7 @@ export const frameworkCoverageKnowledge = {
   methodologyComparison: {
     criteria: [
       // Threat Identification (40 points)
-      {
-      id: 'cis-controls',
-      name: 'CIS Controls',
-      organization: 'Center for Internet Security',
-      url: 'https://www.cisecurity.org/controls/',
-      aiCoverage: {
-        overall: 0.0,  // No AI-specific coverage
-        categories: {
-          'mcp-attacks': false,      // No MCP coverage
-          'tool-poisoning': false,   // No AI tool poisoning
-          'prompt-injection': false, // No prompt injection
-          'agent-autonomy': false,   // No agent coverage
-          'temporal-drift': false,   // No drift coverage
-          'coordination-attacks': false, // No multi-agent
-          'zero-trust': true,        // Strong general security
-          'defense-in-depth': true   // Comprehensive controls
-        }
-      },
-      status: 'applicable' as const,
-      gaps: ['No AI or ML security coverage', 'No agent threats', 'Traditional IT security only'],
-      lastFrameworkUpdate: '2024-06'  // v8.1 released June 2024
-    },
-    { category: 'threatIdentification', name: 'Memory attacks', points: 5, section: 'Threat Identification' },
+      { category: 'threatIdentification', name: 'Memory attacks', points: 5, section: 'Threat Identification' },
       { category: 'threatIdentification', name: 'Tool/API abuse', points: 5, section: 'Threat Identification' },
       { category: 'threatIdentification', name: 'Privilege escalation', points: 5, section: 'Threat Identification' },
       { category: 'threatIdentification', name: 'Multi-agent threats', points: 5, section: 'Threat Identification' },
@@ -213,12 +191,12 @@ export const frameworkCoverageKnowledge = {
     },
     {
       date: new Date('2025-08-10'),
-      by: '@assistant',
+      by: '@tsynode',
       change: 'Updated ATLAS evaluation to 75/100 after analyzing data files. Found extensive LLM coverage including RAG poisoning, 32 case studies, and April 2025 updates. Still missing MCP and multi-agent coordination.'
     },
     {
       date: new Date('2025-08-10'),
-      by: '@assistant',
+      by: '@tsynode',
       change: 'Evaluated CIS Controls v8.1: 25/100 score. Excellent general cybersecurity but zero AI content. 18 controls don\'t recognize AI as distinct asset class. Traditional IT focus only.'
     }
   ],
@@ -489,7 +467,7 @@ export const frameworkCoverageKnowledge = {
     'nist-ai-rmf-v1': {
       frameworkName: 'NIST AI Risk Management Framework 1.0 + GenAI Profile',
       evaluationDate: new Date('2025-07-27'),
-      evaluatedBy: '@assistant',
+      evaluatedBy: '@tsynode',
       
       scores: {
         threatIdentification: 0,   // No agentic-specific threats
@@ -613,7 +591,7 @@ export const frameworkCoverageKnowledge = {
     'iso-42001-2023': {
       frameworkName: 'ISO/IEC 42001:2023 - AI Management Systems',
       evaluationDate: new Date('2025-08-10'),
-      evaluatedBy: '@assistant',
+      evaluatedBy: '@tsynode',
       
       scores: {
         threatIdentification: 0,   // No agentic-specific threats identified
@@ -677,7 +655,7 @@ export const frameworkCoverageKnowledge = {
     'mitre-atlas-v4': {
       frameworkName: 'MITRE ATLAS v4.5.2 - Adversarial Threat Landscape for AI Systems',
       evaluationDate: new Date('2025-08-10'),
-      evaluatedBy: '@assistant',
+      evaluatedBy: '@tsynode',
       
       scores: {
         threatIdentification: 30,  // Strong AI/LLM threats, missing some agent aspects
@@ -741,7 +719,7 @@ export const frameworkCoverageKnowledge = {
     'cis-controls-v8': {
       frameworkName: 'CIS Critical Security Controls v8.1',
       evaluationDate: new Date('2025-08-10'),
-      evaluatedBy: '@assistant',
+      evaluatedBy: '@tsynode',
       
       scores: {
         threatIdentification: 0,   // No AI-specific threats
@@ -805,7 +783,7 @@ export const frameworkCoverageKnowledge = {
     'mitre-attack-v15': {
       frameworkName: 'MITRE ATT&CK v15.1',
       evaluationDate: new Date('2025-08-10'),
-      evaluatedBy: '@assistant',
+      evaluatedBy: '@tsynode',
       
       scores: {
         threatIdentification: 0,   // No AI threats
