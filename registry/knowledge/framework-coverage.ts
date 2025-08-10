@@ -24,7 +24,7 @@ export interface Framework {
 }
 
 // Add type for detailed evaluations
-export type DetailedEvaluationKey = 'owasp-agentic-threats-v1' | 'nist-ai-rmf-v1' | 'iso-27090-draft';
+export type DetailedEvaluationKey = 'owasp-agentic-threats-v1' | 'nist-ai-rmf-v1' | 'iso-27090-draft' | 'iso-42001-2023';
 
 export interface DetailedEvaluation {
   frameworkName: string;
@@ -174,6 +174,11 @@ export const frameworkCoverageKnowledge = {
       date: new Date('2025-07-28'),
       by: '@tommy',
       change: 'Replaced ISO/IEC 27001 (generic infosec) with ISO/IEC DIS 27090 (AI cybersecurity draft). ISO 42001:2023 excluded as pre-agentic era standard. Tracking 27090 draft status.'
+    },
+    {
+      date: new Date('2025-08-10'),
+      by: '@assistant',
+      change: 'Added ISO/IEC 42001:2023 evaluation: 35/100 score. Good AI governance framework but zero agentic AI security content. Published pre-MCP era, focuses on bias/transparency over agent threats.'
     }
   ],
   
@@ -259,6 +264,28 @@ export const frameworkCoverageKnowledge = {
       lastFrameworkUpdate: '2025-07'
     },
     {
+      id: 'iso-42001',
+      name: 'ISO/IEC 42001:2023 AI Management Systems',
+      organization: 'ISO/IEC',
+      url: 'https://www.iso.org/standard/42001',
+      aiCoverage: {
+        overall: 0.35,  // General AI management, limited agentic coverage
+        categories: {
+          'mcp-attacks': false,      // Pre-MCP era (2023)
+          'tool-poisoning': false,   // No specific tool security
+          'prompt-injection': false, // General risk management only
+          'agent-autonomy': false,   // Pre-agentic AI focus
+          'temporal-drift': false,   // No behavioral evolution coverage
+          'coordination-attacks': false,  // Single AI system focus
+          'zero-trust': true,        // General security principles via Annex A
+          'defense-in-depth': true   // Risk-based approach throughout
+        }
+      },
+      status: 'applicable' as const,
+      gaps: ['Published before agentic AI emergence', 'No MCP or tool calling security', 'Focuses on traditional AI risks', 'Limited technical security controls'],
+      lastFrameworkUpdate: '2023-12'
+    },
+    {
       id: 'mitre-attack',
       name: 'MITRE ATT&CK',
       organization: 'MITRE Corporation',
@@ -308,8 +335,8 @@ export const frameworkCoverageKnowledge = {
     'Tool poisoning attacks succeed 86% of the time - critical gap in most frameworks',
     'OWASP now provides 90% coverage with comprehensive Agentic AI Threats document',
     'NIST AI RMF has 0% agentic AI content despite being an AI-specific framework',
-    'ISO/IEC 27090 (AI cybersecurity) still in draft - first ISO standard targeting AI threats',
-    'ISO 42001:2023 predates agentic AI era - focuses on traditional AI governance only',
+    'ISO/IEC 42001:2023 scores 35% - good governance but predates agentic AI',
+    'ISO/IEC 27090 (AI cybersecurity) still in draft - may address security gaps when published',
     'Only OWASP addresses multi-agent systems and MCP security',
     '80% of frameworks have zero guidance for autonomous agents'
   ],
@@ -517,6 +544,70 @@ export const frameworkCoverageKnowledge = {
       ],
       
       verdict: 'ISO/IEC 27090 represents the ISO community\'s response to AI security threats. However, as a draft standard with no public content, organizations cannot use it yet. Its relevance to agentic AI, multi-agent systems, and modern threats like MCP attacks remains unknown. Track its development but rely on OWASP for current guidance.'
+    },
+    
+    'iso-42001-2023': {
+      frameworkName: 'ISO/IEC 42001:2023 - AI Management Systems',
+      evaluationDate: new Date('2025-08-10'),
+      evaluatedBy: '@assistant',
+      
+      scores: {
+        threatIdentification: 0,   // No agentic-specific threats identified
+        practicalGuidance: 25,     // Good general AI guidance, some implementation help
+        evidenceQuality: 10,       // References standards but not real incidents
+        completeness: 0,           // No agentic-specific lifecycle coverage
+        total: 35
+      },
+      
+      // Detailed scoring breakdown
+      breakdown: {
+        // THREAT IDENTIFICATION (0/40)
+        'memory-attacks': false,          // No coverage of AI memory attacks
+        'tool-api-abuse': false,          // No tool/API security mentioned
+        'privilege-escalation': false,     // General access control only
+        'multi-agent-threats': false,      // Single AI system focus
+        'temporal-behaviors': false,       // No coverage of behavioral drift
+        'human-manipulation': false,       // Ethics covered, not manipulation
+        'communication-poisoning': false,  // No inter-agent communication
+        'identity-auth': false,           // No AI identity management
+        
+        // PRACTICAL GUIDANCE (25/30)
+        'clear-patterns': true,           // PDCA methodology, Annex A controls
+        'specific-tools': false,          // No specific security tools
+        'checklists': true,              // Annex A provides control checklist
+        'architecture-diagrams': false,   // No security architecture diagrams
+        'step-by-step': true,            // Clear implementation steps via PDCA
+        
+        // EVIDENCE QUALITY (10/20)
+        'credible-research': true,        // References ISO standards
+        'real-incidents': false,          // No real attack examples
+        'attack-patterns': false,         // No threat scenarios
+        'detection-guidance': true,       // Monitoring requirements in Clause 9
+        
+        // COMPLETENESS (0/10)
+        'detection-methods': false,       // General monitoring, not threat detection
+        'response-procedures': false      // Incident management not specific to AI threats
+      },
+      
+      strengths: [
+        'First published AI management system standard',
+        'Comprehensive management system approach (PDCA)',
+        'Annex A provides AI-specific controls',
+        'Integration with ISO/IEC 27001 for security',
+        'Microsoft Copilot achieved certification',
+        'Addresses bias, transparency, and accountability'
+      ],
+      
+      weaknesses: [
+        'Published in 2023 - predates agentic AI emergence',
+        'No coverage of MCP, tool calling, or function calling',
+        'Lacks specific security threat identification',
+        'No multi-agent system considerations',
+        'Limited technical security controls',
+        'Focuses on ethics/governance over security'
+      ],
+      
+      verdict: 'ISO/IEC 42001:2023 provides solid AI governance foundations but lacks agentic AI security coverage. As a pre-MCP era standard, it addresses traditional AI risks (bias, transparency) rather than modern agent threats. Useful for general AI management but insufficient for securing autonomous agents or multi-agent systems.'
     }
   } as Record<DetailedEvaluationKey, DetailedEvaluation>
 }
