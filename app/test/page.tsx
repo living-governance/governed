@@ -54,7 +54,8 @@ export default function TestPage() {
         </div>
         
         <div className="px-4 md:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Desktop: Side-by-side view */}
+          <div className="hidden lg:grid lg:grid-cols-2 gap-6">
             {/* Left component - starts with Home view */}
             <div className="space-y-2">
               <h2 className="text-sm font-medium text-muted-foreground">Main View</h2>
@@ -65,6 +66,14 @@ export default function TestPage() {
             <div className="space-y-2">
               <h2 className="text-sm font-medium text-muted-foreground">Methodology View</h2>
               <FrameworkCoverage initialView="methodology" />
+            </div>
+          </div>
+          
+          {/* Mobile/Tablet: Single component */}
+          <div className="lg:hidden">
+            <div className="space-y-2">
+              <h2 className="text-sm font-medium text-muted-foreground">Navigate views using the icons at the bottom</h2>
+              <FrameworkCoverage />
             </div>
           </div>
         </div>
