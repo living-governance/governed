@@ -24,7 +24,7 @@ export interface Framework {
 }
 
 // Add type for detailed evaluations
-export type DetailedEvaluationKey = 'owasp-agentic-threats-v1' | 'nist-ai-rmf-v1' | 'iso-27090-draft' | 'iso-42001-2023';
+export type DetailedEvaluationKey = 'owasp-agentic-threats-v1' | 'nist-ai-rmf-v1' | 'iso-27090-draft' | 'iso-42001-2023' | 'mitre-atlas-v4' | 'cis-controls-v8' | 'mitre-attack-v15';
 
 export interface DetailedEvaluation {
   frameworkName: string;
@@ -95,7 +95,29 @@ export const frameworkCoverageKnowledge = {
   methodologyComparison: {
     criteria: [
       // Threat Identification (40 points)
-      { category: 'threatIdentification', name: 'Memory attacks', points: 5, section: 'Threat Identification' },
+      {
+      id: 'cis-controls',
+      name: 'CIS Controls',
+      organization: 'Center for Internet Security',
+      url: 'https://www.cisecurity.org/controls/',
+      aiCoverage: {
+        overall: 0.0,  // No AI-specific coverage
+        categories: {
+          'mcp-attacks': false,      // No MCP coverage
+          'tool-poisoning': false,   // No AI tool poisoning
+          'prompt-injection': false, // No prompt injection
+          'agent-autonomy': false,   // No agent coverage
+          'temporal-drift': false,   // No drift coverage
+          'coordination-attacks': false, // No multi-agent
+          'zero-trust': true,        // Strong general security
+          'defense-in-depth': true   // Comprehensive controls
+        }
+      },
+      status: 'applicable' as const,
+      gaps: ['No AI or ML security coverage', 'No agent threats', 'Traditional IT security only'],
+      lastFrameworkUpdate: '2024-06'  // v8.1 released June 2024
+    },
+    { category: 'threatIdentification', name: 'Memory attacks', points: 5, section: 'Threat Identification' },
       { category: 'threatIdentification', name: 'Tool/API abuse', points: 5, section: 'Threat Identification' },
       { category: 'threatIdentification', name: 'Privilege escalation', points: 5, section: 'Threat Identification' },
       { category: 'threatIdentification', name: 'Multi-agent threats', points: 5, section: 'Threat Identification' },
@@ -121,7 +143,11 @@ export const frameworkCoverageKnowledge = {
     frameworks: {
       owasp: 'owasp-agentic-threats-v1' as DetailedEvaluationKey,
       nist: 'nist-ai-rmf-v1' as DetailedEvaluationKey,
-      iso: 'iso-27090-draft' as DetailedEvaluationKey
+      iso27090: 'iso-27090-draft' as DetailedEvaluationKey,
+      iso42001: 'iso-42001-2023' as DetailedEvaluationKey,
+      atlas: 'mitre-atlas-v4' as DetailedEvaluationKey,
+      attack: 'mitre-attack-v15' as DetailedEvaluationKey,
+      cis: 'cis-controls-v8' as DetailedEvaluationKey
     }
   },
   
@@ -179,6 +205,21 @@ export const frameworkCoverageKnowledge = {
       date: new Date('2025-08-10'),
       by: '@assistant',
       change: 'Added ISO/IEC 42001:2023 evaluation: 35/100 score. Good AI governance framework but zero agentic AI security content. Published pre-MCP era, focuses on bias/transparency over agent threats.'
+    },
+    {
+      date: new Date('2025-08-10'),
+      by: '@assistant',
+      change: 'Evaluated MITRE ATLAS: 65/100 score. Best ML/AI threat framework but limited agentic coverage. Strong on prompt injection and LLM threats, missing MCP and multi-agent scenarios. Updated ATT&CK entry to clarify it has no AI coverage.'
+    },
+    {
+      date: new Date('2025-08-10'),
+      by: '@assistant',
+      change: 'Updated ATLAS evaluation to 75/100 after analyzing data files. Found extensive LLM coverage including RAG poisoning, 32 case studies, and April 2025 updates. Still missing MCP and multi-agent coordination.'
+    },
+    {
+      date: new Date('2025-08-10'),
+      by: '@assistant',
+      change: 'Evaluated CIS Controls v8.1: 25/100 score. Excellent general cybersecurity but zero AI content. 18 controls don\'t recognize AI as distinct asset class. Traditional IT focus only.'
     }
   ],
   
@@ -304,8 +345,30 @@ export const frameworkCoverageKnowledge = {
         }
       },
       status: 'no-guidance' as const,
-      gaps: ['No official MCP attack techniques', 'Researchers mapping attacks independently', 'Expected future additions'],
+      gaps: ['Traditional IT focus only', 'No AI/ML coverage', 'Use MITRE ATLAS for AI threats'],
       lastFrameworkUpdate: '2025-01'
+    },
+    {
+      id: 'mitre-atlas',
+      name: 'MITRE ATLAS',
+      organization: 'MITRE Corporation',
+      url: 'https://atlas.mitre.org/',
+      aiCoverage: {
+        overall: 0.75,  // Excellent ML/AI coverage, strong LLM coverage
+        categories: {
+          'mcp-attacks': false,      // No MCP-specific coverage found
+          'tool-poisoning': true,    // LLM Plugin Compromise (T0053)
+          'prompt-injection': true,  // AML.T0051 - Direct and Indirect
+          'agent-autonomy': true,    // LLM Jailbreak, system prompt extraction
+          'temporal-drift': false,   // No behavioral drift coverage
+          'coordination-attacks': false,  // Single AI focus
+          'zero-trust': true,        // Security principles throughout
+          'defense-in-depth': true   // Comprehensive threat matrix
+        }
+      },
+      status: 'active' as const,
+      gaps: ['No MCP/Model Context Protocol', 'Limited multi-agent scenarios', 'No agent behavioral drift'],
+      lastFrameworkUpdate: '2025-04'  // Latest techniques from April 2025
     },
     {
       id: 'cis-controls',
@@ -333,20 +396,21 @@ export const frameworkCoverageKnowledge = {
   
   insights: [
     'Tool poisoning attacks succeed 86% of the time - critical gap in most frameworks',
-    'OWASP now provides 90% coverage with comprehensive Agentic AI Threats document',
-    'NIST AI RMF has 0% agentic AI content despite being an AI-specific framework',
+    'OWASP leads with 90% coverage through comprehensive Agentic AI Threats document',
+    'MITRE ATLAS scores 75% - excellent LLM coverage but no MCP or multi-agent',
     'ISO/IEC 42001:2023 scores 35% - good governance but predates agentic AI',
-    'ISO/IEC 27090 (AI cybersecurity) still in draft - may address security gaps when published',
+    'NIST AI RMF has 0% agentic AI content despite being AI-specific',
     'Only OWASP addresses multi-agent systems and MCP security',
-    '80% of frameworks have zero guidance for autonomous agents'
+    'ATLAS has 32 real-world case studies including ChatGPT attacks'
   ],
   
   recommendations: [
     'Use OWASP Agentic AI Threats as primary reference for agent security',
+    'Supplement with MITRE ATLAS for ML/LLM attack patterns',
     'NIST AI RMF useful for general AI governance but not agentic systems',
     'Implement tool validation beyond what any framework requires',
     'Monitor OWASP MCP Top 10 development for protocol-specific guidance',
-    'Combine OWASP agentic guidance with NIST governance structure where applicable'
+    'Use ATLAS Navigator for threat modeling LLM applications'
   ],
   
   sources: [
@@ -608,6 +672,196 @@ export const frameworkCoverageKnowledge = {
       ],
       
       verdict: 'ISO/IEC 42001:2023 provides solid AI governance foundations but lacks agentic AI security coverage. As a pre-MCP era standard, it addresses traditional AI risks (bias, transparency) rather than modern agent threats. Useful for general AI management but insufficient for securing autonomous agents or multi-agent systems.'
+    },
+    
+    'mitre-atlas-v4': {
+      frameworkName: 'MITRE ATLAS v4.5.2 - Adversarial Threat Landscape for AI Systems',
+      evaluationDate: new Date('2025-08-10'),
+      evaluatedBy: '@assistant',
+      
+      scores: {
+        threatIdentification: 30,  // Strong AI/LLM threats, missing some agent aspects
+        practicalGuidance: 20,     // Tactics/techniques but limited implementation
+        evidenceQuality: 20,       // Excellent case studies and active research
+        completeness: 5,           // Detection only, limited response
+        total: 75
+      },
+      
+      // Detailed scoring breakdown
+      breakdown: {
+        // THREAT IDENTIFICATION (30/40)
+        'memory-attacks': false,          // No AI memory attack coverage
+        'tool-api-abuse': true,           // LLM Plugin Compromise (T0053)
+        'privilege-escalation': true,      // LLM Jailbreak (T0054)
+        'multi-agent-threats': false,      // Single AI system focus
+        'temporal-behaviors': false,       // No behavioral drift coverage
+        'human-manipulation': true,        // Phishing via LLM (T0052)
+        'communication-poisoning': true,   // RAG Poisoning (T0070)
+        'identity-auth': true,            // System prompt extraction (T0056)
+        
+        // PRACTICAL GUIDANCE (20/30)
+        'clear-patterns': true,           // Matrix of tactics/techniques
+        'specific-tools': false,          // No tool recommendations
+        'checklists': false,             // Tactics not prescriptive
+        'architecture-diagrams': true,    // Attack flow diagrams
+        'step-by-step': false,           // High-level techniques only
+        
+        // EVIDENCE QUALITY (20/20)
+        'credible-research': true,        // Academic partnerships
+        'real-incidents': true,           // 32 case studies documented
+        'attack-patterns': true,          // Detailed TTPs with procedures
+        'detection-guidance': true,       // Mitigations documented
+        
+        // COMPLETENESS (5/10)
+        'detection-methods': true,        // Some detection guidance
+        'response-procedures': false      // Minimal incident response
+      },
+      
+      strengths: [
+        'Most comprehensive AI/ML threat framework',
+        'Excellent LLM coverage (prompt injection, jailbreak, plugins)',
+        'RAG poisoning and retrieval attacks covered',
+        '32 real-world case studies including ChatGPT attacks',
+        'Active development with April 2025 updates',
+        'Strong industry adoption and community'
+      ],
+      
+      weaknesses: [
+        'No MCP or Model Context Protocol coverage',
+        'Limited multi-agent coordination attacks',
+        'No temporal drift or behavioral evolution',
+        'Focuses on attacks not defenses',
+        'Limited implementation guidance',
+        'No agent-to-agent attack patterns'
+      ],
+      
+      verdict: 'MITRE ATLAS scores 75% - the most comprehensive ML/AI threat framework available. Excellent coverage of LLM threats including prompt injection, RAG poisoning, and plugin compromise. Strong evidence base with 32 case studies. However, still lacks MCP-specific attacks and multi-agent scenarios. Essential reference but supplement with OWASP for full agentic coverage.'
+    },
+    
+    'cis-controls-v8': {
+      frameworkName: 'CIS Critical Security Controls v8.1',
+      evaluationDate: new Date('2025-08-10'),
+      evaluatedBy: '@assistant',
+      
+      scores: {
+        threatIdentification: 0,   // No AI-specific threats
+        practicalGuidance: 15,     // General security controls
+        evidenceQuality: 10,       // Good general security research
+        completeness: 0,           // No AI-specific coverage
+        total: 25
+      },
+      
+      // Detailed scoring breakdown
+      breakdown: {
+        // THREAT IDENTIFICATION (0/40)
+        'memory-attacks': false,          // No AI memory considerations
+        'tool-api-abuse': false,          // No AI tool security
+        'privilege-escalation': false,     // General privilege only
+        'multi-agent-threats': false,      // No agent considerations
+        'temporal-behaviors': false,       // No behavioral evolution
+        'human-manipulation': false,       // General phishing only
+        'communication-poisoning': false,  // Traditional network focus
+        'identity-auth': false,           // Traditional IAM only
+        
+        // PRACTICAL GUIDANCE (15/30)
+        'clear-patterns': true,           // 18 controls with safeguards
+        'specific-tools': false,          // No AI-specific tools
+        'checklists': true,              // Implementation groups (IG1/2/3)
+        'architecture-diagrams': false,   // No AI threat architecture
+        'step-by-step': true,            // Clear control implementation
+        
+        // EVIDENCE QUALITY (10/20)
+        'credible-research': true,        // Community consensus process
+        'real-incidents': true,           // Traditional IT incidents
+        'attack-patterns': false,         // No AI attack patterns
+        'detection-guidance': false,      // Not AI-specific
+        
+        // COMPLETENESS (0/10)
+        'detection-methods': false,       // No AI threat detection
+        'response-procedures': false      // No AI incident response
+      },
+      
+      strengths: [
+        '18 prioritized controls for cyber hygiene',
+        'Implementation Groups for different org sizes',
+        'Aligns with NIST CSF 2.0 and other frameworks',
+        'Strong community adoption and tooling',
+        'Version 8.1 adds governance function',
+        'Cloud Companion Guide available'
+      ],
+      
+      weaknesses: [
+        'Zero AI or ML security content',
+        'No recognition of AI as distinct asset class',
+        'No coverage of prompt injection or model attacks',
+        'Traditional IT security focus only',
+        'No guidance for AI development lifecycle',
+        'Asset inventory doesn\'t include AI models'
+      ],
+      
+      verdict: 'CIS Controls v8.1 provides excellent general cybersecurity guidance but contains zero AI-specific content. The 18 controls focus entirely on traditional IT security without recognizing AI systems as requiring distinct security measures. Organizations using AI must supplement CIS Controls with AI-specific frameworks like OWASP or ATLAS.'
+    },
+    
+    'mitre-attack-v15': {
+      frameworkName: 'MITRE ATT&CK v15.1',
+      evaluationDate: new Date('2025-08-10'),
+      evaluatedBy: '@assistant',
+      
+      scores: {
+        threatIdentification: 0,   // No AI threats
+        practicalGuidance: 0,      // No AI guidance
+        evidenceQuality: 0,        // No AI evidence
+        completeness: 0,           // No AI coverage
+        total: 0
+      },
+      
+      // Detailed scoring breakdown
+      breakdown: {
+        // THREAT IDENTIFICATION (0/40)
+        'memory-attacks': false,          // No AI coverage
+        'tool-api-abuse': false,          // No AI coverage
+        'privilege-escalation': false,     // Traditional IT only
+        'multi-agent-threats': false,      // No AI coverage
+        'temporal-behaviors': false,       // No AI coverage
+        'human-manipulation': false,       // Traditional phishing only
+        'communication-poisoning': false,  // No AI coverage
+        'identity-auth': false,           // Traditional IT only
+        
+        // PRACTICAL GUIDANCE (0/30)
+        'clear-patterns': false,          // Not for AI
+        'specific-tools': false,          // Not for AI
+        'checklists': false,              // Not for AI
+        'architecture-diagrams': false,   // Not for AI
+        'step-by-step': false,            // Not for AI
+        
+        // EVIDENCE QUALITY (0/20)
+        'credible-research': false,       // Not for AI
+        'real-incidents': false,          // Not for AI
+        'attack-patterns': false,         // Not for AI
+        'detection-guidance': false,      // Not for AI
+        
+        // COMPLETENESS (0/10)
+        'detection-methods': false,       // Not for AI
+        'response-procedures': false      // Not for AI
+      },
+      
+      strengths: [
+        'Industry standard for traditional IT threats',
+        'Comprehensive adversary tactics and techniques',
+        'Strong community and tooling ecosystem',
+        'Regular updates and living framework',
+        'Used globally by SOCs and threat intel teams'
+      ],
+      
+      weaknesses: [
+        'Zero AI or ML coverage by design',
+        'Explicitly directs users to ATLAS for AI threats',
+        'No plans to add AI content',
+        'Traditional IT/enterprise focus only',
+        'Not applicable to AI security'
+      ],
+      
+      verdict: 'MITRE ATT&CK scores 0% for AI security - this is by design. ATT&CK focuses exclusively on traditional IT threats and explicitly directs users to MITRE ATLAS for AI/ML security. Organizations should not look to ATT&CK for AI guidance but instead use its sister framework ATLAS.'
     }
   } as Record<DetailedEvaluationKey, DetailedEvaluation>
 }

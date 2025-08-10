@@ -47,6 +47,9 @@ export function FrameworkCoverage() {
     }
   }
   
+  // Sort frameworks by coverage (highest to lowest)
+  const rankedFrameworks = [...frameworks].sort((a, b) => b.aiCoverage.overall - a.aiCoverage.overall)
+  
   // Calculate summary statistics
   const avgCoverage = Math.round(
     (frameworks.reduce((sum, f) => sum + f.aiCoverage.overall, 0) / frameworks.length) * 100
@@ -109,18 +112,26 @@ export function FrameworkCoverage() {
                 // Get evaluations for each framework
                 const owaspEval = detailedEvaluations[methodologyComparison.frameworks.owasp]
                 const nistEval = detailedEvaluations[methodologyComparison.frameworks.nist]
-                const isoEval = detailedEvaluations[methodologyComparison.frameworks.iso]
+                const iso27090Eval = detailedEvaluations[methodologyComparison.frameworks.iso27090]
+                const iso42001Eval = detailedEvaluations[methodologyComparison.frameworks.iso42001]
+                const atlasEval = detailedEvaluations[methodologyComparison.frameworks.atlas]
+                const attackEval = detailedEvaluations[methodologyComparison.frameworks.attack]
+                const cisEval = detailedEvaluations[methodologyComparison.frameworks.cis]
                 
                 // Calculate section scores
-                const owaspSectionScore = sectionCriteria.reduce((sum, c) => {
-                  const key = c.name.toLowerCase().replace(/ /g, '-').replace(/\//g, '-')
-                  return sum + (owaspEval?.breakdown[key] === true ? c.points : 0)
-                }, 0)
+                const calculateSectionScore = (evaluation: any) => {
+                  return sectionCriteria.reduce((sum, c) => {
+                    const key = c.name.toLowerCase().replace(/ /g, '-').replace(/\//g, '-')
+                    return sum + (evaluation?.breakdown[key] === true ? c.points : 0)
+                  }, 0)
+                }
                 
-                const nistSectionScore = sectionCriteria.reduce((sum, c) => {
-                  const key = c.name.toLowerCase().replace(/ /g, '-').replace(/\//g, '-')
-                  return sum + (nistEval?.breakdown[key] === true ? c.points : 0)
-                }, 0)
+                const owaspSectionScore = calculateSectionScore(owaspEval)
+                const nistSectionScore = calculateSectionScore(nistEval)
+                const iso42001SectionScore = calculateSectionScore(iso42001Eval)
+                const atlasSectionScore = calculateSectionScore(atlasEval)
+                const attackSectionScore = calculateSectionScore(attackEval)
+                const cisSectionScore = calculateSectionScore(cisEval)
                 
                 return (
                   <div key={sectionName}>
@@ -133,34 +144,58 @@ export function FrameworkCoverage() {
                         const key = criterion.name.toLowerCase().replace(/ /g, '-').replace(/\//g, '-')
                         const owaspValue = owaspEval?.breakdown[key]
                         const nistValue = nistEval?.breakdown[key]
-                        const isoValue = isoEval?.breakdown[key]
+                        const iso27090Value = iso27090Eval?.breakdown[key]
+                        const iso42001Value = iso42001Eval?.breakdown[key]
+                        const atlasValue = atlasEval?.breakdown[key]
+                        const cisValue = cisEval?.breakdown[key]
                         
                         return (
-                          <div key={criterion.name} className="grid grid-cols-14 gap-2 text-sm items-center">
-                            <span className="col-span-6 text-muted-foreground">• {criterion.name}</span>
-                            <span className="col-span-2 text-xs text-muted-foreground">{criterion.points}pts</span>
-                            <span className="col-span-2 text-center">{owaspValue === true ? '✓' : owaspValue === false ? '✗' : '?'}</span>
-                            <span className="col-span-2 text-center">{nistValue === true ? '✓' : nistValue === false ? '✗' : '?'}</span>
-                            <span className="col-span-2 text-center">{isoValue === true ? '✓' : isoValue === false ? '✗' : isoValue === 'unknown' ? '?' : '✗'}</span>
+                          <div key={criterion.name} className="grid grid-cols-12 gap-1 text-xs items-center">
+                            <span className="col-span-3 text-muted-foreground truncate">• {criterion.name}</span>
+                            <span className="col-span-1 text-xs text-muted-foreground text-center">{criterion.points}</span>
+                            <span className="col-span-1 text-center font-mono">{owaspValue === true ? '✓' : owaspValue === false ? '✗' : '?'}</span>
+                            <span className="col-span-1 text-center font-mono">{atlasValue === true ? '✓' : atlasValue === false ? '✗' : '?'}</span>
+                            <span className="col-span-1 text-center font-mono">{iso42001Value === true ? '✓' : iso42001Value === false ? '✗' : '?'}</span>
+                            <span className="col-span-1 text-center font-mono">{nistValue === true ? '✓' : nistValue === false ? '✗' : '?'}</span>
+                            <span className="col-span-1 text-center font-mono">{cisValue === true ? '✓' : cisValue === false ? '✗' : '?'}</span>
+                            <span className="col-span-1 text-center font-mono">{iso27090Value === true ? '✓' : iso27090Value === false ? '✗' : iso27090Value === 'unknown' ? '?' : '✗'}</span>
                           </div>
                         )
                       })}
-                      <div className="grid grid-cols-14 gap-2 text-sm font-medium pt-2 border-t">
-                        <span className="col-span-6">Subtotal</span>
-                        <span className="col-span-2"></span>
+                      <div className="grid grid-cols-12 gap-1 text-xs font-medium pt-2 border-t">
+                        <span className="col-span-3">Subtotal</span>
+                        <span className="col-span-1"></span>
                         <span className={cn(
-                          "col-span-2 text-center",
+                          "col-span-1 text-center",
                           owaspSectionScore === sectionPoints && "text-success",
                           owaspSectionScore > 0 && owaspSectionScore < sectionPoints && "text-warning",
                           owaspSectionScore === 0 && "text-danger"
                         )}>{owaspSectionScore}/{sectionPoints}</span>
                         <span className={cn(
-                          "col-span-2 text-center",
+                          "col-span-1 text-center",
+                          atlasSectionScore === sectionPoints && "text-success",
+                          atlasSectionScore > 0 && atlasSectionScore < sectionPoints && "text-warning",
+                          atlasSectionScore === 0 && "text-danger"
+                        )}>{atlasSectionScore}/{sectionPoints}</span>
+                        <span className={cn(
+                          "col-span-1 text-center",
+                          iso42001SectionScore === sectionPoints && "text-success",
+                          iso42001SectionScore > 0 && iso42001SectionScore < sectionPoints && "text-warning",
+                          iso42001SectionScore === 0 && "text-danger"
+                        )}>{iso42001SectionScore}/{sectionPoints}</span>
+                        <span className={cn(
+                          "col-span-1 text-center",
                           nistSectionScore === sectionPoints && "text-success",
                           nistSectionScore > 0 && nistSectionScore < sectionPoints && "text-warning",
                           nistSectionScore === 0 && "text-danger"
                         )}>{nistSectionScore}/{sectionPoints}</span>
-                        <span className="col-span-2 text-center text-muted-foreground">Draft</span>
+                        <span className={cn(
+                          "col-span-1 text-center",
+                          cisSectionScore === sectionPoints && "text-success",
+                          cisSectionScore > 0 && cisSectionScore < sectionPoints && "text-warning",
+                          cisSectionScore === 0 && "text-danger"
+                        )}>{cisSectionScore}/{sectionPoints}</span>
+                        <span className="col-span-1 text-center text-muted-foreground">Draft</span>
                       </div>
                     </div>
                   </div>
@@ -169,39 +204,59 @@ export function FrameworkCoverage() {
 
               {/* Total Score */}
               <div className="border-t pt-4">
-                <div className="grid grid-cols-14 gap-2 text-sm font-medium">
-                  <span className="col-span-6">Total Score</span>
-                  <span className="col-span-2"></span>
-                  <span className="col-span-2 text-center">
-                    <Badge variant="default" className="bg-success">
-                      {detailedEvaluations[methodologyComparison.frameworks.owasp]?.scores.total || 0}/100
+                <div className="grid grid-cols-12 gap-1 text-xs font-medium">
+                  <span className="col-span-3">Total Score</span>
+                  <span className="col-span-1"></span>
+                  <span className="col-span-1 text-center">
+                    <Badge variant="default" className="bg-success text-xs px-1">
+                      {detailedEvaluations[methodologyComparison.frameworks.owasp]?.scores.total || 0}
                     </Badge>
                   </span>
-                  <span className="col-span-2 text-center">
+                  <span className="col-span-1 text-center">
+                    <Badge variant="secondary" className="text-xs px-1">
+                      {detailedEvaluations[methodologyComparison.frameworks.atlas]?.scores.total || 0}
+                    </Badge>
+                  </span>
+                  <span className="col-span-1 text-center">
+                    <Badge variant="outline" className="text-xs px-1">
+                      {detailedEvaluations[methodologyComparison.frameworks.iso42001]?.scores.total || 0}
+                    </Badge>
+                  </span>
+                  <span className="col-span-1 text-center">
                     <Badge variant="outline" className={cn(
+                      "text-xs px-1",
                       detailedEvaluations[methodologyComparison.frameworks.nist]?.scores.total === 0 && "text-danger border-danger"
                     )}>
-                      {detailedEvaluations[methodologyComparison.frameworks.nist]?.scores.total || 0}/100
+                      {detailedEvaluations[methodologyComparison.frameworks.nist]?.scores.total || 0}
                     </Badge>
                   </span>
-                  <span className="col-span-2 text-center">
-                    <Badge variant="secondary">TBD</Badge>
+                  <span className="col-span-1 text-center">
+                    <Badge variant="outline" className="text-xs px-1">
+                      {detailedEvaluations[methodologyComparison.frameworks.cis]?.scores.total || 0}
+                    </Badge>
+                  </span>
+                  <span className="col-span-1 text-center">
+                    <Badge variant="secondary" className="text-xs px-1">?</Badge>
                   </span>
                 </div>
               </div>
 
               {/* Legend */}
               <div className="text-xs text-muted-foreground pt-4 space-y-1">
-                <div className="grid grid-cols-14 gap-2 font-medium">
-                  <span className="col-span-6"></span>
-                  <span className="col-span-2"></span>
-                  <span className="col-span-2 text-center">OWASP</span>
-                  <span className="col-span-2 text-center">NIST</span>
-                  <span className="col-span-2 text-center">ISO 27090</span>
+                <div className="grid grid-cols-12 gap-1 font-medium">
+                  <span className="col-span-3"></span>
+                  <span className="col-span-1"></span>
+                  <span className="col-span-1 text-center">OWASP</span>
+                  <span className="col-span-1 text-center">ATLAS</span>
+                  <span className="col-span-1 text-center">ISO-42k</span>
+                  <span className="col-span-1 text-center">NIST</span>
+                  <span className="col-span-1 text-center">CIS</span>
+                  <span className="col-span-1 text-center">ISO-27k</span>
                 </div>
-                <p className="mt-2">✓ = Criteria met | ✗ = Criteria not met | ? = Unknown (draft)</p>
-                <p>Scores reflect coverage of agentic AI security threats specifically.</p>
-                <p className="text-warning">ISO/IEC 27090 is in draft status - content not publicly available.</p>
+                <p className="mt-2">✓ = Criteria met | ✗ = Criteria not met | ? = Unknown</p>
+                <p>Scores out of 100 points total. Higher = better agentic AI threat coverage.</p>
+                <p className="text-warning">ISO-27k (ISO/IEC 27090) is draft - content not available.</p>
+                <p className="text-muted-foreground text-xs">Note: MITRE ATT&CK (0%) not shown due to space - see main view.</p>
               </div>
             </div>
           </>
@@ -343,17 +398,18 @@ export function FrameworkCoverage() {
             </Badge>
           </div>
           <CardDescription>
-            {withGuidance} of {frameworks.length} frameworks provide AI guidance • Average coverage: {avgCoverage}%
+            Ranked by AI threat coverage • {withGuidance} of {frameworks.length} provide guidance • Average: {avgCoverage}%
           </CardDescription>
         </CardHeader>
         
         <CardContent className="flex-1 flex flex-col overflow-hidden">
           <div className="flex-1 overflow-y-auto space-y-4 pr-2">
-            {/* Framework list */}
-            {frameworks.map((framework) => (
+            {/* Framework list - Ranked by coverage */}
+            {rankedFrameworks.map((framework, index) => (
               <div key={framework.id} className="space-y-2">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium text-muted-foreground w-6">#{index + 1}</span>
                   <a 
                   href={framework.url}
                   target="_blank"
