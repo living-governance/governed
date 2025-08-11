@@ -18,7 +18,7 @@ import {
 } from "../../knowledge/framework-coverage"
 import { 
   AlertCircle, Clock, ExternalLink, Download, Share2, Link, 
-  Info, Cloud, TrendingUp, ChevronLeft, Home
+  Info, Cloud, TrendingUp, ChevronLeft, Home, Check, Copy
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useState } from "react"
@@ -33,6 +33,7 @@ export function FrameworkCoverage({ initialView = 'main' }: FrameworkCoveragePro
   const { frameworks, evaluation, methodologyComparison, detailedEvaluations } = frameworkCoverageKnowledge
   const confidenceStatus = getConfidenceStatus(frameworkCoverageKnowledge)
   const [currentView, setCurrentView] = useState<ViewType>(initialView)
+  const [copiedCommand, setCopiedCommand] = useState<'cli' | 'npm' | null>(null)
   
   // Get the most recent evaluation date from all evaluations
   const getMostRecentEvaluation = () => {
@@ -619,7 +620,28 @@ ${rankedFrameworks.slice(0, 3).map((f, i) =>
         const copyCliCommand = () => {
           const command = `npx @governed/cli add framework-coverage`
           navigator.clipboard.writeText(command).then(() => {
-            console.log('CLI command copied')
+            console.log('CLI command copied to clipboard')
+            setCopiedCommand('cli')
+            // Reset after 2 seconds
+            setTimeout(() => setCopiedCommand(null), 2000)
+          }).catch(err => {
+            console.error('Failed to copy:', err)
+            // Fallback for browsers that don't support clipboard API
+            const textArea = document.createElement('textarea')
+            textArea.value = command
+            textArea.style.position = 'fixed'
+            textArea.style.left = '-999999px'
+            document.body.appendChild(textArea)
+            textArea.focus()
+            textArea.select()
+            try {
+              document.execCommand('copy')
+              setCopiedCommand('cli')
+              setTimeout(() => setCopiedCommand(null), 2000)
+            } catch (err) {
+              console.error('Fallback copy failed:', err)
+            }
+            document.body.removeChild(textArea)
           })
         }
         
@@ -627,7 +649,28 @@ ${rankedFrameworks.slice(0, 3).map((f, i) =>
           // Package names are by category, not component
           const command = `npm install @governed/frameworks`
           navigator.clipboard.writeText(command).then(() => {
-            console.log('NPM command copied')
+            console.log('NPM command copied to clipboard')
+            setCopiedCommand('npm')
+            // Reset after 2 seconds
+            setTimeout(() => setCopiedCommand(null), 2000)
+          }).catch(err => {
+            console.error('Failed to copy:', err)
+            // Fallback for browsers that don't support clipboard API
+            const textArea = document.createElement('textarea')
+            textArea.value = command
+            textArea.style.position = 'fixed'
+            textArea.style.left = '-999999px'
+            document.body.appendChild(textArea)
+            textArea.focus()
+            textArea.select()
+            try {
+              document.execCommand('copy')
+              setCopiedCommand('npm')
+              setTimeout(() => setCopiedCommand(null), 2000)
+            } catch (err) {
+              console.error('Fallback copy failed:', err)
+            }
+            document.body.removeChild(textArea)
           })
         }
         
@@ -643,10 +686,14 @@ ${rankedFrameworks.slice(0, 3).map((f, i) =>
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="h-6 text-xs -mt-1"
+                      className="h-6 text-xs -mt-1 px-2"
                       onClick={copyCliCommand}
                     >
-                      Copy
+                      {copiedCommand === 'cli' ? (
+                        <><Check className="h-3 w-3 mr-1" />Copied</>
+                      ) : (
+                        <><Copy className="h-3 w-3 mr-1" />Copy</>
+                      )}
                     </Button>
                   </div>
                   <code className="font-mono text-xs">npx @governed/cli add framework-coverage</code>
@@ -659,10 +706,14 @@ ${rankedFrameworks.slice(0, 3).map((f, i) =>
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="h-6 text-xs -mt-1"
+                      className="h-6 text-xs -mt-1 px-2"
                       onClick={copyNpmCommand}
                     >
-                      Copy
+                      {copiedCommand === 'npm' ? (
+                        <><Check className="h-3 w-3 mr-1" />Copied</>
+                      ) : (
+                        <><Copy className="h-3 w-3 mr-1" />Copy</>
+                      )}
                     </Button>
                   </div>
                   <code className="font-mono text-xs">npm install @governed/frameworks</code>
