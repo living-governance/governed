@@ -22,6 +22,7 @@ import {
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useState } from "react"
+import Image from "next/image"
 
 type ViewType = 'main' | 'methodology' | 'sources' | 'cloud' | 'history' | 'download' | 'share'
 
@@ -391,12 +392,210 @@ export function FrameworkCoverage({ initialView = 'main' }: FrameworkCoveragePro
           </>
         )
       case 'cloud':
+        const cloudData = frameworkCoverageKnowledge.cloudImplementation
+        const awsImpl = cloudData.aws
+        
         return (
           <>
-            <p className="font-medium mb-2">Cloud Provider Guidance</p>
-            <p className="text-muted-foreground">
-              [Placeholder: AWS, GCP, Azure specific implementation guidance]
-            </p>
+            <p className="font-medium mb-4">{awsImpl.title}</p>
+            <div className="space-y-4">
+              {/* Key Message */}
+              <div className="bg-muted/50 p-3 rounded-lg border">
+                <p className="text-xs text-muted-foreground">
+                  {awsImpl.keyMessage}
+                </p>
+              </div>
+
+              {/* Service Overview */}
+              {awsImpl.serviceOverview && (
+                <div className="space-y-2">
+                  <p className="text-xs font-medium">AWS Security Services</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    {Object.values(awsImpl.serviceOverview).map((service: any, idx) => (
+                      <a
+                        key={idx}
+                        href={service.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="border rounded-lg p-3 hover:bg-muted/50 transition-colors flex items-start gap-3"
+                      >
+                        <div className="flex-shrink-0">
+                          <Image
+                            src={service.icon}
+                            alt={service.name}
+                            width={32}
+                            height={32}
+                            className="opacity-90"
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs font-medium">{service.name}</p>
+                          <p className="text-xs text-muted-foreground mt-1">{service.when}</p>
+                        </div>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Framework Implementations */}
+              {awsImpl.frameworkMappings && awsImpl.frameworkMappings.length > 0 && (
+                <div className="space-y-3">
+                  <p className="text-xs font-medium">Framework Implementations</p>
+                  {awsImpl.frameworkMappings.map((mapping: any, idx) => (
+                    <div key={idx} className="border rounded-lg p-3 space-y-3">
+                      <Badge 
+                        className={cn(
+                          "text-xs",
+                          mapping.framework === 'OWASP' && "bg-blue-600 text-white",
+                          mapping.framework === 'NIST 800-53' && "bg-green-600 text-white",
+                          mapping.framework === 'CIS' && "bg-yellow-600 text-white",
+                          mapping.framework === 'MITRE ATT&CK' && "bg-orange-600 text-white"
+                        )}
+                      >
+                        {mapping.framework}
+                      </Badge>
+                      
+                      <div className="space-y-3">
+                        {mapping.implementations.map((impl: any, implIdx: number) => {
+                          // Find the service icon from serviceOverview
+                          const serviceIcon = Object.values(awsImpl.serviceOverview || {}).find(
+                            (s: any) => s.name.includes(impl.service.replace('AWS ', '').replace(' Managed Rules', '').replace(' Conformance Pack', ''))
+                          ) as any;
+                          
+                          return (
+                            <div key={implIdx} className="space-y-2">
+                              {/* Service header with icon */}
+                              <div className="flex items-center gap-2">
+                                {serviceIcon && (
+                                  <a
+                                    href={impl.serviceUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex-shrink-0 hover:opacity-80 transition-opacity"
+                                  >
+                                    <Image
+                                      src={serviceIcon.icon}
+                                      alt={impl.service}
+                                      width={24}
+                                      height={24}
+                                      className="opacity-90"
+                                    />
+                                  </a>
+                                )}
+                                <div className="flex items-center gap-2 flex-1">
+                                  <span className="text-xs text-muted-foreground">{impl.approach}:</span>
+                                  <a
+                                    href={impl.serviceUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-xs font-medium hover:text-primary hover:underline"
+                                  >
+                                    {impl.service}
+                                  </a>
+                                  <ExternalLink className="h-3 w-3 text-muted-foreground" />
+                                </div>
+                              </div>
+                              
+                              {/* Details section */}
+                              <div className="pl-8 space-y-2">
+                                {impl.details.map((detail: any, detailIdx: number) => (
+                                  <div key={detailIdx} className="space-y-1">
+                                    <div className="flex items-start justify-between">
+                                      <div className="space-y-1 flex-1">
+                                        <p className="text-xs font-medium">{detail.name}</p>
+                                        <p className="text-xs text-muted-foreground">{detail.description}</p>
+                                      </div>
+                                      {detail.githubTemplate && (
+                                        <a
+                                          href={detail.githubTemplate}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                          className="text-xs text-muted-foreground hover:text-primary ml-2"
+                                          title="View GitHub template"
+                                        >
+                                          <ExternalLink className="h-3 w-3" />
+                                        </a>
+                                      )}
+                                    </div>
+                                    {(detail.resourceId || detail.specs) && (
+                                      <div className="flex items-center gap-3 flex-wrap">
+                                        {detail.resourceId && (
+                                          <code className="text-xs bg-muted px-2 py-0.5 rounded font-mono">
+                                            {detail.resourceId}
+                                          </code>
+                                        )}
+                                        {detail.specs && (
+                                          <span className="text-xs text-muted-foreground">{detail.specs}</span>
+                                        )}
+                                      </div>
+                                    )}
+                                  </div>
+                                ))}
+                                
+                                {impl.quickDeploy && (
+                                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                    <span>🚀</span>
+                                    <span>{impl.quickDeploy}</span>
+                                  </div>
+                                )}
+                                
+                                {impl.advantages && (
+                                  <div className="flex items-start gap-2 text-xs text-success">
+                                    <span>✓</span>
+                                    <span>{impl.advantages}</span>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Decision Guide */}
+              {awsImpl.decisionGuide && (
+                <div className="border-t pt-3">
+                  <p className="text-xs font-medium mb-2">{awsImpl.decisionGuide.title}</p>
+                  <div className="space-y-1">
+                    {awsImpl.decisionGuide.scenarios.map((item: any, idx) => (
+                      <div key={idx} className="text-xs">
+                        <span className="text-muted-foreground">{item.scenario}:</span>
+                        <span className="ml-2">{item.recommendation}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Best Practices */}
+              {awsImpl.bestPractices && awsImpl.bestPractices.length > 0 && (
+                <div className="border-t pt-3">
+                  <p className="text-xs font-medium mb-2">Best Practices</p>
+                  <ul className="space-y-1">
+                    {awsImpl.bestPractices.map((practice, idx) => (
+                      <li key={idx} className="text-xs text-muted-foreground flex items-start gap-1">
+                        <span className="text-primary">•</span>
+                        <span>{practice}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* Other clouds coming soon */}
+              <div className="border-t pt-3 space-y-1">
+                <div className="text-xs text-muted-foreground">
+                  <span className="font-medium">GCP:</span> {cloudData.gcp.description}
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  <span className="font-medium">Azure:</span> {cloudData.azure.description}
+                </div>
+              </div>
+            </div>
           </>
         )
       case 'history':

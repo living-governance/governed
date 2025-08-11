@@ -38,6 +38,211 @@ export const frameworkCoverageKnowledge = {
   id: 'framework-coverage-2025-q3',
   name: 'Security Framework AI Coverage Analysis',
   
+  // Cloud implementation guidance
+  cloudImplementation: {
+    aws: {
+      title: 'AWS Implementation Guide',
+      description: 'Deploy framework controls using AWS security services',
+      keyMessage: 'Security frameworks provide the "what" - AWS services provide the "how". Choose between centralized management (Security Hub, Firewall Manager) or direct implementation (WAF, Config) based on your organization\'s needs.',
+      
+      // Service overview - explain the landscape first
+      serviceOverview: {
+        waf: {
+          name: 'AWS WAF',
+          icon: '/aws-icons/aws-waf.svg',
+          description: 'Web application firewall for Layer 7 protection',
+          url: 'https://aws.amazon.com/waf/',
+          when: 'Direct protection for specific applications'
+        },
+        firewallManager: {
+          name: 'AWS Firewall Manager',
+          icon: '/aws-icons/aws-firewall-manager.svg',
+          description: 'Centrally manage WAF rules across multiple accounts',
+          url: 'https://aws.amazon.com/firewall-manager/',
+          when: 'Organization-wide WAF policy enforcement'
+        },
+        config: {
+          name: 'AWS Config',
+          icon: '/aws-icons/aws-config.svg',
+          description: 'Assess, audit, and evaluate resource configurations',
+          url: 'https://aws.amazon.com/config/',
+          when: 'Detailed resource compliance tracking'
+        },
+        securityHub: {
+          name: 'AWS Security Hub',
+          icon: '/aws-icons/aws-security-hub.svg',
+          description: 'Unified security and compliance center',
+          url: 'https://aws.amazon.com/security-hub/',
+          when: 'Consolidated compliance dashboard and automated checks'
+        },
+        guardDuty: {
+          name: 'Amazon GuardDuty',
+          icon: '/aws-icons/amazon-guardduty.svg',
+          description: 'Intelligent threat detection service',
+          url: 'https://aws.amazon.com/guardduty/',
+          when: 'Automated threat detection mapped to MITRE ATT&CK'
+        }
+      },
+      
+      // Framework-specific implementations
+      frameworkMappings: [
+        {
+          framework: 'OWASP',
+          implementations: [
+            {
+              approach: 'Direct Protection',
+              service: 'AWS WAF Managed Rules',
+              serviceUrl: 'https://docs.aws.amazon.com/waf/latest/developerguide/aws-managed-rule-groups.html',
+              details: [
+                {
+                  name: 'Core Rule Set (CRS)',
+                  description: 'OWASP Top 10 protection',
+                  resourceId: 'AWSManagedRulesCommonRuleSet',
+                  specs: '700 WCU • Free'
+                },
+                {
+                  name: 'Known Bad Inputs',
+                  description: 'Block malicious patterns',
+                  resourceId: 'AWSManagedRulesKnownBadInputsRuleSet',
+                  specs: '200 WCU • Free'
+                }
+              ],
+              quickDeploy: 'WAF Console → Add rules → Deploy to ALB/CloudFront'
+            },
+            {
+              approach: 'Centralized Management',
+              service: 'AWS Firewall Manager',
+              serviceUrl: 'https://docs.aws.amazon.com/waf/latest/developerguide/fms-chapter.html',
+              details: [
+                {
+                  name: 'Organization-wide WAF Policy',
+                  description: 'Deploy OWASP rules across all accounts automatically',
+                  specs: '$100/policy/month + WAF costs'
+                }
+              ],
+              quickDeploy: 'Enable in Organizations → Create security policy → Apply to OUs'
+            }
+          ]
+        },
+        {
+          framework: 'NIST 800-53',
+          implementations: [
+            {
+              approach: 'Conformance Pack',
+              service: 'AWS Config',
+              serviceUrl: 'https://docs.aws.amazon.com/config/latest/developerguide/operational-best-practices-for-nist-800-53_rev_5.html',
+              details: [
+                {
+                  name: 'NIST 800-53 Rev 5',
+                  description: '200+ Config rules mapped to NIST controls',
+                  resourceId: 'Operational-Best-Practices-for-NIST-800-53-rev-5',
+                  specs: '$0.003/rule evaluation',
+                  githubTemplate: 'https://github.com/awslabs/aws-config-rules/blob/master/aws-config-conformance-packs/Operational-Best-Practices-for-NIST-800-53-rev-5.yaml'
+                }
+              ],
+              quickDeploy: 'Config → Conformance packs → Deploy template'
+            },
+            {
+              approach: 'Security Standard',
+              service: 'AWS Security Hub',
+              serviceUrl: 'https://docs.aws.amazon.com/securityhub/latest/userguide/nist-standard.html',
+              details: [
+                {
+                  name: 'NIST 800-53 Rev 5 Standard',
+                  description: 'Pre-configured checks with automated evidence collection',
+                  specs: '$0.001/check + Config costs'
+                }
+              ],
+              quickDeploy: 'Security Hub → Standards → Enable NIST',
+              advantages: 'Includes Config rules + additional checks, automated scoring, investigation tools'
+            }
+          ]
+        },
+        {
+          framework: 'CIS',
+          implementations: [
+            {
+              approach: 'Security Standard',
+              service: 'AWS Security Hub',
+              serviceUrl: 'https://docs.aws.amazon.com/securityhub/latest/userguide/cis-aws-foundations-benchmark.html',
+              details: [
+                {
+                  name: 'CIS AWS Foundations Benchmark',
+                  description: 'Automated CIS benchmark checks',
+                  specs: 'Included with Security Hub'
+                }
+              ],
+              quickDeploy: 'Security Hub → Standards → Enable CIS'
+            }
+          ]
+        },
+        {
+          framework: 'MITRE ATT&CK',
+          implementations: [
+            {
+              approach: 'Threat Detection',
+              service: 'Amazon GuardDuty',
+              serviceUrl: 'https://aws.amazon.com/guardduty/',
+              details: [
+                {
+                  name: 'Automated threat detection',
+                  description: 'Maps to MITRE ATT&CK tactics',
+                  specs: '$0.02/GB analyzed'
+                }
+              ],
+              quickDeploy: 'Enable with one click → Auto-maps findings to ATT&CK'
+            }
+          ]
+        }
+      ],
+      
+      // Decision guide
+      decisionGuide: {
+        title: 'Which Service to Use?',
+        scenarios: [
+          {
+            scenario: 'Single AWS account, specific web apps',
+            recommendation: 'AWS WAF with managed rules'
+          },
+          {
+            scenario: 'Multi-account organization',
+            recommendation: 'Security Hub for compliance, Firewall Manager for WAF'
+          },
+          {
+            scenario: 'Need compliance evidence/reporting',
+            recommendation: 'Security Hub (includes Config + more)'
+          },
+          {
+            scenario: 'Custom compliance requirements',
+            recommendation: 'AWS Config with custom rules'
+          },
+          {
+            scenario: 'AI/ML workloads without specific framework',
+            recommendation: 'Still use Config AI/ML pack for baseline security'
+          }
+        ]
+      },
+      
+      bestPractices: [
+        'Use Security Hub over standalone Config for standard frameworks (NIST, CIS)',
+        'Deploy Firewall Manager for organization-wide WAF policies',
+        'Start with detection mode before enforcement',
+        'Layer services: GuardDuty (threats) + Security Hub (compliance) + Config (resources)',
+        'AI/ML Config pack provides defense-in-depth even without framework mapping'
+      ]
+    },
+    gcp: {
+      title: 'GCP Implementation Guide',
+      description: 'Coming soon - Cloud Armor, Security Command Center, and Policy Intelligence',
+      frameworkMappings: []
+    },
+    azure: {
+      title: 'Azure Implementation Guide', 
+      description: 'Coming soon - Azure WAF, Policy, and Microsoft Defender for Cloud',
+      frameworkMappings: []
+    }
+  },
+  
   // Living Knowledge metadata
   evaluation: {
     date: new Date('2025-07-24'),
