@@ -17,24 +17,26 @@ import {
   getLatestChange 
 } from "../../knowledge/framework-coverage"
 import { 
-  AlertCircle, Clock, ExternalLink, Download, Share2, Link, 
-  Info, Cloud, TrendingUp, ChevronLeft, Home, Check, Copy
+  AlertCircle, Clock, ExternalLink, Download, Link, 
+  Info, Cloud, TrendingUp, ChevronLeft, Home, Check, Copy,
+  Linkedin
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useState } from "react"
 import Image from "next/image"
 
-type ViewType = 'main' | 'methodology' | 'sources' | 'cloud' | 'history' | 'download' | 'share'
+type ViewType = 'main' | 'methodology' | 'sources' | 'cloud' | 'history' | 'download'
 
 interface FrameworkCoverageProps {
   initialView?: ViewType
 }
 
 export function FrameworkCoverage({ initialView = 'main' }: FrameworkCoverageProps = {}) {
-  const { frameworks, evaluation, methodologyComparison, detailedEvaluations } = frameworkCoverageKnowledge
+  const { frameworks, evaluation, methodologyComparison, detailedEvaluations, shareableContent } = frameworkCoverageKnowledge
   const confidenceStatus = getConfidenceStatus(frameworkCoverageKnowledge)
   const [currentView, setCurrentView] = useState<ViewType>(initialView)
   const [copiedCommand, setCopiedCommand] = useState<'cli' | 'npm' | null>(null)
+  const [showLinkedInToast, setShowLinkedInToast] = useState(false)
   
   // Get the most recent evaluation date from all evaluations
   const getMostRecentEvaluation = () => {
@@ -75,6 +77,9 @@ export function FrameworkCoverage({ initialView = 'main' }: FrameworkCoveragePro
     (frameworks.reduce((sum, f) => sum + f.aiCoverageScore, 0) / frameworks.length) * 100
   )
   const withGuidance = frameworks.filter(f => f.status !== 'no-guidance').length
+  const readyFrameworks = rankedFrameworks.filter(f => f.aiCoverageScore > 0.7).length
+  const readyPercent = Math.round((readyFrameworks / frameworks.length) * 100)
+  
   
   // Icon button component for cleaner code
   const IconButton = ({ icon: Icon, view, label, isActive = false }: { 
@@ -112,7 +117,6 @@ export function FrameworkCoverage({ initialView = 'main' }: FrameworkCoveragePro
       <IconButton icon={TrendingUp} view="history" label="History" isActive={currentView === 'history'} />
       <IconButton icon={Link} view="sources" label="Sources" isActive={currentView === 'sources'} />
       <IconButton icon={Download} view="download" label="Download" isActive={currentView === 'download'} />
-      <IconButton icon={Share2} view="share" label="Share" isActive={currentView === 'share'} />
     </div>
   )
   
@@ -120,17 +124,7 @@ export function FrameworkCoverage({ initialView = 'main' }: FrameworkCoveragePro
   const renderMetadataContent = () => {
     switch (currentView) {
       case 'methodology':
-        // Create ranking for all frameworks
-        const methodologyRanking = [
-          { key: 'owasp', label: 'OWASP', score: 100 },
-          { key: 'atlas', label: 'ATLAS', score: 75 },
-          { key: 'iso42001', label: 'ISO42k', score: 35 },
-          { key: 'nist', label: 'NIST', score: 25 },
-          { key: 'cis', label: 'CIS', score: 25 },
-          { key: 'attack', label: 'ATT&CK', score: 0 },
-          { key: 'iso27090', label: 'ISO27k', score: 0 }
-        ]
-        
+        // Methodology view content (already implemented above)
         return (
           <>
             <p className="font-medium mb-4">Evaluation Methodology</p>
@@ -315,6 +309,7 @@ export function FrameworkCoverage({ initialView = 'main' }: FrameworkCoveragePro
             </div>
           </>
         )
+        
       case 'sources':
         return (
           <>
@@ -391,6 +386,7 @@ export function FrameworkCoverage({ initialView = 'main' }: FrameworkCoveragePro
             </div>
           </>
         )
+        
       case 'cloud':
         const cloudData = frameworkCoverageKnowledge.cloudImplementation
         const awsImpl = cloudData.aws
@@ -438,139 +434,6 @@ export function FrameworkCoverage({ initialView = 'main' }: FrameworkCoveragePro
                 </div>
               )}
 
-              {/* Framework Implementations */}
-              {awsImpl.frameworkMappings && awsImpl.frameworkMappings.length > 0 && (
-                <div className="space-y-3">
-                  <p className="text-xs font-medium">Framework Implementations</p>
-                  {awsImpl.frameworkMappings.map((mapping: any, idx) => (
-                    <div key={idx} className="border rounded-lg p-3 space-y-3">
-                      <Badge 
-                        className={cn(
-                          "text-xs",
-                          mapping.framework === 'OWASP' && "bg-blue-600 text-white",
-                          mapping.framework === 'NIST 800-53' && "bg-green-600 text-white",
-                          mapping.framework === 'CIS' && "bg-yellow-600 text-white",
-                          mapping.framework === 'MITRE ATT&CK' && "bg-orange-600 text-white"
-                        )}
-                      >
-                        {mapping.framework}
-                      </Badge>
-                      
-                      <div className="space-y-3">
-                        {mapping.implementations.map((impl: any, implIdx: number) => {
-                          // Find the service icon from serviceOverview
-                          const serviceIcon = Object.values(awsImpl.serviceOverview || {}).find(
-                            (s: any) => s.name.includes(impl.service.replace('AWS ', '').replace(' Managed Rules', '').replace(' Conformance Pack', ''))
-                          ) as any;
-                          
-                          return (
-                            <div key={implIdx} className="space-y-2">
-                              {/* Service header with icon */}
-                              <div className="flex items-center gap-2">
-                                {serviceIcon && (
-                                  <a
-                                    href={impl.serviceUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="flex-shrink-0 hover:opacity-80 transition-opacity"
-                                  >
-                                    <Image
-                                      src={serviceIcon.icon}
-                                      alt={impl.service}
-                                      width={24}
-                                      height={24}
-                                      className="opacity-90"
-                                    />
-                                  </a>
-                                )}
-                                <div className="flex items-center gap-2 flex-1">
-                                  <span className="text-xs text-muted-foreground">{impl.approach}:</span>
-                                  <a
-                                    href={impl.serviceUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-xs font-medium hover:text-primary hover:underline"
-                                  >
-                                    {impl.service}
-                                  </a>
-                                  <ExternalLink className="h-3 w-3 text-muted-foreground" />
-                                </div>
-                              </div>
-                              
-                              {/* Details section */}
-                              <div className="pl-8 space-y-2">
-                                {impl.details.map((detail: any, detailIdx: number) => (
-                                  <div key={detailIdx} className="space-y-1">
-                                    <div className="flex items-start justify-between">
-                                      <div className="space-y-1 flex-1">
-                                        <p className="text-xs font-medium">{detail.name}</p>
-                                        <p className="text-xs text-muted-foreground">{detail.description}</p>
-                                      </div>
-                                      {detail.githubTemplate && (
-                                        <a
-                                          href={detail.githubTemplate}
-                                          target="_blank"
-                                          rel="noopener noreferrer"
-                                          className="text-xs text-muted-foreground hover:text-primary ml-2"
-                                          title="View GitHub template"
-                                        >
-                                          <ExternalLink className="h-3 w-3" />
-                                        </a>
-                                      )}
-                                    </div>
-                                    {(detail.resourceId || detail.specs) && (
-                                      <div className="flex items-center gap-3 flex-wrap">
-                                        {detail.resourceId && (
-                                          <code className="text-xs bg-muted px-2 py-0.5 rounded font-mono">
-                                            {detail.resourceId}
-                                          </code>
-                                        )}
-                                        {detail.specs && (
-                                          <span className="text-xs text-muted-foreground">{detail.specs}</span>
-                                        )}
-                                      </div>
-                                    )}
-                                  </div>
-                                ))}
-                                
-                                {impl.quickDeploy && (
-                                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                                    <span>🚀</span>
-                                    <span>{impl.quickDeploy}</span>
-                                  </div>
-                                )}
-                                
-                                {impl.advantages && (
-                                  <div className="flex items-start gap-2 text-xs text-success">
-                                    <span>✓</span>
-                                    <span>{impl.advantages}</span>
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {/* Decision Guide */}
-              {awsImpl.decisionGuide && (
-                <div className="border-t pt-3">
-                  <p className="text-xs font-medium mb-2">{awsImpl.decisionGuide.title}</p>
-                  <div className="space-y-1">
-                    {awsImpl.decisionGuide.scenarios.map((item: any, idx) => (
-                      <div key={idx} className="text-xs">
-                        <span className="text-muted-foreground">{item.scenario}:</span>
-                        <span className="ml-2">{item.recommendation}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
               {/* Best Practices */}
               {awsImpl.bestPractices && awsImpl.bestPractices.length > 0 && (
                 <div className="border-t pt-3">
@@ -598,6 +461,7 @@ export function FrameworkCoverage({ initialView = 'main' }: FrameworkCoveragePro
             </div>
           </>
         )
+        
       case 'history':
         // Get timeline data from knowledge
         const timeline = frameworkCoverageKnowledge.timeline || []
@@ -732,6 +596,7 @@ export function FrameworkCoverage({ initialView = 'main' }: FrameworkCoveragePro
             </div>
           </>
         )
+        
       case 'download':
         // Generate download functions
         const downloadJSON = () => {
@@ -748,7 +613,7 @@ export function FrameworkCoverage({ initialView = 'main' }: FrameworkCoveragePro
               averageCoverage: avgCoverage,
               withGuidance: withGuidance,
               topFramework: rankedFrameworks[0]?.name,
-              criticalGaps: ['Tool poisoning (86% success rate)', 'MCP security', 'Multi-agent threats']
+              criticalGaps: ['MCP security', 'Multi-agent threats', 'Temporal behaviors (agent drift)']
             },
             frameworks: rankedFrameworks.map(f => ({
               ...f,
@@ -791,10 +656,10 @@ ${rankedFrameworks.slice(0, 3).map((f, i) =>
 
 ## Critical Gaps Across Industry
 
-- **Tool poisoning** attacks succeed 86% of the time
 - **MCP security** only addressed by OWASP (draft)
-- **Multi-agent threats** largely ignored
-- **Temporal behaviors** (agent drift) not covered
+- **Multi-agent threats** largely ignored across frameworks
+- **Temporal behaviors** (agent drift over time) not covered
+- **Tool/function calling** validation missing from most frameworks
 
 ## Recommendations
 
@@ -821,55 +686,16 @@ ${rankedFrameworks.slice(0, 3).map((f, i) =>
           navigator.clipboard.writeText(command).then(() => {
             console.log('CLI command copied to clipboard')
             setCopiedCommand('cli')
-            // Reset after 2 seconds
             setTimeout(() => setCopiedCommand(null), 2000)
-          }).catch(err => {
-            console.error('Failed to copy:', err)
-            // Fallback for browsers that don't support clipboard API
-            const textArea = document.createElement('textarea')
-            textArea.value = command
-            textArea.style.position = 'fixed'
-            textArea.style.left = '-999999px'
-            document.body.appendChild(textArea)
-            textArea.focus()
-            textArea.select()
-            try {
-              document.execCommand('copy')
-              setCopiedCommand('cli')
-              setTimeout(() => setCopiedCommand(null), 2000)
-            } catch (err) {
-              console.error('Fallback copy failed:', err)
-            }
-            document.body.removeChild(textArea)
           })
         }
         
         const copyNpmCommand = () => {
-          // Package names are by category, not component
           const command = `npm install @governed/frameworks`
           navigator.clipboard.writeText(command).then(() => {
             console.log('NPM command copied to clipboard')
             setCopiedCommand('npm')
-            // Reset after 2 seconds
             setTimeout(() => setCopiedCommand(null), 2000)
-          }).catch(err => {
-            console.error('Failed to copy:', err)
-            // Fallback for browsers that don't support clipboard API
-            const textArea = document.createElement('textarea')
-            textArea.value = command
-            textArea.style.position = 'fixed'
-            textArea.style.left = '-999999px'
-            document.body.appendChild(textArea)
-            textArea.focus()
-            textArea.select()
-            try {
-              document.execCommand('copy')
-              setCopiedCommand('npm')
-              setTimeout(() => setCopiedCommand(null), 2000)
-            } catch (err) {
-              console.error('Fallback copy failed:', err)
-            }
-            document.body.removeChild(textArea)
           })
         }
         
@@ -963,27 +789,27 @@ ${rankedFrameworks.slice(0, 3).map((f, i) =>
             </div>
           </>
         )
-      case 'share':
-        return (
-          <>
-            <p className="font-medium mb-2">Share This Analysis</p>
-            <p className="text-muted-foreground">
-              [Placeholder: Copy link or share on social media]
-            </p>
-          </>
-        )
+
+        
       default:
         return null
     }
   }
   
+
+  
   // Main view rendering
   if (currentView === 'main') {
     return (
-      <Card className="h-[600px] flex flex-col">
+      <Card className="h-[600px] flex flex-col relative">
         <CardHeader>
-          <div className="flex items-start justify-between mb-2">
-            <CardTitle>AI Security Framework Coverage</CardTitle>
+          <div className="flex items-start justify-between">
+            <div>
+              <CardTitle>AI Security Framework Coverage</CardTitle>
+              <CardDescription className="mt-1">
+                Only {readyFrameworks} of {frameworks.length} frameworks ready for AI threats • {frameworks.length - readyFrameworks} lack adequate coverage
+              </CardDescription>
+            </div>
             <Badge 
               variant={confidenceStatus.confidence >= 0.7 ? "default" : "secondary"}
               className="text-xs"
@@ -992,33 +818,30 @@ ${rankedFrameworks.slice(0, 3).map((f, i) =>
               {confidenceStatus.status}
             </Badge>
           </div>
-          <CardDescription>
-            Ranked by AI threat coverage • {withGuidance} of {frameworks.length} provide guidance • Average: {avgCoverage}%
-          </CardDescription>
         </CardHeader>
         
         <CardContent className="flex-1 flex flex-col overflow-hidden">
+          {/* Scrollable content area */}
           <div className="flex-1 overflow-y-auto space-y-4 pr-2">
-            {/* Framework list - Ranked by coverage */}
+            {/* Framework Rankings - Now immediately visible */}
             {rankedFrameworks.map((framework, index) => (
               <div key={framework.id} className="space-y-2">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium text-muted-foreground w-6">#{index + 1}</span>
-                  <a 
-                  href={framework.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="font-medium text-sm hover:text-primary hover:underline transition-colors flex items-center gap-1"
-                  >
-                  {framework.name}
-                  <ExternalLink className="h-3 w-3" />
-                  </a>
-
+                    <span className="text-sm font-medium text-muted-foreground w-6">#{index + 1}</span>
+                    <a 
+                      href={framework.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-medium text-sm hover:text-primary hover:underline transition-colors flex items-center gap-1"
+                    >
+                      {framework.name}
+                      <ExternalLink className="h-3 w-3" />
+                    </a>
                     <Badge variant={getStatusVariant(framework.status)} className="text-xs">
-                    {framework.status.replace('-', ' ')}
-                  </Badge>
-                </div>
+                      {framework.status.replace('-', ' ')}
+                    </Badge>
+                  </div>
                   <span className="text-sm text-muted-foreground">
                     {Math.round(framework.aiCoverageScore * 100)}%
                   </span>
@@ -1036,27 +859,84 @@ ${rankedFrameworks.slice(0, 3).map((f, i) =>
                     <span>{framework.gaps[0]}</span>
                   </p>
                 )}
-                
-
               </div>
             ))}
           </div>
           
-          {/* Footer - always at bottom */}
-          <div className="flex-shrink-0 space-y-3 pt-4">
-            <div className="border-t pt-3 text-xs text-muted-foreground">
-              Last evaluated: {latestEvaluation.date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })} by {latestEvaluation.by}
-              {confidenceStatus.daysUntilStale > 0 && (
-                <span> • Review in {confidenceStatus.daysUntilStale} days</span>
-              )}
-            </div>
-            
-            {/* Metadata access icons */}
-            <div className="pt-3 border-t">
-              <IconBar />
+          {/* Fixed footer */}
+          <div className="flex-shrink-0 pt-4 border-t">
+            <div className="flex items-center justify-between">
+              <p className="text-xs text-muted-foreground">
+                Evaluated by {latestEvaluation.by} • {latestEvaluation.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                {confidenceStatus.daysUntilStale > 0 && (
+                  <span> • Review in {confidenceStatus.daysUntilStale} days</span>
+                )}
+              </p>
+              <div className="flex items-center gap-2">
+                <IconBar />
+                {/* Social sharing buttons */}
+                <div className="flex items-center gap-1 ml-2 border-l pl-2">
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-8 w-8 p-0"
+                          onClick={() => {
+                            const text = `🚨 Only ${readyFrameworks} of ${frameworks.length} security frameworks are ready for AI threats!\n\n${readyFrameworks} frameworks have >70% coverage.\nOWASP leads with 100%, others average ${avgCoverage}%.\n\nMajor gaps: MCP security, multi-agent systems.\n\n${window.location.origin}`
+                            navigator.clipboard.writeText(text).then(() => {
+                              setShowLinkedInToast(true)
+                              setTimeout(() => setShowLinkedInToast(false), 3000)
+                              const url = encodeURIComponent(window.location.origin)
+                              window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank', 'width=600,height=600')
+                            })
+                          }}
+                        >
+                          <Linkedin className="h-4 w-4" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Share on LinkedIn (copies text)</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                  
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-8 w-8 p-0"
+                          onClick={() => {
+                            const text = encodeURIComponent(`🚨 Only ${readyFrameworks} of ${frameworks.length} security frameworks ready for AI threats!\n\nOWASP: 100% coverage\nOthers: ${avgCoverage}% average\n\n${window.location.origin}`)
+                            window.open(`https://twitter.com/intent/tweet?text=${text}`, '_blank', 'width=600,height=400')
+                          }}
+                        >
+                          <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current" aria-hidden="true">
+                            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                          </svg>
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Share on X</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </div>
+              </div>
             </div>
           </div>
         </CardContent>
+        
+        {/* LinkedIn copy notification toast */}
+        {showLinkedInToast && (
+          <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 bg-foreground text-background px-3 py-2 rounded-md shadow-lg flex items-center gap-2 animate-in fade-in slide-in-from-bottom-2 duration-200 z-50">
+            <Check className="h-4 w-4" />
+            <span className="text-sm">Text copied! Paste in LinkedIn</span>
+          </div>
+        )}
       </Card>
     )
   }
@@ -1068,20 +948,23 @@ ${rankedFrameworks.slice(0, 3).map((f, i) =>
         <Button 
           variant="ghost" 
           size="sm" 
-          className="w-fit -ml-2"
+          className="w-fit -ml-2 mb-2"
           onClick={() => setCurrentView('main')}
         >
           <ChevronLeft className="h-4 w-4 mr-1" />
-          {currentView.charAt(0).toUpperCase() + currentView.slice(1)}
+          Back
         </Button>
+        <CardTitle>AI Security Framework Coverage</CardTitle>
       </CardHeader>
+      
       <CardContent className="flex-1 flex flex-col overflow-hidden">
-        <div className="flex-1 overflow-y-auto">
+        {/* Scrollable content area */}
+        <div className="flex-1 overflow-y-auto pr-2">
           {renderMetadataContent()}
         </div>
         
-        {/* Icon bar at bottom of metadata views too */}
-        <div className="flex-shrink-0 pt-4 mt-4 border-t">
+        {/* Fixed footer */}
+        <div className="flex-shrink-0 pt-4 border-t">
           <IconBar />
         </div>
       </CardContent>

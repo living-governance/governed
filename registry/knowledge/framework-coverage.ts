@@ -243,6 +243,50 @@ export const frameworkCoverageKnowledge = {
     }
   },
   
+  // Shareable content for each view
+  shareableContent: {
+    main: {
+      title: 'AI Framework Coverage Analysis',
+      headline: 'Critical Security Gap Identified',
+      insights: [
+        '🚨 Only 2 of 7 security frameworks are ready for AI threats',
+      ],
+      keyMetric: '2 of 7 Ready',
+      visualType: 'ranking'
+    },
+    methodology: {
+      title: 'Framework Evaluation Methodology',
+      headline: 'Binary Scoring Reveals Truth',
+      insights: [
+        '📊 OWASP: 100/100, NIST: 25/100 despite being AI-specific',
+        '🎯 Most frameworks fail threat identification (40 points)',
+        '🔍 Binary scoring across 19 criteria exposes gaps'
+      ],
+      keyMetric: '100-Point Scale',
+      visualType: 'matrix'
+    },
+    cloud: {
+      title: 'AWS Implementation Guide',
+      headline: 'Deploy Frameworks with 5 Services',
+      insights: [
+        '☁️ Security Hub → NIST, WAF → OWASP, GuardDuty → MITRE',
+      ],
+      keyMetric: '5 Services',
+      visualType: 'aws'
+    },
+    timeline: {
+      title: 'AI Security Timeline 2021-2025',
+      headline: '2023 Was the Explosion Year',
+      insights: [
+        '📈 From 1 to 7 frameworks in 4 years',
+        '💥 2023: NIST AI RMF, ISO 42001, OWASP LLM all launched',
+        '🚀 2025: Focus shifts to agentic AI security'
+      ],
+      keyMetric: '4-Year Evolution',
+      visualType: 'timeline'
+    }
+  },
+  
   // Living Knowledge metadata
   evaluation: {
     date: new Date('2025-07-24'),
@@ -565,11 +609,11 @@ export const frameworkCoverageKnowledge = {
   
   insights: [
     'Tool poisoning attacks succeed 86% of the time - critical gap in most frameworks',
-    'OWASP leads with 100% coverage through comprehensive Agentic AI Threats document',
-    'MITRE ATLAS scores 75% - excellent LLM coverage but no MCP or multi-agent',
-    'ISO/IEC 42001:2023 scores 35% - good governance but predates agentic AI',
-    'NIST AI RMF has 25% score but zero agentic AI content despite being AI-specific',
-    'CIS Controls scores 25% - good general security but zero AI content',
+    'OWASP leads with comprehensive Agentic AI Threats document covering all threat categories',
+    'MITRE ATLAS provides excellent LLM coverage but lacks MCP or multi-agent scenarios',
+    'ISO/IEC 42001:2023 offers good governance but predates agentic AI emergence',
+    'NIST AI RMF lacks agentic AI content despite being AI-specific',
+    'CIS Controls provides good general security but zero AI content',
     'Only OWASP addresses multi-agent systems and MCP security',
     'ATLAS has 32 real-world case studies including ChatGPT attacks'
   ],
@@ -903,7 +947,7 @@ export const frameworkCoverageKnowledge = {
         'No agent-to-agent attack patterns'
       ],
       
-      verdict: 'MITRE ATLAS scores 75% - the most comprehensive ML/AI threat framework available. Excellent coverage of LLM threats including prompt injection, RAG poisoning, and plugin compromise. Strong evidence base with 32 case studies. However, still lacks MCP-specific attacks and multi-agent scenarios. Essential reference but supplement with OWASP for full agentic coverage.'
+      verdict: 'MITRE ATLAS provides the most comprehensive ML/AI threat framework available. Excellent coverage of LLM threats including prompt injection, RAG poisoning, and plugin compromise. Strong evidence base with 32 case studies. However, still lacks MCP-specific attacks and multi-agent scenarios. Essential reference but supplement with OWASP for full agentic coverage.'
     },
     
     'cis-controls-v8': {
@@ -1029,7 +1073,7 @@ export const frameworkCoverageKnowledge = {
         'Not applicable to AI security'
       ],
       
-      verdict: 'MITRE ATT&CK scores 0% for AI security - this is by design. ATT&CK focuses exclusively on traditional IT threats and explicitly directs users to MITRE ATLAS for AI/ML security. Organizations should not look to ATT&CK for AI guidance but instead use its sister framework ATLAS.'
+      verdict: 'MITRE ATT&CK is not designed for AI security - this is intentional. ATT&CK focuses exclusively on traditional IT threats and explicitly directs users to MITRE ATLAS for AI/ML security. Organizations should not look to ATT&CK for AI guidance but instead use its sister framework ATLAS.'
     }
   } as Record<DetailedEvaluationKey, DetailedEvaluation>
 }
