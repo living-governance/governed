@@ -1,70 +1,68 @@
 // app/page.tsx
 
-import Link from "next/link"
+"use client"
+
+import { FrameworkCoverage } from "../registry/components/compliance/framework-coverage"
+import { Moon, Sun } from "lucide-react"
+import { useEffect, useState } from "react"
 
 export default function Home() {
+  const [isDark, setIsDark] = useState(true)
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme')
+    if (savedTheme === 'light') {
+      setIsDark(false)
+    } else {
+      setIsDark(true)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (isDark) {
+      document.documentElement.classList.add('dark')
+      localStorage.setItem('theme', 'dark')
+    } else {
+      document.documentElement.classList.remove('dark')
+      localStorage.setItem('theme', 'light')
+    }
+  }, [isDark])
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="max-w-2xl mx-auto px-6 text-center space-y-8">
-        {/* Logo/Title */}
-        <div className="space-y-4">
-          <h1 className="text-4xl md:text-6xl font-bold tracking-tight">
-            Living Governance
-          </h1>
-          <p className="text-xl text-muted-foreground">
-            Executable knowledge infrastructure for AI governance
-          </p>
+    <div className="container mx-auto py-8">
+      <div className="mb-8 flex justify-between items-center px-4 md:px-8">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Living Governance</h1>
+          <p className="text-muted-foreground mt-2">Security framework analysis for AI and MCP threats</p>
         </div>
+        <button
+          onClick={() => setIsDark(!isDark)}
+          className="p-2 rounded-lg border bg-background hover:bg-accent"
+        >
+          {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+        </button>
+      </div>
 
-        {/* Tagline */}
-        <div className="space-y-2">
-          <p className="text-lg font-medium">
-            Copy. Customize. Govern.
-          </p>
-          <p className="text-muted-foreground">
-            Transform AI governance from static PDFs into self-aware, executable code
-          </p>
-        </div>
+      <div className="px-4 md:px-8">
+        {/* Desktop: Side-by-side view */}
+        <div className="hidden lg:grid lg:grid-cols-2 gap-6">
+          <div className="space-y-2">
+            <h2 className="text-sm font-medium text-muted-foreground">Main View</h2>
+            <FrameworkCoverage />
+          </div>
 
-        {/* Launch Info */}
-        <div className="py-8">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border bg-muted/20">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
-            </span>
-            <span className="text-sm font-medium">Launching August 2025</span>
+          <div className="space-y-2">
+            <h2 className="text-sm font-medium text-muted-foreground">Methodology View</h2>
+            <FrameworkCoverage initialView="methodology" />
           </div>
         </div>
 
-        {/* CTA */}
-        <div className="space-y-4">
-          <Link 
-            href="/test" 
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors"
-          >
-            Preview Components
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M6 12L10 8L6 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </Link>
-          
-          <p className="text-sm text-muted-foreground">
-            Join the waitlist at{" "}
-            <a 
-              href="https://github.com/living-governance/governed" 
-              className="text-primary hover:underline"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              GitHub
-            </a>
-          </p>
-        </div>
-
-        {/* Footer */}
-        <div className="pt-8 text-xs text-muted-foreground">
-          <p>Making expertise executable, not archaeological</p>
+        {/* Mobile/Tablet: Single component */}
+        <div className="lg:hidden">
+          <div className="space-y-2">
+            <h2 className="text-sm font-medium text-muted-foreground">Navigate views using the icons at the bottom</h2>
+            <FrameworkCoverage />
+          </div>
         </div>
       </div>
     </div>
