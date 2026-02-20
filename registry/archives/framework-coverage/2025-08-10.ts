@@ -35,261 +35,12 @@ export interface DetailedEvaluation {
 }
 
 export const frameworkCoverageKnowledge = {
-  id: 'framework-coverage-2026-q1',
+  id: 'framework-coverage-2025-q3',
   name: 'Security Framework AI Coverage Analysis',
-  
-  // Cloud implementation guidance
-  cloudImplementation: {
-    aws: {
-      title: 'AWS Implementation Guide',
-      description: 'Deploy framework controls using AWS security services',
-      keyMessage: 'Security frameworks provide the "what" - AWS services provide the "how". Choose between centralized management (Security Hub, Firewall Manager) or direct implementation (WAF, Config) based on your organization\'s needs.',
-      
-      // Service overview - explain the landscape first
-      serviceOverview: {
-        waf: {
-          name: 'AWS WAF',
-          icon: '/aws-icons/aws-waf.svg',
-          description: 'Web application firewall for Layer 7 protection',
-          url: 'https://aws.amazon.com/waf/',
-          when: 'Direct protection for specific applications'
-        },
-        firewallManager: {
-          name: 'AWS Firewall Manager',
-          icon: '/aws-icons/aws-firewall-manager.svg',
-          description: 'Centrally manage WAF rules across multiple accounts',
-          url: 'https://aws.amazon.com/firewall-manager/',
-          when: 'Organization-wide WAF policy enforcement'
-        },
-        config: {
-          name: 'AWS Config',
-          icon: '/aws-icons/aws-config.svg',
-          description: 'Assess, audit, and evaluate resource configurations',
-          url: 'https://aws.amazon.com/config/',
-          when: 'Detailed resource compliance tracking'
-        },
-        securityHub: {
-          name: 'AWS Security Hub',
-          icon: '/aws-icons/aws-security-hub.svg',
-          description: 'Unified security and compliance center',
-          url: 'https://aws.amazon.com/security-hub/',
-          when: 'Consolidated compliance dashboard and automated checks'
-        },
-        guardDuty: {
-          name: 'Amazon GuardDuty',
-          icon: '/aws-icons/amazon-guardduty.svg',
-          description: 'Intelligent threat detection service',
-          url: 'https://aws.amazon.com/guardduty/',
-          when: 'Automated threat detection mapped to MITRE ATT&CK'
-        }
-      },
-      
-      // Framework-specific implementations
-      frameworkMappings: [
-        {
-          framework: 'OWASP',
-          implementations: [
-            {
-              approach: 'Direct Protection',
-              service: 'AWS WAF Managed Rules',
-              serviceUrl: 'https://docs.aws.amazon.com/waf/latest/developerguide/aws-managed-rule-groups.html',
-              details: [
-                {
-                  name: 'Core Rule Set (CRS)',
-                  description: 'OWASP Top 10 protection',
-                  resourceId: 'AWSManagedRulesCommonRuleSet',
-                  specs: '700 WCU • Free'
-                },
-                {
-                  name: 'Known Bad Inputs',
-                  description: 'Block malicious patterns',
-                  resourceId: 'AWSManagedRulesKnownBadInputsRuleSet',
-                  specs: '200 WCU • Free'
-                }
-              ],
-              quickDeploy: 'WAF Console → Add rules → Deploy to ALB/CloudFront'
-            },
-            {
-              approach: 'Centralized Management',
-              service: 'AWS Firewall Manager',
-              serviceUrl: 'https://docs.aws.amazon.com/waf/latest/developerguide/fms-chapter.html',
-              details: [
-                {
-                  name: 'Organization-wide WAF Policy',
-                  description: 'Deploy OWASP rules across all accounts automatically',
-                  specs: '$100/policy/month + WAF costs'
-                }
-              ],
-              quickDeploy: 'Enable in Organizations → Create security policy → Apply to OUs'
-            }
-          ]
-        },
-        {
-          framework: 'NIST 800-53',
-          implementations: [
-            {
-              approach: 'Conformance Pack',
-              service: 'AWS Config',
-              serviceUrl: 'https://docs.aws.amazon.com/config/latest/developerguide/operational-best-practices-for-nist-800-53_rev_5.html',
-              details: [
-                {
-                  name: 'NIST 800-53 Rev 5',
-                  description: '200+ Config rules mapped to NIST controls',
-                  resourceId: 'Operational-Best-Practices-for-NIST-800-53-rev-5',
-                  specs: '$0.003/rule evaluation',
-                  githubTemplate: 'https://github.com/awslabs/aws-config-rules/blob/master/aws-config-conformance-packs/Operational-Best-Practices-for-NIST-800-53-rev-5.yaml'
-                }
-              ],
-              quickDeploy: 'Config → Conformance packs → Deploy template'
-            },
-            {
-              approach: 'Security Standard',
-              service: 'AWS Security Hub',
-              serviceUrl: 'https://docs.aws.amazon.com/securityhub/latest/userguide/nist-standard.html',
-              details: [
-                {
-                  name: 'NIST 800-53 Rev 5 Standard',
-                  description: 'Pre-configured checks with automated evidence collection',
-                  specs: '$0.001/check + Config costs'
-                }
-              ],
-              quickDeploy: 'Security Hub → Standards → Enable NIST',
-              advantages: 'Includes Config rules + additional checks, automated scoring, investigation tools'
-            }
-          ]
-        },
-        {
-          framework: 'CIS',
-          implementations: [
-            {
-              approach: 'Security Standard',
-              service: 'AWS Security Hub',
-              serviceUrl: 'https://docs.aws.amazon.com/securityhub/latest/userguide/cis-aws-foundations-benchmark.html',
-              details: [
-                {
-                  name: 'CIS AWS Foundations Benchmark',
-                  description: 'Automated CIS benchmark checks',
-                  specs: 'Included with Security Hub'
-                }
-              ],
-              quickDeploy: 'Security Hub → Standards → Enable CIS'
-            }
-          ]
-        },
-        {
-          framework: 'MITRE ATT&CK',
-          implementations: [
-            {
-              approach: 'Threat Detection',
-              service: 'Amazon GuardDuty',
-              serviceUrl: 'https://aws.amazon.com/guardduty/',
-              details: [
-                {
-                  name: 'Automated threat detection',
-                  description: 'Maps to MITRE ATT&CK tactics',
-                  specs: '$0.02/GB analyzed'
-                }
-              ],
-              quickDeploy: 'Enable with one click → Auto-maps findings to ATT&CK'
-            }
-          ]
-        }
-      ],
-      
-      // Decision guide
-      decisionGuide: {
-        title: 'Which Service to Use?',
-        scenarios: [
-          {
-            scenario: 'Single AWS account, specific web apps',
-            recommendation: 'AWS WAF with managed rules'
-          },
-          {
-            scenario: 'Multi-account organization',
-            recommendation: 'Security Hub for compliance, Firewall Manager for WAF'
-          },
-          {
-            scenario: 'Need compliance evidence/reporting',
-            recommendation: 'Security Hub (includes Config + more)'
-          },
-          {
-            scenario: 'Custom compliance requirements',
-            recommendation: 'AWS Config with custom rules'
-          },
-          {
-            scenario: 'AI/ML workloads without specific framework',
-            recommendation: 'Still use Config AI/ML pack for baseline security'
-          }
-        ]
-      },
-      
-      bestPractices: [
-        'Use Security Hub over standalone Config for standard frameworks (NIST, CIS)',
-        'Deploy Firewall Manager for organization-wide WAF policies',
-        'Start with detection mode before enforcement',
-        'Layer services: GuardDuty (threats) + Security Hub (compliance) + Config (resources)',
-        'AI/ML Config pack provides defense-in-depth even without framework mapping'
-      ]
-    },
-    gcp: {
-      title: 'GCP Implementation Guide',
-      description: 'Coming soon - Cloud Armor, Security Command Center, and Policy Intelligence',
-      frameworkMappings: []
-    },
-    azure: {
-      title: 'Azure Implementation Guide', 
-      description: 'Coming soon - Azure WAF, Policy, and Microsoft Defender for Cloud',
-      frameworkMappings: []
-    }
-  },
-  
-  // Shareable content for each view
-  shareableContent: {
-    main: {
-      title: 'AI Framework Coverage Analysis',
-      headline: 'Two Frameworks Now Lead',
-      insights: [
-        '🚨 Only 2 of 7 security frameworks score above 70% for AI threats',
-      ],
-      keyMetric: '2 of 7 Ready',
-      visualType: 'ranking'
-    },
-    methodology: {
-      title: 'Framework Evaluation Methodology',
-      headline: 'Binary Scoring Reveals Truth',
-      insights: [
-        '📊 OWASP: 100/100, ATLAS: 90/100 (up from 75), NIST: 30/100',
-        '🎯 Most frameworks still fail threat identification (40 points)',
-        '🔍 Binary scoring across 19 criteria exposes gaps'
-      ],
-      keyMetric: '100-Point Scale',
-      visualType: 'matrix'
-    },
-    cloud: {
-      title: 'AWS Implementation Guide',
-      headline: 'Deploy Frameworks with 5 Services',
-      insights: [
-        '☁️ Security Hub → NIST, WAF → OWASP, GuardDuty → MITRE',
-      ],
-      keyMetric: '5 Services',
-      visualType: 'aws'
-    },
-    timeline: {
-      title: 'AI Security Timeline 2021-2026',
-      headline: '2025 Was the Agentic AI Year',
-      insights: [
-        '📈 From 1 to 7 frameworks in 5 years',
-        '💥 2025: OWASP Agentic Top 10, ATLAS adds 14 agent techniques, NIST drafts AI overlays',
-        '🚀 2026: ATLAS expands to 16 tactics / 84+ techniques, OpenClaw investigation'
-      ],
-      keyMetric: '5-Year Evolution',
-      visualType: 'timeline'
-    }
-  },
   
   // Living Knowledge metadata
   evaluation: {
-    date: new Date('2026-02-20'),
+    date: new Date('2025-07-24'),
     by: '@tsynode',
     validDays: 90,
     methodology: `Binary Scoring Framework for Security Frameworks (100 points total):
@@ -506,54 +257,6 @@ export const frameworkCoverageKnowledge = {
       framework: 'OWASP MCP Top 10',
       change: 'Phase 1: Drafting initiated (v0.0.0) - defining MCP-specific vulnerabilities',
       confidence: 'high' // GitHub repo confirms draft status, not yet released
-    },
-    {
-      date: new Date('2025-08-14'),
-      framework: 'NIST AI RMF',
-      change: 'COSAiS concept paper released - SP 800-53 control overlays for AI including multi-agent systems',
-      confidence: 'high' // NIST press release August 14, 2025
-    },
-    {
-      date: new Date('2025-10-01'), // October 2025
-      framework: 'MITRE ATT&CK',
-      change: 'ATT&CK v18.1 released - added CI/CD, Kubernetes, cloud DB techniques. Has T1588.007 (Obtain Capabilities: AI) since March 2024 but no agentic AI content',
-      confidence: 'high' // MITRE official release; T1588.007 confirmed on attack.mitre.org
-    },
-    {
-      date: new Date('2025-10-22'),
-      framework: 'MITRE ATLAS',
-      change: '14 new agentic AI techniques added via Zenity Labs collaboration - agent context poisoning, memory manipulation, tool invocation exfiltration',
-      confidence: 'high' // Zenity blog post and MITRE announcement October 22, 2025
-    },
-    {
-      date: new Date('2025-12-09'),
-      framework: 'OWASP Agentic Security',
-      change: 'OWASP Top 10 for Agentic Applications 2026 released (ASI01-ASI10) + Threats & Mitigations v1.1 taxonomy',
-      confidence: 'high' // OWASP blog post dated December 9, 2025; London summit was Dec 10
-    },
-    {
-      date: new Date('2025-12-16'),
-      framework: 'NIST AI RMF',
-      change: 'Cyber AI Profile (NIST IR 8596) preliminary draft released - aligns CSF 2.0 with AI risks',
-      confidence: 'high' // NIST CSRC publication December 16, 2025
-    },
-    {
-      date: new Date('2025-12-01'), // December 2025
-      framework: 'OWASP MCP Top 10',
-      change: 'Phase 3: Beta release (v0.1) - 10 MCP vulnerabilities defined (MCP01-MCP10)',
-      confidence: 'medium' // Project page shows Phase 3, exact date approximate
-    },
-    {
-      date: new Date('2026-01-15'),
-      framework: 'MITRE ATLAS',
-      change: 'ATLAS January 2026 release - new agent techniques confirmed: T0098 (Tool Credential Harvesting), T0099 (Tool Data Poisoning), T0100 (Agent Clickbait), T0102 (Generate Malicious Commands). Now 16 tactics, 84+ techniques, 56+ sub-techniques',
-      confidence: 'medium' // Zenity blog confirms Jan 2026 update; version number unconfirmed (latest tagged release v5.1.1 Nov 2025). T0103-T0105, CS0045, M0032/M0033 IDs unverified from primary sources
-    },
-    {
-      date: new Date('2026-02-09'),
-      framework: 'MITRE ATLAS',
-      change: 'OpenClaw investigation published - discovered 7 new agent-specific techniques from AI-first ecosystems',
-      confidence: 'high' // CTID blog post February 9, 2026
     }
   ],
   
@@ -561,14 +264,14 @@ export const frameworkCoverageKnowledge = {
   metadata: {
     description: 'Shows how well security frameworks address AI and MCP-specific threats',
     details: [
-      'Evaluated February 2026 with latest framework versions',
-      'OWASP Top 10 for Agentic Applications (Dec 2025) and MITRE ATLAS (16 tactics, 84+ techniques) lead coverage',
-      'ATLAS now includes MCP-specific case studies, 14+ agentic techniques (Oct 2025), and OpenClaw investigation (Feb 2026)',
-      'OWASP MCP Top 10 in beta (v0.1) with 10 defined vulnerabilities',
+      'Based on MCP Security Research from June 2025',
+      'Tool poisoning attacks show 86% success rate',
+      'Only 50% of frameworks have any AI guidance',
+      'OWASP leading with MCP Top 10 development',
       'Color-coded by coverage: red (<40%), yellow (40-70%), green (>70%)'
     ],
     category: 'compliance',
-    tags: ['frameworks', 'compliance', 'ai-security', 'mcp-security', 'agentic-ai', 'gap-analysis']
+    tags: ['frameworks', 'compliance', 'ai-security', 'mcp-security', 'gap-analysis']
   },
   
   frameworks: [
@@ -577,11 +280,11 @@ export const frameworkCoverageKnowledge = {
       name: 'OWASP GenAI Security Project',
       organization: 'OWASP Foundation',
       url: 'https://genai.owasp.org/',
-      dataSource: 'https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/',  // Top 10 for Agentic Apps
+      dataSource: 'https://genai.owasp.org/resource/agentic-ai-threats-and-mitigations/',  // Direct PDF link
       aiCoverageScore: 1.0,  // 100/100 from detailed evaluation
       status: 'active' as const,
       gaps: ['Quantitative metrics on attack success rates'],
-      lastFrameworkUpdate: '2025-12'  // Top 10 for Agentic Applications released Dec 2025
+      lastFrameworkUpdate: '2025-04'
     },
     {
       id: 'nist-ai-rmf',
@@ -589,10 +292,10 @@ export const frameworkCoverageKnowledge = {
       organization: 'NIST (US)',
       url: 'https://www.nist.gov/itl/ai-risk-management-framework',
       dataSource: 'https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.100-1.pdf',  // PDF
-      aiCoverageScore: 0.30,  // 30/100 from detailed evaluation
+      aiCoverageScore: 0.25,  // 25/100 from detailed evaluation
       status: 'applicable' as const,
-      gaps: ['Core AI RMF still lacks agentic AI content', 'COSAiS and Cyber AI Profile still in draft', 'No MCP or tool calling guidance yet', 'AI RMF revision in progress per AI Action Plan'],
-      lastFrameworkUpdate: '2025-12'  // Cyber AI Profile (IR 8596) preliminary draft
+      gaps: ['No agentic AI content', 'No multi-agent systems coverage', 'No MCP or tool calling guidance', 'Framework addresses general AI only'],
+      lastFrameworkUpdate: '2024-07'  // GenAI Profile release
     },
     {
       id: 'iso-27090',
@@ -602,8 +305,8 @@ export const frameworkCoverageKnowledge = {
       // No dataSource - draft not publicly available
       aiCoverageScore: 0.0,  // Unknown - draft status
       status: 'no-guidance' as const,  // Draft = not yet actionable
-      gaps: ['DIS stage - publication expected May 2026', 'Content not publicly available', 'Guidance only (no testable requirements)', 'Unknown coverage of agentic AI threats'],
-      lastFrameworkUpdate: '2026-05'  // Expected publication date
+      gaps: ['Draft International Standard - voting closes July 2025', 'Content not publicly available', 'Unknown coverage of agentic AI threats', 'First AI-specific cybersecurity ISO standard'],
+      lastFrameworkUpdate: '2025-07'
     },
     {
       id: 'iso-42001',
@@ -624,8 +327,8 @@ export const frameworkCoverageKnowledge = {
       dataSource: 'https://github.com/mitre-attack/attack-data-model',  // GitHub data
       aiCoverageScore: 0.0,  // 0/100 from detailed evaluation
       status: 'no-guidance' as const,
-      gaps: ['Only T1588.007 (Obtain Capabilities: AI) — no agentic AI coverage', 'Defers to MITRE ATLAS for AI/ML threats by design', 'No MCP, tool calling, or agent security'],
-      lastFrameworkUpdate: '2025-10'  // v18.1 release
+      gaps: ['Traditional IT focus only', 'No AI/ML coverage', 'Use MITRE ATLAS for AI threats'],
+      lastFrameworkUpdate: '2025-01'
     },
     {
       id: 'mitre-atlas',
@@ -633,10 +336,10 @@ export const frameworkCoverageKnowledge = {
       organization: 'MITRE Corporation',
       url: 'https://atlas.mitre.org/',
       dataSource: 'https://github.com/mitre-atlas/atlas-data',  // GitHub data
-      aiCoverageScore: 0.90,  // 90/100 from detailed evaluation
+      aiCoverageScore: 0.75,  // 75/100 from detailed evaluation
       status: 'active' as const,
-      gaps: ['Limited response/remediation procedures', 'No temporal behavioral drift coverage'],
-      lastFrameworkUpdate: '2026-02'  // Jan 2026 update + OpenClaw investigation (Feb 2026). Version tag unconfirmed; latest tagged v5.1.1 Nov 2025
+      gaps: ['No MCP/Model Context Protocol', 'Limited multi-agent scenarios', 'No agent behavioral drift'],
+      lastFrameworkUpdate: '2025-04'  // Latest techniques from April 2025
     },
     {
       id: 'cis-controls',
@@ -649,176 +352,169 @@ export const frameworkCoverageKnowledge = {
       gaps: ['No AI or ML security coverage', '18 controls don\'t address agent threats'],
       lastFrameworkUpdate: '2024-05'
     },
-    // Note: OWASP MCP Top 10 is in Phase 3: Beta Release (v0.1)
+    // Note: OWASP MCP Top 10 is in development (Phase 1: Drafting, v0.0.0)
     // URL: https://owasp.org/www-project-mcp-top-10/
-    // MCP01: Token Mismanagement, MCP02: Privilege Escalation, MCP03: Tool Poisoning,
-    // MCP04: Supply Chain, MCP05: Command Injection, MCP06: Intent Flow Subversion,
-    // MCP07: Auth Issues, MCP08: Audit Gaps, MCP09: Shadow MCP Servers, MCP10: Context Injection
-    // Microsoft published MCP Azure Security Guide referencing this project
+    // Will address: Tool poisoning, context spoofing, rug pull attacks, MCP-specific vulnerabilities
+    // Expected to be first framework specifically targeting Model Context Protocol security
   ] as Framework[],
   
   insights: [
-    'Two frameworks now lead: OWASP (100/100) and MITRE ATLAS (90/100) — up from one in mid-2025',
-    'ATLAS expanded massively: 14 agentic techniques (Oct 2025), MCP coverage + OpenClaw investigation (Feb 2026) — now 16 tactics, 84+ techniques',
-    'OWASP Top 10 for Agentic Applications (Dec 2025) created by 100+ experts is the definitive agentic security list',
-    'NIST is building AI security infrastructure (Cyber AI Profile, COSAiS) but published docs still lack agentic content',
-    'ISO/IEC 42001:2023 unchanged since 2023 — predates agentic AI era',
-    'CIS Controls has zero AI content; ATT&CK has minimal AI (T1588.007) but no agentic coverage — defers to ATLAS by design',
-    'OWASP MCP Top 10 reached beta (v0.1) with 10 defined MCP vulnerabilities',
-    'EU AI Act enforcement begins Aug 2 2026 (fines up to €35M / 7% global turnover) — ENISA Multilayer Framework for AI Cybersecurity (2023) provides practices guidance'
+    'Tool poisoning attacks succeed 86% of the time - critical gap in most frameworks',
+    'OWASP leads with 100% coverage through comprehensive Agentic AI Threats document',
+    'MITRE ATLAS scores 75% - excellent LLM coverage but no MCP or multi-agent',
+    'ISO/IEC 42001:2023 scores 35% - good governance but predates agentic AI',
+    'NIST AI RMF has 25% score but zero agentic AI content despite being AI-specific',
+    'CIS Controls scores 25% - good general security but zero AI content',
+    'Only OWASP addresses multi-agent systems and MCP security',
+    'ATLAS has 32 real-world case studies including ChatGPT attacks'
   ],
-
+  
   recommendations: [
-    'Use OWASP Top 10 for Agentic Applications (ASI01-ASI10) as primary agentic security checklist',
-    'Use MITRE ATLAS for threat modeling — now 16 tactics, 84+ techniques with MCP and agent coverage',
-    'Apply MAESTRO framework from OWASP Multi-Agentic System Threat Modeling Guide for MAS',
-    'Track NIST COSAiS and Cyber AI Profile for upcoming SP 800-53 AI overlays',
-    'Use OWASP MCP Top 10 (beta) for Model Context Protocol-specific security',
-    'Prepare for EU AI Act compliance by Aug 2 2026 using ENISA Multilayer Framework for Good Cybersecurity Practices for AI'
+    'Use OWASP Agentic AI Threats as primary reference for agent security',
+    'Supplement with MITRE ATLAS for ML/LLM attack patterns',
+    'NIST AI RMF useful for general AI governance but not agentic systems',
+    'Implement tool validation beyond what any framework requires',
+    'Monitor OWASP MCP Top 10 development for protocol-specific guidance',
+    'Use ATLAS Navigator for threat modeling LLM applications'
   ],
   
   sources: [
-    { name: 'OWASP GenAI Project Site', url: 'https://genai.owasp.org/', date: new Date('2026-02-20') },
-    { name: 'OWASP Top 10 for Agentic Applications 2026', url: 'https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/', date: new Date('2025-12-09') },
-    { name: 'OWASP Agentic AI Threats and Mitigations v1.1', url: 'https://genai.owasp.org/resource/agentic-ai-threats-and-mitigations/', date: new Date('2025-12-09') },
-    { name: 'OWASP Multi-Agentic System Threat Modeling Guide v1.0', url: 'https://genai.owasp.org/resource/multi-agentic-system-threat-modeling-guide-v1-0/', date: new Date('2025-04-01') },
-    { name: 'OWASP MCP Top 10 (Beta v0.1)', url: 'https://owasp.org/www-project-mcp-top-10/', date: new Date('2025-12-01') },
-    { name: 'MITRE ATLAS CHANGELOG (Jan 2026 update)', url: 'https://github.com/mitre-atlas/atlas-data/blob/main/CHANGELOG.md', date: new Date('2026-01-15') },
-    { name: 'MITRE ATLAS OpenClaw Investigation', url: 'https://ctid.mitre.org/blog/2026/02/09/mitre-atlas-openclaw-investigation/', date: new Date('2026-02-09') },
+    { name: 'OWASP GenAI Project Site', url: 'https://genai.owasp.org/', date: new Date('2025-07-01') },
+    { name: 'OWASP Agentic AI Threats and Mitigations v1.0a', url: 'https://genai.owasp.org/resource/agentic-ai-threats-and-mitigations/', date: new Date('2025-02-01') },
+    { name: 'OWASP MCP Top 10 (In Development)', url: 'https://owasp.org/www-project-mcp-top-10/', date: new Date('2025-07-01') },
     { name: 'NIST AI Risk Management Framework 1.0', url: 'https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.100-1.pdf', date: new Date('2023-01-26') },
-    { name: 'NIST Cyber AI Profile (IR 8596 Draft)', url: 'https://csrc.nist.gov/pubs/ir/8596/iprd', date: new Date('2025-12-16') },
-    { name: 'NIST COSAiS - Control Overlays for AI', url: 'https://csrc.nist.gov/projects/cosais', date: new Date('2025-08-14') }
+    { name: 'NIST Generative AI Profile', url: 'https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf', date: new Date('2024-07-26') }
   ],
   
   // Detailed framework evaluations using our binary scoring methodology
   detailedEvaluations: {
     'owasp-agentic-threats-v1': {
-      frameworkName: 'OWASP Top 10 for Agentic Applications 2026 + Threats & Mitigations v1.1',
-      evaluationDate: new Date('2026-02-20'),
+      frameworkName: 'OWASP Agentic AI Threats and Mitigations v1.0a',
+      evaluationDate: new Date('2025-07-27'),
       evaluatedBy: '@tsynode',
-
+      
       scores: {
-        threatIdentification: 40,  // All 8 threats covered via ASI01-ASI10
-        practicalGuidance: 30,     // Full marks - playbooks, threat modeling guide, dev guidelines
-        evidenceQuality: 20,       // Full marks - 100+ expert contributors, real incidents
+        threatIdentification: 40,  // All 8 threats covered
+        practicalGuidance: 30,     // Full marks - playbooks and patterns
+        evidenceQuality: 20,       // Full marks - credible sources
         completeness: 10,          // Full marks - detect/respond covered
         total: 100                 // Perfect score
       },
-
+      
       // Detailed scoring breakdown
       breakdown: {
         // THREAT IDENTIFICATION (40/40)
-        'memory-attacks': true,           // ASI06: Memory & Context Poisoning
-        'tool-api-abuse': true,           // ASI02: Tool Misuse and Exploitation
-        'privilege-escalation': true,     // ASI03: Identity and Privilege Abuse
-        'multi-agent-threats': true,      // ASI07: Insecure Inter-Agent Communication + MAS Threat Modeling Guide
-        'temporal-behaviors': true,       // ASI10: Rogue Agents + ASI08: Cascading Failures
-        'human-manipulation': true,       // ASI09: Human-Agent Trust Exploitation
-        'communication-poisoning': true,  // ASI07: Insecure Inter-Agent Communication
-        'identity-auth-threats': true,   // ASI03: Identity and Privilege Abuse
-
+        'memory-attacks': true,           // T1: Memory Poisoning
+        'tool-api-abuse': true,           // T2: Tool Misuse  
+        'privilege-escalation': true,     // T3: Privilege Compromise
+        'multi-agent-threats': true,      // T12, T13, T14
+        'temporal-behaviors': true,       // T7: Misaligned & Deceptive
+        'human-manipulation': true,       // T15: Human Manipulation
+        'communication-poisoning': true,  // T12: Agent Communication Poisoning
+        'identity-auth-threats': true,   // T9: Identity Spoofing (fixed key name)
+        
         // PRACTICAL GUIDANCE (30/30)
-        'clear-patterns': true,           // Top 10 list + 6 playbooks + MAESTRO framework
+        'clear-patterns': true,           // 6 detailed playbooks
         'specific-tools': true,           // MCP-scan, frameworks mentioned
-        'checklists': true,               // Step-by-step playbooks + secure dev guidelines
-        'architecture-diagrams': true,    // MAESTRO multi-layer threat model diagrams
+        'checklists': true,               // Step-by-step playbooks
+        'architecture-diagrams': true,    // Threat model diagram page 16
         'step-by-step-instructions': true, // Proactive/reactive/detective steps
-
+        
         // EVIDENCE QUALITY (20/20)
-        'credible-research': true,       // 100+ expert contributors, NIST, CSA sources
-        'real-incidents': true,          // Real-world scenarios and case studies
-        'attack-patterns': true,         // ASI01-ASI10 detailed attack patterns
-        'detection-guidance': true,      // Each threat has detection guidance
-
+        'credible-research': true,       // NIST, CSA, academic sources
+        'real-incidents': true,          // Links to real studies
+        'attack-patterns': true,         // Detailed threat scenarios
+        'detection-guidance': true,      // Each threat has detection
+        
         // COMPLETENESS (10/10)
         'detection-methods': true,       // All threats include detection
         'response-procedures': true      // Playbooks include response
       },
-
+      
       strengths: [
-        'OWASP Top 10 for Agentic Applications (ASI01-ASI10) released Dec 2025 with 100+ expert contributors',
-        'Threats & Mitigations v1.1 taxonomy synchronized with Top 10',
-        'Multi-Agentic System Threat Modeling Guide v1.0 with MAESTRO framework',
-        'Comprehensive suite: threat taxonomy, threat modeling, secure dev guidelines, governance guide',
+        'Comprehensive coverage of all 15 agentic AI threats',
+        'Detailed threat taxonomy navigator for systematic evaluation',
+        'Six practical playbooks with proactive/reactive/detective controls',
         'Real-world scenarios for enterprise copilots, IoT, code review, and RPA',
-        'Industry-wide adoption as benchmark for agentic AI security'
+        'Strong contributor list including NIST and industry experts'
       ],
-
+      
       weaknesses: [
         'No production-ready code samples (appropriate for security framework)',
+        'Proof-of-concepts still in development',
         'Limited quantitative metrics on attack success rates',
-        'Rapidly evolving space may outpace document updates'
+        'Version 1.0a indicates early release status'
       ],
-
-      verdict: 'OWASP\'s Agentic AI security suite is the definitive reference for AI agent security. The Dec 2025 Top 10 for Agentic Applications (ASI01-ASI10), backed by 100+ experts, combined with the Threats & Mitigations v1.1 taxonomy and MAESTRO-based threat modeling guide, provides the most comprehensive and actionable coverage available.'
+      
+      verdict: 'OWASP\'s Agentic AI Threats document sets the gold standard for identifying and addressing agentic AI security risks. With perfect scores across all categories, it provides the most comprehensive threat taxonomy and practical guidance available today.'
     },
     
     'nist-ai-rmf-v1': {
-      frameworkName: 'NIST AI RMF 1.0 + GenAI Profile + Cyber AI Profile (Draft) + COSAiS (Draft)',
-      evaluationDate: new Date('2026-02-20'),
+      frameworkName: 'NIST AI Risk Management Framework 1.0 + GenAI Profile',
+      evaluationDate: new Date('2025-07-27'),
       evaluatedBy: '@tsynode',
-
+      
       scores: {
-        threatIdentification: 0,   // No agentic-specific threats in published docs
-        practicalGuidance: 20,     // General AI guidance + COSAiS concept for multi-agent
-        evidenceQuality: 10,       // Good references, Cyber AI Profile adds AI-specific context
-        completeness: 0,           // No agentic lifecycle coverage yet
-        total: 30
+        threatIdentification: 0,   // No agentic-specific threats
+        practicalGuidance: 20,     // General AI guidance only
+        evidenceQuality: 5,        // Good references but not agentic
+        completeness: 0,           // No agentic lifecycle coverage
+        total: 25
       },
-
+      
       // Detailed scoring breakdown
       breakdown: {
         // THREAT IDENTIFICATION (0/40)
         'memory-attacks': false,          // No agent memory poisoning
         'tool-api-abuse': false,          // No tool calling/MCP coverage
         'privilege-escalation': false,     // No agent privilege escalation
-        'multi-agent-threats': false,      // COSAiS mentions multi-agent but still draft
+        'multi-agent-threats': false,      // Zero multi-agent content
         'temporal-behaviors': false,       // No agent behavioral evolution
         'human-manipulation': false,       // General human-AI only
         'communication-poisoning': false,  // No inter-agent communication
         'identity-auth-threats': false,   // No agent identity threats
-
+        
         // PRACTICAL GUIDANCE (20/30)
         'clear-patterns': true,           // Good general AI patterns
         'specific-tools': false,          // No agentic tools
-        'checklists': true,              // General AI checklists + CSF 2.0 alignment
+        'checklists': true,              // General AI checklists
         'architecture-diagrams': false,   // No threat diagrams
         'step-by-step-instructions': true, // General AI process
-
-        // EVIDENCE QUALITY (10/20)
+        
+        // EVIDENCE QUALITY (5/20)
         'credible-research': true,        // Good general AI research
         'real-incidents': false,          // No agentic incidents
         'attack-patterns': false,         // No agentic attacks
-        'detection-guidance': true,       // Cyber AI Profile adds AI-specific monitoring
-
+        'detection-guidance': false,      // Not for agents
+        
         // COMPLETENESS (0/10)
         'detection-methods': false,       // Not agentic-specific
         'response-procedures': false      // Not for agent threats
       },
-
+      
       strengths: [
         'Excellent general AI governance framework',
-        'NIST IR 8596 Cyber AI Profile (Dec 2025 draft) aligns CSF 2.0 with AI risks',
-        'COSAiS project (Aug 2025) plans SP 800-53 overlays for multi-agent AI systems',
-        'AI RMF currently in revision per AI Action Plan',
         'Strong lifecycle management approach',
+        'Good organizational risk management structure',
+        'Living document with regular updates',
         'Comprehensive for traditional AI systems'
       ],
-
+      
       weaknesses: [
-        'Core AI RMF 1.0 still lacks agentic AI or autonomous agent content',
-        'COSAiS and Cyber AI Profile are drafts, not yet actionable',
+        'Zero coverage of agentic AI or autonomous agents',
+        'No mention of multi-agent systems',
         'No Model Context Protocol (MCP) guidance',
         'No tool calling or function calling security',
-        'Multi-agent coverage only in concept papers, not published guidance'
+        'Does not address agent-specific threats',
+        'No coverage of temporal malicious evolution in agents'
       ],
-
-      verdict: 'NIST is expanding its AI security ecosystem with the Cyber AI Profile (IR 8596, Dec 2025 draft) and COSAiS control overlays (which plan to cover multi-agent systems). However, published guidance still lacks agentic AI content. The AI RMF revision is underway but not yet released. Watch this space - NIST is moving in the right direction but not yet actionable for agent security.'
+      
+      verdict: 'NIST AI RMF provides solid governance for general AI systems but completely lacks agentic AI security content. Organizations building autonomous agents or multi-agent systems will find no specific guidance here and must look elsewhere for agentic threat coverage.'
     },
     
     'iso-27090-draft': {
       frameworkName: 'ISO/IEC DIS 27090 - AI Cybersecurity (Draft)',
-      evaluationDate: new Date('2026-02-20'),
+      evaluationDate: new Date('2025-07-28'),
       evaluatedBy: '@tsynode',
       
       scores: {
@@ -867,19 +563,19 @@ export const frameworkCoverageKnowledge = {
       ],
       
       weaknesses: [
-        'Still in Draft International Standard (DIS) stage - publication expected May 2026',
+        'Still in Draft International Standard (DIS) stage',
         'Content not publicly available for evaluation',
         'Unknown coverage of agentic AI and multi-agent systems',
-        'Guidance only - no testable "shall" requirements',
+        'Voting closes July 2025 - not yet actionable',
         'May not address latest threats like MCP attacks or tool poisoning'
       ],
-
-      verdict: 'ISO/IEC 27090 publication is now expected May 2026 with comment resolution starting June 2026. As guidance (not certifiable requirements), it will provide best practices for AI cybersecurity throughout the lifecycle. Its relevance to agentic AI and MCP threats remains unknown. Track development but rely on OWASP and ATLAS for current actionable guidance.'
+      
+      verdict: 'ISO/IEC 27090 represents the ISO community\'s response to AI security threats. However, as a draft standard with no public content, organizations cannot use it yet. Its relevance to agentic AI, multi-agent systems, and modern threats like MCP attacks remains unknown. Track its development but rely on OWASP for current guidance.'
     },
     
     'iso-42001-2023': {
       frameworkName: 'ISO/IEC 42001:2023 - AI Management Systems',
-      evaluationDate: new Date('2026-02-20'),
+      evaluationDate: new Date('2025-08-10'),
       evaluatedBy: '@tsynode',
       
       scores: {
@@ -942,72 +638,72 @@ export const frameworkCoverageKnowledge = {
     },
     
     'mitre-atlas-v4': {
-      frameworkName: 'MITRE ATLAS - Adversarial Threat Landscape for AI Systems (latest confirmed tag: v5.1.1, Nov 2025; Jan/Feb 2026 updates applied)',
-      evaluationDate: new Date('2026-02-20'),
+      frameworkName: 'MITRE ATLAS v4.5.2 - Adversarial Threat Landscape for AI Systems',
+      evaluationDate: new Date('2025-08-10'),
       evaluatedBy: '@tsynode',
-
+      
       scores: {
-        threatIdentification: 35,  // Now covers memory, agents, MCP; missing temporal drift
-        practicalGuidance: 25,     // New mitigations (M0032, M0033) + attack flows
-        evidenceQuality: 20,       // Excellent case studies including MCP/Cursor exfil
-        completeness: 10,          // Detection + new agent-specific mitigations
-        total: 90
+        threatIdentification: 30,  // Strong AI/LLM threats, missing some agent aspects
+        practicalGuidance: 20,     // Tactics/techniques but limited implementation
+        evidenceQuality: 20,       // Excellent case studies and active research
+        completeness: 5,           // Detection only, limited response
+        total: 75
       },
-
+      
       // Detailed scoring breakdown
       breakdown: {
-        // THREAT IDENTIFICATION (35/40)
-        'memory-attacks': true,           // AI Agent Memory manipulation technique (Oct 2025)
-        'tool-api-abuse': true,           // T0053 + T0098 Tool Credential Harvesting + T0099 Tool Data Poisoning
-        'privilege-escalation': true,      // T0054 LLM Jailbreak + T0105 Escape to Host
-        'multi-agent-threats': true,       // T0103 Deploy AI Agent + T0108 AI Agent techniques
+        // THREAT IDENTIFICATION (30/40)
+        'memory-attacks': false,          // No AI memory attack coverage
+        'tool-api-abuse': true,           // LLM Plugin Compromise (T0053)
+        'privilege-escalation': true,      // LLM Jailbreak (T0054)
+        'multi-agent-threats': false,      // Single AI system focus
         'temporal-behaviors': false,       // No behavioral drift coverage
-        'human-manipulation': true,        // T0052 Phishing via LLM + T0100 Agent Clickbait
-        'communication-poisoning': true,   // T0070 RAG Poisoning + AI Agent Context Poisoning
-        'identity-auth-threats': true,    // T0056 System prompt extraction + agent identity
-
-        // PRACTICAL GUIDANCE (25/30)
-        'clear-patterns': true,           // Matrix of 16 tactics / 84+ techniques (incl. Lateral Movement AML.TA0015)
-        'specific-tools': true,           // 32+ mitigations incl. M0031 Memory Hardening; agent-specific mitigations expanding
-        'checklists': false,             // Tactics not prescriptive checklists
-        'architecture-diagrams': true,    // Attack flow diagrams + OpenClaw investigation
-        'step-by-step-instructions': true, // Agent-specific mitigations with implementation detail
-
+        'human-manipulation': true,        // Phishing via LLM (T0052)
+        'communication-poisoning': true,   // RAG Poisoning (T0070)
+        'identity-auth-threats': true,    // System prompt extraction (T0056)
+        
+        // PRACTICAL GUIDANCE (20/30)
+        'clear-patterns': true,           // Matrix of tactics/techniques
+        'specific-tools': false,          // No tool recommendations
+        'checklists': false,             // Tactics not prescriptive
+        'architecture-diagrams': true,    // Attack flow diagrams
+        'step-by-step-instructions': false, // High-level techniques only
+        
         // EVIDENCE QUALITY (20/20)
-        'credible-research': true,        // Academic partnerships + CTID + Zenity collab
-        'real-incidents': true,           // 45+ case studies incl. CS0048-CS0051 (OpenClaw); MCP/Cursor exfil reported but CS0045 ID unverified
+        'credible-research': true,        // Academic partnerships
+        'real-incidents': true,           // 32 case studies documented
         'attack-patterns': true,          // Detailed TTPs with procedures
-        'detection-guidance': true,       // Mitigations documented per technique
-
-        // COMPLETENESS (10/10)
-        'detection-methods': true,        // Detection guidance per technique
-        'response-procedures': true       // 32+ mitigations incl. M0031 (Memory Hardening); M0032/M0033 IDs unverified but agent mitigations expanding
+        'detection-guidance': true,       // Mitigations documented
+        
+        // COMPLETENESS (5/10)
+        'detection-methods': true,        // Some detection guidance
+        'response-procedures': false      // Minimal incident response
       },
-
+      
       strengths: [
-        'Most comprehensive AI/ML threat framework with 16 tactics, 84+ techniques, 56+ sub-techniques (as of v5.1.0 Nov 2025, plus Jan/Feb 2026 additions)',
-        'Oct 2025: 14 new agentic AI techniques added via Zenity Labs collaboration (v4.6.0/data v5.0.0)',
-        'Jan 2026: New agent techniques confirmed: T0098 (Tool Credential Harvesting), T0099 (Tool Data Poisoning), T0100 (Agent Clickbait), T0102 (Generate Malicious Commands)',
-        'Feb 2026: OpenClaw investigation discovered 7 new agent-specific techniques (CS0048-CS0051)',
-        'v5.1.0 added Lateral Movement tactic (AML.TA0015) and 32+ mitigations including M0031 (Memory Hardening)',
-        '45+ real-world case studies with growing MCP and agent coverage',
-        'Active development with monthly updates and strong industry partnerships (Zenity, CTID)'
+        'Most comprehensive AI/ML threat framework',
+        'Excellent LLM coverage (prompt injection, jailbreak, plugins)',
+        'RAG poisoning and retrieval attacks covered',
+        '32 real-world case studies including ChatGPT attacks',
+        'Active development with April 2025 updates',
+        'Strong industry adoption and community'
       ],
-
+      
       weaknesses: [
-        'No temporal drift or behavioral evolution coverage',
-        'Agent techniques still expanding - coverage not yet complete',
-        'Focuses on attack patterns more than defensive implementation',
-        'No prescriptive checklists (by design - it\'s a threat framework)',
-        'Some Jan 2026 technique IDs (T0103-T0105) and mitigation IDs (M0032, M0033) unverified from primary sources'
+        'No MCP or Model Context Protocol coverage',
+        'Limited multi-agent coordination attacks',
+        'No temporal drift or behavioral evolution',
+        'Focuses on attacks not defenses',
+        'Limited implementation guidance',
+        'No agent-to-agent attack patterns'
       ],
-
-      verdict: 'MITRE ATLAS has transformed into a comprehensive AI agent security framework. The Oct 2025 Zenity collaboration added 14 agentic techniques, and Jan/Feb 2026 releases brought further agent and MCP coverage including the OpenClaw investigation. With 16 tactics, 84+ techniques, 45+ case studies and growing agent-specific mitigations, ATLAS now rivals OWASP for agentic threat coverage while providing the strongest evidence base of any framework.'
+      
+      verdict: 'MITRE ATLAS scores 75% - the most comprehensive ML/AI threat framework available. Excellent coverage of LLM threats including prompt injection, RAG poisoning, and plugin compromise. Strong evidence base with 32 case studies. However, still lacks MCP-specific attacks and multi-agent scenarios. Essential reference but supplement with OWASP for full agentic coverage.'
     },
     
     'cis-controls-v8': {
       frameworkName: 'CIS Critical Security Controls v8.1',
-      evaluationDate: new Date('2026-02-20'),
+      evaluationDate: new Date('2025-08-10'),
       evaluatedBy: '@tsynode',
       
       scores: {
@@ -1070,8 +766,8 @@ export const frameworkCoverageKnowledge = {
     },
     
     'mitre-attack-v15': {
-      frameworkName: 'MITRE ATT&CK v18.1',
-      evaluationDate: new Date('2026-02-20'),
+      frameworkName: 'MITRE ATT&CK v15.1',
+      evaluationDate: new Date('2025-08-10'),
       evaluatedBy: '@tsynode',
       
       scores: {
@@ -1117,19 +813,18 @@ export const frameworkCoverageKnowledge = {
         'Comprehensive adversary tactics and techniques',
         'Strong community and tooling ecosystem',
         'Regular updates and living framework',
-        'Used globally by SOCs and threat intel teams',
-        'T1588.007 (Obtain Capabilities: AI) added March 2024 — recognizes AI as adversary resource'
+        'Used globally by SOCs and threat intel teams'
       ],
       
       weaknesses: [
-        'Only one AI sub-technique (T1588.007) — covers adversaries obtaining AI, not securing AI systems',
-        'No agentic AI, multi-agent, or MCP coverage',
-        'Explicitly directs users to ATLAS for AI-specific threats',
-        'Traditional IT/enterprise focus by design',
-        'No plans to expand AI coverage beyond resource development'
+        'Zero AI or ML coverage by design',
+        'Explicitly directs users to ATLAS for AI threats',
+        'No plans to add AI content',
+        'Traditional IT/enterprise focus only',
+        'Not applicable to AI security'
       ],
       
-      verdict: 'MITRE ATT&CK contains minimal AI content — T1588.007 (Obtain Capabilities: AI, added March 2024) covers adversaries acquiring AI capabilities but provides no coverage of securing AI systems, agents, or MCP. ATT&CK explicitly directs users to MITRE ATLAS for AI/ML security. Score reflects zero agentic AI coverage, not absence of all AI recognition.'
+      verdict: 'MITRE ATT&CK scores 0% for AI security - this is by design. ATT&CK focuses exclusively on traditional IT threats and explicitly directs users to MITRE ATLAS for AI/ML security. Organizations should not look to ATT&CK for AI guidance but instead use its sister framework ATLAS.'
     }
   } as Record<DetailedEvaluationKey, DetailedEvaluation>
 }
