@@ -2,7 +2,8 @@
 
 "use client"
 
-import { FrameworkCoverage } from "../registry/components/compliance/framework-coverage"
+import { FrameworkCoverage } from "../registry/components/framework-coverage"
+import { Threats } from "../registry/components/threats"
 import { Moon, Sun } from "lucide-react"
 import { useEffect, useState } from "react"
 
@@ -44,25 +45,16 @@ export default function Home() {
       </div>
 
       <div className="px-4 md:px-8">
-        {/* Desktop: Side-by-side view */}
+        {/* Desktop: Side-by-side — Threats left, Framework Coverage right */}
         <div className="hidden lg:grid lg:grid-cols-2 gap-6">
-          <div className="space-y-2">
-            <h2 className="text-sm font-medium text-muted-foreground">Main View</h2>
-            <FrameworkCoverage />
-          </div>
-
-          <div className="space-y-2">
-            <h2 className="text-sm font-medium text-muted-foreground">Methodology View</h2>
-            <FrameworkCoverage initialView="methodology" />
-          </div>
+          <Threats />
+          <FrameworkCoverage />
         </div>
 
-        {/* Mobile/Tablet: Single component */}
-        <div className="lg:hidden">
-          <div className="space-y-2">
-            <h2 className="text-sm font-medium text-muted-foreground">Navigate views using the icons at the bottom</h2>
-            <FrameworkCoverage />
-          </div>
+        {/* Mobile/Tablet: Stacked */}
+        <div className="lg:hidden space-y-6">
+          <Threats />
+          <FrameworkCoverage />
         </div>
       </div>
     </div>

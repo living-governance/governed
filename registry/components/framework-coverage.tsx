@@ -1,4 +1,4 @@
-// registry/components/compliance/framework-coverage.tsx
+// registry/components/framework-coverage.tsx
 "use client"
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -15,7 +15,7 @@ import {
   frameworkCoverageKnowledge,
   getConfidenceStatus,
   getLatestChange 
-} from "../../knowledge/framework-coverage"
+} from "../knowledge/framework-coverage"
 import { 
   AlertCircle, Clock, ExternalLink, Download, Link, 
   Info, Cloud, TrendingUp, ChevronLeft, Home, Check, Copy,
@@ -810,13 +810,28 @@ ${rankedFrameworks.slice(0, 3).map((f, i) =>
                 Only {readyFrameworks} of {frameworks.length} frameworks ready for AI threats • {frameworks.length - readyFrameworks} lack adequate coverage
               </CardDescription>
             </div>
-            <Badge 
-              variant={confidenceStatus.confidence >= 0.7 ? "default" : "secondary"}
-              className="text-xs"
-            >
-              <Clock className="h-3 w-3 mr-1" />
-              {confidenceStatus.status}
-            </Badge>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <Badge 
+                    variant="outline"
+                    className={cn(
+                      "text-[10px]",
+                      confidenceStatus.confidence >= 0.7 ? 'border-green-300 dark:border-green-700' :
+                      confidenceStatus.confidence >= 0.5 ? 'border-yellow-300 dark:border-yellow-700' :
+                      'border-red-300 dark:border-red-700'
+                    )}
+                  >
+                    <Clock className="h-3 w-3 mr-1" />
+                    {confidenceStatus.daysUntilStale}d
+                  </Badge>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{confidenceStatus.status}</p>
+                  <p className="text-xs">Evaluated {latestEvaluation.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} by {latestEvaluation.by}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
         </CardHeader>
         
@@ -866,14 +881,8 @@ ${rankedFrameworks.slice(0, 3).map((f, i) =>
           {/* Fixed footer */}
           <div className="flex-shrink-0 pt-4 border-t">
             <div className="flex items-center justify-between">
-              <p className="text-xs text-muted-foreground">
-                Evaluated by {latestEvaluation.by} • {latestEvaluation.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                {confidenceStatus.daysUntilStale > 0 && (
-                  <span> • Review in {confidenceStatus.daysUntilStale} days</span>
-                )}
-              </p>
+              <IconBar />
               <div className="flex items-center gap-2">
-                <IconBar />
                 {/* Social sharing buttons */}
                 <div className="flex items-center gap-1 ml-2 border-l pl-2">
                   <TooltipProvider>
