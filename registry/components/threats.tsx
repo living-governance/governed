@@ -98,7 +98,7 @@ export function Threats({ initialView = 'incidents' }: ThreatsProps = {}) {
   )
 
   // Share text for social sharing
-  const shareText = `🔒 ${gaps.length} critical gaps in AI security framework coverage\n\n${k.threats.length} agentic AI threats tracked, ${k.incidents.length} real-world incidents documented.\nOnly ${covSummary.direct} threats have direct framework coverage.\n\n`
+  const shareText = `🔒 ${gaps.length} critical gaps in AI security framework coverage\n\n${k.threats.length} agentic AI threats tracked, ${k.incidents.length} real-world incidents documented.\nOnly ${covSummary.gapsByFramework.reduce((s, f) => s + f.directCount, 0)} incident-framework pairs have direct coverage.\n\n`
 
   const IconBar = () => (
     <div className="flex items-center justify-between">
@@ -588,7 +588,7 @@ export function Threats({ initialView = 'incidents' }: ThreatsProps = {}) {
           <p>\u2022 {k.threats.length} agentic AI threats with cross-taxonomy mapping</p>
           <p>\u2022 {k.incidents.length} real-world incidents with timeline data</p>
           <p>\u2022 {k.mitigations.length} mitigation references with framework links</p>
-          <p>\u2022 Coverage gap analysis across {Object.keys(k.frameworkCoverage).length}+ frameworks</p>
+          <p>\u2022 Coverage gap analysis across {covSummary.gapsByFramework.length}+ frameworks</p>
           <p>\u2022 React component with 8 views and icon bar navigation</p>
           <p>\u2022 Self-contained \u2014 no external API dependencies</p>
         </div>
