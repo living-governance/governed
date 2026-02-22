@@ -106,6 +106,31 @@ When executing work from `backlog/intents/`:
 
 ---
 
+## Commits
+
+Conventional commits, lowercase after prefix. Single line when
+the commit touches ≤3 files for one reason:
+
+```
+fix: reverse timeline event order within year
+refactor: extract confidence calculation to shared util
+chore: update dependencies
+```
+
+Add a body (blank line after subject) when the commit is larger
+or the reason isn't obvious from the diff:
+
+```
+feat: add threat-intelligence component
+
+Second knowledge component. Aggregates threats from OWASP,
+MITRE ATLAS, and NIST sources with cross-correlation.
+Answers PENDING-003 (new component workflow).
+```
+
+Prefixes: `feat`, `fix`, `refactor`, `chore`, `docs`.
+Tag messages carry release-level descriptions.
+
 ## Commands
 
 - Build: `npx next build`
