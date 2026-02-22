@@ -1,18 +1,9 @@
 ---
-status: pending
+status: resolved
+resolved_by: ADR-013-new-component-workflow.md
+resolved_date: 2026-02-22
 ---
 
 # New Component Creation Workflow
 
-## Question
-What is the standard workflow for creating a new component from scratch?
-
-## Context
-- Only one component exists so far (framework-coverage)
-- Second component (threat-intelligence aggregator) is next
-- CLAUDE.md currently says "work with the user interactively"
-- Pattern will become clear after the second component is built
-- Define after threat-intelligence component is complete
-
-## Options
-To be determined from experience building the second component.
+Resolved. See ADR-013 for the accepted workflow.
