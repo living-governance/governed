@@ -4,17 +4,27 @@
   "description": "OWASP, NIST, ISO, MITRE AI threat coverage scores with evaluation methodology",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "files": ["dist", "README.md"],
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "scripts": {
     "build": "tsc",
     "prepublishOnly": "npm run build"
   },
-  "keywords": ["ai-security", "owasp", "nist", "mitre", "frameworks", "governance"],
+  "keywords": [
+    "ai-security",
+    "owasp",
+    "nist",
+    "mitre",
+    "frameworks",
+    "governance"
+  ],
   "author": "living-governance.com",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/governed/living-governance.git"
+    "url": "git+https://github.com/governed/living-governance.git"
   },
   "publishConfig": {
     "access": "public"
