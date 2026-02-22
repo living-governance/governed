@@ -476,7 +476,7 @@ export function FrameworkCoverage({ initialView = 'main' }: FrameworkCoveragePro
         
         // Sort events within each year
         Object.values(eventsByYear).forEach(events => {
-          events.sort((a, b) => a.date.getTime() - b.date.getTime())
+          events.sort((a, b) => b.date.getTime() - a.date.getTime())
         })
         
         // Get framework colors
