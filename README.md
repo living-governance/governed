@@ -91,9 +91,12 @@ component copying is under development.
 ```bash
 git clone https://github.com/living-governance/governed
 cd governed
+nvm use
 npm install
 npm run dev
 ```
+
+Use Node 20 or 22 LTS for this repo. `.nvmrc` is set to `20`.
 
 ## What Makes Knowledge "Living"
 

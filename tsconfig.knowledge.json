@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "incremental": false,
+    "plugins": []
+  },
+  "include": ["registry/knowledge/**/*.ts"],
+  "exclude": ["node_modules", ".next", "registry/knowledge/_TEMPLATE.ts"]
+}

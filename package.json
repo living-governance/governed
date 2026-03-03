@@ -2,11 +2,26 @@
   "name": "living-governance",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=20.9.0 <23"
+  },
   "scripts": {
+    "check:node": "node scripts/check-node-version.mjs",
+    "predev": "npm run check:node",
     "dev": "next dev",
+    "prebuild": "npm run check:node",
     "build": "next build",
+    "prestart": "npm run check:node",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "precheck:ontology": "npm run check:node",
+    "check:ontology": "node scripts/check-ontology.mjs",
+    "precheck:knowledge": "npm run check:node",
+    "check:knowledge": "npx tsc --noEmit -p tsconfig.knowledge.json",
+    "precheck:app": "npm run check:node",
+    "check:app": "npm run build",
+    "check:package:frameworks": "(cd packages/frameworks && npx tsc --noEmit)",
+    "check:ci": "npm run check:ontology && npm run check:knowledge && npm run check:app && npm run check:package:frameworks"
   },
   "dependencies": {
     "@radix-ui/react-progress": "^1.1.7",

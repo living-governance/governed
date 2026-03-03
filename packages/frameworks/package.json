@@ -2,6 +2,9 @@
   "name": "@governed/frameworks",
   "version": "0.2.0",
   "description": "OWASP, NIST, ISO, MITRE AI threat coverage scores with evaluation methodology",
+  "engines": {
+    "node": ">=20.9.0 <23"
+  },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
