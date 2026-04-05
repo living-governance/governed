@@ -15,6 +15,7 @@ export interface Evaluation {
   by: string;
   validDays: number;
   verificationStatus: VerificationStatus;
+  verifiedBy?: string;
   methodology?: string;
   sources?: Source[];
   confidence?: number;

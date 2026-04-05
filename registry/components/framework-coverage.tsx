@@ -603,10 +603,10 @@ export function FrameworkCoverage({ initialView = 'main' }: FrameworkCoveragePro
       case 'evaluations':
         // Archive metadata — hardcoded since archives are static files
         const archiveEntries = [
-          { date: '2025-04-15', label: 'Initial evaluation', evaluatedBy: '@tsynode', verificationStatus: 'human-verified' },
-          { date: '2025-08-10', label: 'Q3 2025 re-evaluation', evaluatedBy: '@tsynode', verificationStatus: 'human-verified' },
-          { date: '2026-02-20', label: 'Q1 2026 re-evaluation', evaluatedBy: '@tsynode', verificationStatus: 'human-verified' },
-          { date: '2026-04-05', label: 'Current evaluation', evaluatedBy: '@agent', verificationStatus: evaluation.verificationStatus || 'human-verified' },
+          { date: '2025-04-15', label: 'Initial evaluation', evaluatedBy: '@tsynode', verificationStatus: 'human-verified', verifiedBy: undefined as string | undefined },
+          { date: '2025-08-10', label: 'Q3 2025 re-evaluation', evaluatedBy: '@tsynode', verificationStatus: 'human-verified', verifiedBy: undefined as string | undefined },
+          { date: '2026-02-20', label: 'Q1 2026 re-evaluation', evaluatedBy: '@tsynode', verificationStatus: 'human-verified', verifiedBy: undefined as string | undefined },
+          { date: '2026-04-05', label: 'Current evaluation', evaluatedBy: '@agent', verificationStatus: evaluation.verificationStatus || 'human-verified', verifiedBy: (evaluation as any).verifiedBy as string | undefined },
         ]
 
         // Try to use RUNS.ts data, fall back gracefully
@@ -661,15 +661,18 @@ export function FrameworkCoverage({ initialView = 'main' }: FrameworkCoveragePro
                               ? 'border-yellow-400 dark:border-yellow-600'
                               : 'border-blue-300 dark:border-blue-700'
                           )}>
-                            {entry.evaluatedBy === '@agent' ? 'Agent-evaluated' : entry.evaluatedBy}
+                            {entry.evaluatedBy === '@agent' ? 'Agent-evaluated' : 'Human-evaluated'}
                           </Badge>
-                          {/* Verification badge — only when agent-evaluated */}
-                          {entry.evaluatedBy === '@agent' && entry.verificationStatus === 'human-verified' && (
+                          {/* Verification badge */}
+                          {entry.verificationStatus === 'human-verified' && (
                             <Badge variant="outline" className="text-[10px] border-green-300 dark:border-green-700">
-                              Human-verified
+                              {entry.evaluatedBy === '@agent'
+                                ? `Verified by ${entry.verifiedBy || 'human'}`
+                                : `by ${entry.evaluatedBy}`
+                              }
                             </Badge>
                           )}
-                          {entry.evaluatedBy === '@agent' && entry.verificationStatus === 'agent-evaluated' && (
+                          {entry.verificationStatus === 'agent-evaluated' && (
                             <Badge variant="outline" className="text-[10px] border-yellow-400/50 dark:border-yellow-600/50 text-muted-foreground">
                               Pending review
                             </Badge>
