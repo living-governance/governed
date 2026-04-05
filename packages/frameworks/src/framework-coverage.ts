@@ -299,7 +299,7 @@ export const frameworkCoverageKnowledge = {
   evaluation: {
     date: new Date('2026-04-05'),
     by: '@agent',
-    verificationStatus: 'agent-evaluated' as const,
+    verificationStatus: 'human-verified' as const,
     validDays: 90,
     methodology: `Binary Scoring Framework for Security Frameworks (100 points total):
     
