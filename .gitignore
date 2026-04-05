@@ -43,6 +43,9 @@ packages/*/src/generated/
 # Keep CLI placeholder
 !packages/cli/dist/index.js
 
+# Claude Code
+.claude/
+
 # IDE
 .vscode/
 .idea/
