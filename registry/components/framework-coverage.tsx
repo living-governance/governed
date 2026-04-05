@@ -666,10 +666,7 @@ export function FrameworkCoverage({ initialView = 'main' }: FrameworkCoveragePro
                           {/* Verification badge */}
                           {entry.verificationStatus === 'human-verified' && (
                             <Badge variant="outline" className="text-[10px] border-green-300 dark:border-green-700">
-                              {entry.evaluatedBy === '@agent'
-                                ? `Verified by ${entry.verifiedBy || 'human'}`
-                                : `by ${entry.evaluatedBy}`
-                              }
+                              Human-verified
                             </Badge>
                           )}
                           {entry.verificationStatus === 'agent-evaluated' && (
@@ -681,6 +678,12 @@ export function FrameworkCoverage({ initialView = 'main' }: FrameworkCoveragePro
                             <Badge variant="outline" className="text-[10px] border-red-400 dark:border-red-600">
                               Human-disputed
                             </Badge>
+                          )}
+                          {/* Attribution text */}
+                          {entry.verificationStatus === 'human-verified' && (
+                            <span className="text-xs text-muted-foreground">
+                              by {entry.evaluatedBy === '@agent' ? (entry.verifiedBy || 'human') : entry.evaluatedBy}
+                            </span>
                           )}
                         </div>
                         <p className="text-xs text-muted-foreground">{entry.label}</p>
