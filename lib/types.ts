@@ -8,10 +8,13 @@ export interface Source {
   lastChecked?: Date;
 }
 
+export type VerificationStatus = 'human-verified' | 'agent-evaluated' | 'human-disputed';
+
 export interface Evaluation {
   date: Date;
   by: string;
   validDays: number;
+  verificationStatus: VerificationStatus;
   methodology?: string;
   sources?: Source[];
   confidence?: number;
@@ -25,6 +28,21 @@ export interface TimelineEntry {
   change: string;
   insight?: string;
   trigger?: string;
+}
+
+export interface EvaluationRun {
+  id: string;
+  artifactId: string;
+  date: Date;
+  evaluatedBy: string;
+  evaluatorType: 'human' | 'agent';
+  trigger: 'decay' | 'source-change' | 'manual';
+  previousArchive: string;
+  scoreDeltas: Record<string, number>;
+  sourcesChecked: string[];
+  sourcesChanged: boolean;
+  summary: string;
+  verificationStatus: VerificationStatus;
 }
 
 export interface KnowledgeMetadata {

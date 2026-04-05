@@ -5,7 +5,7 @@
 > and what rules govern them. It is the shared contract between humans,
 > agents, and co-founders. The constitution says WHY. This file says WHAT.
 
-Last reviewed: 2026-02-22
+Last reviewed: 2026-04-05
 
 ---
 
@@ -114,6 +114,35 @@ Historical snapshot of knowledge at a point in time. Stored in
 `registry/archives/{component}/{date}.ts`. Never modified after
 creation. Enables evolution tracking.
 
+### Verification Status
+
+Who last evaluated a knowledge artifact and whether a human has
+reviewed it. Orthogonal to confidence status (which tracks freshness).
+
+- **`human-verified`**: A human reviewed and approved this evaluation.
+  Gold standard. All manually authored knowledge starts here.
+- **`agent-evaluated`**: An agent re-evaluated autonomously using the
+  artifact's declared methodology and sources. Published and usable,
+  but flagged for human review.
+- **`human-disputed`**: A human reviewed the agent's evaluation and
+  disagreed. The agent's version is preserved in the archive as
+  dissent (C-04). The human's corrected version becomes canonical.
+
+Verification status lives on evaluation metadata alongside `evaluatedBy`
+and `validDays`. Consumers can filter on it to set their own trust
+threshold.
+
+### Evaluation Run
+
+A record of a single re-evaluation cycle. Stored in
+`registry/archives/{component}/RUNS.ts` as an append-only log.
+Each run records: who evaluated, what triggered it, which sources
+were checked, what scores changed, and the path to the archived
+prior version.
+
+Runs are the audit trail for knowledge evolution. They answer
+"why did this score change?" without requiring archive diffs.
+
 ### Stranger
 
 Any entity — human or AI agent — operating a knowledge artifact
@@ -215,6 +244,8 @@ about what entity is being referenced.
 | knowledge | information + context + application | describing what's in a knowledge artifact |
 | self-contained | works in isolation, no sibling dependencies | describing component independence |
 | executable knowledge | expertise captured as runnable code | describing the project's foundation |
+| verification status | who evaluated and whether human-reviewed | describing trust level of an evaluation |
+| evaluation run | single re-evaluation cycle with audit trail | describing a knowledge update event |
 
 ### Terms to Avoid
 
@@ -244,3 +275,9 @@ This ontology is constrained by CONSTITUTION.md. Key mappings:
 | C-06: Components Create No Lock-In | Self-contained entity definition, graceful fallback pattern |
 | C-07: Knowledge and Presentation Are Forkable | Tier 1 has zero runtime dependencies, agency removal is safe |
 | C-08: The Stranger Test | Stranger entity definition drives all design constraints |
+
+### ADR References
+
+| ADR | Ontology impact |
+|-----|-----------------|
+| ADR-014: Autonomous Re-evaluation | Verification Status and Evaluation Run entities, agent-evaluated publishing model |
