@@ -106,6 +106,24 @@ When executing work from `backlog/intents/`:
 
 ---
 
+## Branching
+
+Branches follow the methodology (METHODOLOGY.md):
+
+- **Hunt work** → commit directly to master. Small prey, ADRs, ideas,
+  ontology updates, docs. No branch needed — exploration should be fluid.
+- **Unleash work** → branch per intent. Create `intent/{NNN}-{slug}`
+  (e.g. `intent/003-re-evaluation-loop`), work autonomously, open a PR
+  when "Done when" criteria are met.
+- **Verify** → PR review. Outcomes map to:
+  - Aligned → merge to master
+  - Obvious fix → push fix to the branch, re-review
+  - Ontology gap → close PR, sharpen ontology on master, new intent
+  - Recurring failure → close PR, abandon
+
+No long-lived branches. No develop or release branches. Master is always
+the current state of the project.
+
 ## Commits
 
 Conventional commits, lowercase after prefix. Single line when
