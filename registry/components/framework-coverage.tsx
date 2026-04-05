@@ -652,20 +652,33 @@ export function FrameworkCoverage({ initialView = 'main' }: FrameworkCoveragePro
 
                       {/* Entry */}
                       <div className="space-y-1">
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 flex-wrap">
                           <span className="text-sm font-medium">{entry.date}</span>
+                          {/* Evaluator type badge */}
                           <Badge variant="outline" className={cn(
                             "text-[10px]",
-                            entry.verificationStatus === 'agent-evaluated'
+                            entry.evaluatedBy === '@agent'
                               ? 'border-yellow-400 dark:border-yellow-600'
-                              : entry.verificationStatus === 'human-disputed'
-                              ? 'border-red-400 dark:border-red-600'
-                              : 'border-green-300 dark:border-green-700'
+                              : 'border-blue-300 dark:border-blue-700'
                           )}>
-                            {entry.verificationStatus === 'agent-evaluated' ? 'Agent' :
-                             entry.verificationStatus === 'human-disputed' ? 'Disputed' :
-                             'Verified'}
+                            {entry.evaluatedBy === '@agent' ? 'Agent' : 'Human'}
                           </Badge>
+                          {/* Verification status badge — only show when different from evaluator */}
+                          {entry.verificationStatus === 'human-verified' && entry.evaluatedBy === '@agent' && (
+                            <Badge variant="outline" className="text-[10px] border-green-300 dark:border-green-700">
+                              Verified
+                            </Badge>
+                          )}
+                          {entry.verificationStatus === 'human-disputed' && (
+                            <Badge variant="outline" className="text-[10px] border-red-400 dark:border-red-600">
+                              Disputed
+                            </Badge>
+                          )}
+                          {entry.verificationStatus === 'agent-evaluated' && (
+                            <Badge variant="outline" className="text-[10px] border-yellow-400/50 dark:border-yellow-600/50 text-muted-foreground">
+                              Pending review
+                            </Badge>
+                          )}
                           <span className="text-xs text-muted-foreground">by {entry.evaluatedBy}</span>
                         </div>
                         <p className="text-xs text-muted-foreground">{entry.label}</p>
