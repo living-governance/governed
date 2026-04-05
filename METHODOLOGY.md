@@ -55,6 +55,7 @@ HUNT outputs:
 
 - **Finished work** — small prey, killed on the spot
 - **Ideas** — captured for future hunts, not formalized
+- **Questions** — what we're trying to learn, with sources
 - **Decisions** (ADRs) — records of choices that shaped the ontology
 - **Ontology updates** — entities, relationships, rules crystallized
 - **Intents** — big prey described, ready for agents or co-founders
@@ -172,6 +173,11 @@ flowchart TD
     HUNT -->|not ripe| IDEA[idea]
     IDEA -->|incubation| HUNT
 
+    HUNT -->|what is true?| QUESTION[question]
+    QUESTION -->|answered + verified| ONTOLOGY
+    QUESTION -->|answered + verified| ADR
+    QUESTION -->|bigger question| HUNT
+
     HUNT -->|decision| ADR[ADR]
     ADR --> ONTOLOGY
 
@@ -199,6 +205,7 @@ flowchart TD
     style UNLEASH fill:#2196F3,color:#fff
     style VERIFY fill:#4CAF50,color:#fff
     style ONTOLOGY fill:#9C27B0,color:#fff
+    style QUESTION fill:#FF5722,color:#fff
     style SHIP fill:#E8F5E9,color:#000
     style ABANDON fill:#ffcdd2,color:#000
 ```
@@ -225,6 +232,30 @@ When an idea is ripe, it becomes a hunt. You open it, explore it,
 sharpen the ontology around it. If the ontology gets sharp enough,
 write an intent and unleash. If not, park it again. Some ideas
 ripen in days. Some take weeks. Some never ripen.
+
+### Questions
+
+What you're trying to learn. Sharper than ideas, not yet
+answerable — or answerable but not yet verified.
+
+A question captures three things: what you want to know, why
+it matters, and where the answer might live (sources). The
+sources matter because without them, answers are assertions.
+No solution survives without the question that produced it.
+No blog post, no conference talk, no PRFAQ. The question is
+what lets future-you evaluate whether the answer is still
+valid when conditions change.
+
+Questions accumulate across hunts. Some get answered in one
+session. Some take weeks. Answered questions don't get deleted
+— they get marked with the answer, the date, and the sources.
+This creates a research trail: what did we ask, what did we
+find, when, and based on what evidence.
+
+When a question is answered and verified, it becomes an
+ontology update (if structural) or a decision (if it resolved
+an open choice). When a question reveals a bigger question,
+that's a new hunt.
 
 ### Intents
 
@@ -269,6 +300,7 @@ What's alive? What has energy today?
 Entry points — not a priority list, energy decides:
 
 - Ideas — something might be ripe now
+- Questions — something might now be answerable
 - Intents in progress — output to verify
 - The ontology — something might need sharpening
 - Conversation history — the AI partner remembers
@@ -280,6 +312,7 @@ Don't deliberate. Pick whatever pulls you. Go.
 Five minutes. Not formalizing — tagging.
 
 - Ideas parked? → idea files
+- Questions surfaced? → question files (with sources)
 - Decisions made? → ADRs
 - Ontology sharpened? → committed
 - Work identified? → intent files
