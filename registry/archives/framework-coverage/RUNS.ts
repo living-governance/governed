@@ -8,7 +8,7 @@ export const evaluationRuns: EvaluationRun[] = [
     id: 'framework-coverage-2026-04-05',
     artifactId: 'framework-coverage',
     date: new Date('2026-04-05'),
-    evaluatedBy: '@claude',
+    evaluatedBy: '@agent',
     evaluatorType: 'agent',
     trigger: 'manual',
     previousArchive: 'registry/archives/framework-coverage/2026-02-20.ts',

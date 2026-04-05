@@ -298,7 +298,7 @@ export const frameworkCoverageKnowledge = {
   // Living Knowledge metadata
   evaluation: {
     date: new Date('2026-04-05'),
-    by: '@claude',
+    by: '@agent',
     verificationStatus: 'agent-evaluated' as const,
     validDays: 90,
     methodology: `Binary Scoring Framework for Security Frameworks (100 points total):
@@ -750,7 +750,7 @@ export const frameworkCoverageKnowledge = {
     'owasp-agentic-threats-v1': {
       frameworkName: 'OWASP Top 10 for Agentic Applications 2026 + Threats & Mitigations v1.1',
       evaluationDate: new Date('2026-04-05'),
-      evaluatedBy: '@claude',
+      evaluatedBy: '@agent',
 
       scores: {
         threatIdentification: 40,  // All 8 threats covered via ASI01-ASI10
@@ -838,7 +838,7 @@ export const frameworkCoverageKnowledge = {
     'nist-ai-rmf-v1': {
       frameworkName: 'NIST AI RMF 1.0 + GenAI Profile + Cyber AI Profile (Draft) + COSAiS (Draft)',
       evaluationDate: new Date('2026-04-05'),
-      evaluatedBy: '@claude',
+      evaluatedBy: '@agent',
 
       scores: {
         threatIdentification: 0,   // No agentic-specific threats in published docs
@@ -928,7 +928,7 @@ export const frameworkCoverageKnowledge = {
     'iso-27090-draft': {
       frameworkName: 'ISO/IEC DIS 27090 - AI Cybersecurity (Draft)',
       evaluationDate: new Date('2026-04-05'),
-      evaluatedBy: '@claude',
+      evaluatedBy: '@agent',
       
       scores: {
         threatIdentification: 0,   // Unknown - draft content not available
@@ -1016,7 +1016,7 @@ export const frameworkCoverageKnowledge = {
     'iso-42001-2023': {
       frameworkName: 'ISO/IEC 42001:2023 - AI Management Systems',
       evaluationDate: new Date('2026-04-05'),
-      evaluatedBy: '@claude',
+      evaluatedBy: '@agent',
       
       scores: {
         threatIdentification: 0,   // No agentic-specific threats identified
@@ -1107,7 +1107,7 @@ export const frameworkCoverageKnowledge = {
     'mitre-atlas-v4': {
       frameworkName: 'MITRE ATLAS - Adversarial Threat Landscape for AI Systems (v5.5.0, March 2026)',
       evaluationDate: new Date('2026-04-05'),
-      evaluatedBy: '@claude',
+      evaluatedBy: '@agent',
 
       scores: {
         threatIdentification: 35,  // Covers memory, agents, MCP, supply chain; missing temporal drift
@@ -1197,7 +1197,7 @@ export const frameworkCoverageKnowledge = {
     'cis-controls-v8': {
       frameworkName: 'CIS Critical Security Controls v8.1',
       evaluationDate: new Date('2026-04-05'),
-      evaluatedBy: '@claude',
+      evaluatedBy: '@agent',
       
       scores: {
         threatIdentification: 0,   // No AI-specific threats
@@ -1288,7 +1288,7 @@ export const frameworkCoverageKnowledge = {
     'mitre-attack-v15': {
       frameworkName: 'MITRE ATT&CK v18.1',
       evaluationDate: new Date('2026-04-05'),
-      evaluatedBy: '@claude',
+      evaluatedBy: '@agent',
       
       scores: {
         threatIdentification: 0,   // No AI threats
