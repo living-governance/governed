@@ -20,7 +20,7 @@ import { evaluationRuns } from "../archives/framework-coverage/RUNS"
 import { 
   AlertCircle, Clock, ExternalLink, Download, Link,
   Info, Cloud, TrendingUp, ChevronLeft, Home, Check, Copy,
-  Linkedin, GitCommit
+  Linkedin, GitCommit, ChevronDown, ChevronUp
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useState } from "react"
@@ -38,6 +38,7 @@ export function FrameworkCoverage({ initialView = 'main' }: FrameworkCoveragePro
   const [currentView, setCurrentView] = useState<ViewType>(initialView)
   const [copiedCommand, setCopiedCommand] = useState<'cli' | 'npm' | null>(null)
   const [showLinkedInToast, setShowLinkedInToast] = useState(false)
+  const [expandedRun, setExpandedRun] = useState<string | null>(null)
   
   // Get the most recent evaluation date from all evaluations
   const getMostRecentEvaluation = () => {
@@ -669,30 +670,89 @@ export function FrameworkCoverage({ initialView = 'main' }: FrameworkCoveragePro
                         </div>
                         <p className="text-xs text-muted-foreground">{entry.label}</p>
 
-                        {/* Run log summary if available */}
-                        {run && (
-                          <div className="mt-2 p-2 rounded bg-muted/50 text-xs space-y-1">
-                            <p>{run.summary.length > 200 ? run.summary.substring(0, 200) + '...' : run.summary}</p>
-                            {Object.keys(run.scoreDeltas).length > 0 ? (
-                              <div className="flex gap-2 mt-1">
-                                {Object.entries(run.scoreDeltas).map(([key, delta]) => (
-                                  <Badge key={key} variant="outline" className={cn(
-                                    "text-[10px]",
-                                    delta > 0 ? 'text-green-600' : delta < 0 ? 'text-red-600' : ''
-                                  )}>
-                                    {key}: {delta > 0 ? '+' : ''}{delta}
-                                  </Badge>
-                                ))}
-                              </div>
-                            ) : (
-                              <p className="text-muted-foreground italic">No score changes</p>
-                            )}
-                            <p className="text-muted-foreground">
-                              {run.sourcesChecked.length} sources checked •
-                              {run.sourcesChanged ? ' sources changed' : ' no source changes'}
-                            </p>
-                          </div>
-                        )}
+                        {/* Run log — expandable */}
+                        {run && (() => {
+                          const isExpanded = expandedRun === run.id
+                          return (
+                            <div className="mt-2 rounded bg-muted/50 text-xs">
+                              <button
+                                onClick={() => setExpandedRun(isExpanded ? null : run.id)}
+                                className="w-full p-2 flex items-center justify-between text-left hover:bg-muted/80 rounded"
+                              >
+                                <span className="flex items-center gap-2">
+                                  <span>{run.sourcesChecked.length} sources checked</span>
+                                  <span className="text-muted-foreground">•</span>
+                                  <span>{run.sourcesChanged ? 'sources changed' : 'no changes'}</span>
+                                  {Object.keys(run.scoreDeltas).length > 0 ? (
+                                    <span className="text-muted-foreground">• scores moved</span>
+                                  ) : (
+                                    <span className="text-muted-foreground italic">• no score changes</span>
+                                  )}
+                                </span>
+                                {isExpanded
+                                  ? <ChevronUp className="h-3 w-3 text-muted-foreground" />
+                                  : <ChevronDown className="h-3 w-3 text-muted-foreground" />
+                                }
+                              </button>
+
+                              {isExpanded && (
+                                <div className="px-2 pb-2 space-y-3">
+                                  {/* Full summary */}
+                                  <div>
+                                    <p className="font-medium mb-1">Summary</p>
+                                    <p className="text-muted-foreground">{run.summary}</p>
+                                  </div>
+
+                                  {/* Score table */}
+                                  <div>
+                                    <p className="font-medium mb-1">Scores</p>
+                                    <div className="grid grid-cols-2 gap-1">
+                                      {frameworks.map(f => (
+                                        <div key={f.id} className="flex items-center justify-between px-1">
+                                          <span className="text-muted-foreground truncate mr-2">{f.name.split(' ')[0]}</span>
+                                          <span className="flex items-center gap-1">
+                                            <span>{Math.round(f.aiCoverageScore * 100)}</span>
+                                            {run.scoreDeltas[f.id] !== undefined && run.scoreDeltas[f.id] !== 0 && (
+                                              <Badge variant="outline" className={cn(
+                                                "text-[10px] px-1",
+                                                run.scoreDeltas[f.id] > 0 ? 'text-green-600' : 'text-red-600'
+                                              )}>
+                                                {run.scoreDeltas[f.id] > 0 ? '+' : ''}{run.scoreDeltas[f.id]}
+                                              </Badge>
+                                            )}
+                                          </span>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </div>
+
+                                  {/* Sources checked */}
+                                  <div>
+                                    <p className="font-medium mb-1">Sources checked</p>
+                                    <div className="space-y-0.5">
+                                      {run.sourcesChecked.map((src, i) => (
+                                        <a
+                                          key={i}
+                                          href={src}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                          className="block text-muted-foreground hover:text-foreground truncate"
+                                        >
+                                          {src.replace('https://', '').replace('http://', '')}
+                                        </a>
+                                      ))}
+                                    </div>
+                                  </div>
+
+                                  {/* Trigger */}
+                                  <p className="text-muted-foreground">
+                                    Trigger: {run.trigger} • Evaluator: {run.evaluatorType}
+                                  </p>
+                                </div>
+                              )}
+                            </div>
+                          )
+                        })()}
                       </div>
                     </div>
                   )
