@@ -11,21 +11,22 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { 
+import {
   frameworkCoverageKnowledge,
   getConfidenceStatus,
-  getLatestChange 
+  getLatestChange
 } from "../knowledge/framework-coverage"
+import { evaluationRuns } from "../archives/framework-coverage/RUNS"
 import { 
-  AlertCircle, Clock, ExternalLink, Download, Link, 
+  AlertCircle, Clock, ExternalLink, Download, Link,
   Info, Cloud, TrendingUp, ChevronLeft, Home, Check, Copy,
-  Linkedin
+  Linkedin, GitCommit
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useState } from "react"
 import Image from "next/image"
 
-type ViewType = 'main' | 'methodology' | 'sources' | 'cloud' | 'history' | 'download'
+type ViewType = 'main' | 'methodology' | 'sources' | 'cloud' | 'timeline' | 'evaluations' | 'download'
 
 interface FrameworkCoverageProps {
   initialView?: ViewType
@@ -114,7 +115,8 @@ export function FrameworkCoverage({ initialView = 'main' }: FrameworkCoveragePro
       <div className="w-px h-6 bg-border mx-1" /> {/* Separator */}
       <IconButton icon={Info} view="methodology" label="Methodology" isActive={currentView === 'methodology'} />
       <IconButton icon={Cloud} view="cloud" label="Cloud Guidance" isActive={currentView === 'cloud'} />
-      <IconButton icon={TrendingUp} view="history" label="History" isActive={currentView === 'history'} />
+      <IconButton icon={TrendingUp} view="timeline" label="Timeline" isActive={currentView === 'timeline'} />
+      <IconButton icon={GitCommit} view="evaluations" label="Evaluations" isActive={currentView === 'evaluations'} />
       <IconButton icon={Link} view="sources" label="Sources" isActive={currentView === 'sources'} />
       <IconButton icon={Download} view="download" label="Download" isActive={currentView === 'download'} />
     </div>
@@ -462,7 +464,7 @@ export function FrameworkCoverage({ initialView = 'main' }: FrameworkCoveragePro
           </>
         )
         
-      case 'history':
+      case 'timeline':
         // Get timeline data from knowledge
         const timeline = frameworkCoverageKnowledge.timeline || []
         
@@ -597,6 +599,115 @@ export function FrameworkCoverage({ initialView = 'main' }: FrameworkCoveragePro
           </>
         )
         
+      case 'evaluations':
+        // Archive metadata — hardcoded since archives are static files
+        const archiveEntries = [
+          { date: '2025-04-15', label: 'Initial evaluation', evaluatedBy: '@tsynode', verificationStatus: 'human-verified' },
+          { date: '2025-08-10', label: 'Q3 2025 re-evaluation', evaluatedBy: '@tsynode', verificationStatus: 'human-verified' },
+          { date: '2026-02-20', label: 'Q1 2026 re-evaluation', evaluatedBy: '@tsynode', verificationStatus: 'human-verified' },
+          { date: '2026-04-05', label: 'Current evaluation', evaluatedBy: '@agent', verificationStatus: evaluation.verificationStatus || 'human-verified' },
+        ]
+
+        // Try to use RUNS.ts data, fall back gracefully
+        const runs = evaluationRuns || []
+
+        return (
+          <>
+            <p className="font-medium mb-4">Evaluation History</p>
+            <div className="space-y-4">
+              {/* Current status */}
+              <div className="p-3 rounded-lg border bg-muted/50">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-sm font-medium">Current Status</span>
+                  <Badge variant="outline" className={cn(
+                    "text-xs",
+                    confidenceStatus.confidence >= 0.7 ? 'border-green-300 dark:border-green-700' :
+                    confidenceStatus.confidence >= 0.5 ? 'border-yellow-300 dark:border-yellow-700' :
+                    'border-red-300 dark:border-red-700'
+                  )}>
+                    {confidenceStatus.status.split(' - ')[0]}
+                  </Badge>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  {confidenceStatus.daysUntilStale}d until review • {evaluation.validDays}d validity window
+                </p>
+              </div>
+
+              {/* Evaluation timeline */}
+              <div className="space-y-3">
+                {archiveEntries.slice().reverse().map((entry, idx) => {
+                  // Find matching run log entry
+                  const run = runs.find(r => r.date.toISOString().startsWith(entry.date))
+
+                  return (
+                    <div key={entry.date} className="relative pl-6 pb-3 border-l border-border last:border-l-0">
+                      {/* Dot */}
+                      <div className={cn(
+                        "absolute left-[-5px] top-1 w-[9px] h-[9px] rounded-full border-2",
+                        idx === 0
+                          ? "bg-primary border-primary"
+                          : "bg-background border-muted-foreground"
+                      )} />
+
+                      {/* Entry */}
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-medium">{entry.date}</span>
+                          <Badge variant="outline" className={cn(
+                            "text-[10px]",
+                            entry.verificationStatus === 'agent-evaluated'
+                              ? 'border-yellow-400 dark:border-yellow-600'
+                              : entry.verificationStatus === 'human-disputed'
+                              ? 'border-red-400 dark:border-red-600'
+                              : 'border-green-300 dark:border-green-700'
+                          )}>
+                            {entry.verificationStatus === 'agent-evaluated' ? 'Agent' :
+                             entry.verificationStatus === 'human-disputed' ? 'Disputed' :
+                             'Verified'}
+                          </Badge>
+                          <span className="text-xs text-muted-foreground">by {entry.evaluatedBy}</span>
+                        </div>
+                        <p className="text-xs text-muted-foreground">{entry.label}</p>
+
+                        {/* Run log summary if available */}
+                        {run && (
+                          <div className="mt-2 p-2 rounded bg-muted/50 text-xs space-y-1">
+                            <p>{run.summary.length > 200 ? run.summary.substring(0, 200) + '...' : run.summary}</p>
+                            {Object.keys(run.scoreDeltas).length > 0 ? (
+                              <div className="flex gap-2 mt-1">
+                                {Object.entries(run.scoreDeltas).map(([key, delta]) => (
+                                  <Badge key={key} variant="outline" className={cn(
+                                    "text-[10px]",
+                                    delta > 0 ? 'text-green-600' : delta < 0 ? 'text-red-600' : ''
+                                  )}>
+                                    {key}: {delta > 0 ? '+' : ''}{delta}
+                                  </Badge>
+                                ))}
+                              </div>
+                            ) : (
+                              <p className="text-muted-foreground italic">No score changes</p>
+                            )}
+                            <p className="text-muted-foreground">
+                              {run.sourcesChecked.length} sources checked •
+                              {run.sourcesChanged ? ' sources changed' : ' no source changes'}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+
+              {/* Archive info */}
+              <div className="border-t pt-3 text-xs text-muted-foreground">
+                <p>{archiveEntries.length} evaluations archived • {runs.length} run{runs.length !== 1 ? 's' : ''} logged</p>
+                <p className="mt-1">Archives: registry/archives/framework-coverage/</p>
+              </div>
+            </div>
+          </>
+        )
+
       case 'download':
         // Generate download functions
         const downloadJSON = () => {
