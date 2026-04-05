@@ -813,15 +813,20 @@ ${rankedFrameworks.slice(0, 3).map((f, i) =>
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger>
-                  <Badge 
+                  <Badge
                     variant="outline"
                     className={cn(
                       "text-[10px]",
+                      (evaluation as { verificationStatus?: string }).verificationStatus === 'agent-evaluated'
+                        ? 'border-yellow-400 dark:border-yellow-600' :
                       confidenceStatus.confidence >= 0.7 ? 'border-green-300 dark:border-green-700' :
                       confidenceStatus.confidence >= 0.5 ? 'border-yellow-300 dark:border-yellow-700' :
                       'border-red-300 dark:border-red-700'
                     )}
                   >
+                    {(evaluation as { verificationStatus?: string }).verificationStatus === 'agent-evaluated' && (
+                      <span className="mr-1" title="Agent-evaluated">A</span>
+                    )}
                     <Clock className="h-3 w-3 mr-1" />
                     {confidenceStatus.daysUntilStale}d
                   </Badge>
@@ -829,6 +834,12 @@ ${rankedFrameworks.slice(0, 3).map((f, i) =>
                 <TooltipContent>
                   <p>{confidenceStatus.status}</p>
                   <p className="text-xs">Evaluated {latestEvaluation.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} by {latestEvaluation.by}</p>
+                  {(evaluation as { verificationStatus?: string }).verificationStatus === 'agent-evaluated' && (
+                    <p className="text-xs text-yellow-600 dark:text-yellow-400">Agent-evaluated — awaiting human review</p>
+                  )}
+                  {(evaluation as { verificationStatus?: string }).verificationStatus === 'human-disputed' && (
+                    <p className="text-xs text-red-600 dark:text-red-400">Human disputed — see archive for agent version</p>
+                  )}
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>

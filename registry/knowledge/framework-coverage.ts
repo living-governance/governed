@@ -43,7 +43,7 @@ export interface DetailedEvaluation {
 }
 
 export const frameworkCoverageKnowledge = {
-  id: 'framework-coverage-2026-q1',
+  id: 'framework-coverage-2026-q2',
   name: 'Security Framework AI Coverage Analysis',
   
   // Cloud implementation guidance
@@ -297,8 +297,9 @@ export const frameworkCoverageKnowledge = {
   
   // Living Knowledge metadata
   evaluation: {
-    date: new Date('2026-02-20'),
-    by: '@tsynode',
+    date: new Date('2026-04-05'),
+    by: '@claude',
+    verificationStatus: 'agent-evaluated' as const,
     validDays: 90,
     methodology: `Binary Scoring Framework for Security Frameworks (100 points total):
     
@@ -602,6 +603,12 @@ export const frameworkCoverageKnowledge = {
       framework: 'MITRE ATLAS',
       change: 'OpenClaw investigation published - discovered 7 new agent-specific techniques from AI-first ecosystems',
       confidence: 'high' // CTID blog post February 9, 2026
+    },
+    {
+      date: new Date('2026-03-30'),
+      framework: 'MITRE ATLAS',
+      change: 'ATLAS v5.5.0 released - Machine Compromise techniques (T0112) targeting local AI agents, AI Supply Chain Rug Pull (T0109), AI ClickFix case study (CS0055), model distillation case study (CS0056)',
+      confidence: 'high' // GitHub CHANGELOG.md confirms v5.5.0 release date
     }
   ],
   
@@ -609,10 +616,10 @@ export const frameworkCoverageKnowledge = {
   metadata: {
     description: 'Shows how well security frameworks address AI and MCP-specific threats',
     details: [
-      'Evaluated February 2026 with latest framework versions',
-      'OWASP Top 10 for Agentic Applications (Dec 2025) and MITRE ATLAS (16 tactics, 84+ techniques) lead coverage',
-      'ATLAS now includes MCP-specific case studies, 14+ agentic techniques (Oct 2025), and OpenClaw investigation (Feb 2026)',
-      'OWASP MCP Top 10 in beta (v0.1) with 10 defined vulnerabilities',
+      'Agent-evaluated April 2026 — sources checked, methodology re-applied (ADR-014)',
+      'OWASP Top 10 for Agentic Applications (Dec 2025) and MITRE ATLAS v5.5.0 (Mar 2026) lead coverage',
+      'ATLAS v5.5.0: Machine Compromise, AI Supply Chain, MCP-specific case studies (CS0053-CS0056), 34+ mitigations',
+      'OWASP MCP Top 10 still in beta (v0.1) with 10 defined vulnerabilities',
       'Color-coded by coverage: red (<40%), yellow (40-70%), green (>70%)'
     ],
     category: 'compliance',
@@ -672,8 +679,8 @@ export const frameworkCoverageKnowledge = {
       dataSource: 'https://github.com/mitre-attack/attack-data-model',  // GitHub data
       aiCoverageScore: 0.0,  // 0/100 from detailed evaluation
       status: 'no-guidance' as const,
-      gaps: ['Only T1588.007 (Obtain Capabilities: AI) — no agentic AI coverage', 'Defers to MITRE ATLAS for AI/ML threats by design', 'No MCP, tool calling, or agent security'],
-      lastFrameworkUpdate: '2025-10'  // v18.1 release
+      gaps: ['Only T1588.007 (Obtain Capabilities: AI) — no agentic AI coverage', 'Defers to MITRE ATLAS for AI/ML threats by design', 'No MCP, tool calling, or agent security', 'v19 releasing April 28 2026 — no AI content announced'],
+      lastFrameworkUpdate: '2025-10'  // v18.1 release; v19 expected April 28, 2026
     },
     {
       id: 'mitre-atlas',
@@ -683,8 +690,8 @@ export const frameworkCoverageKnowledge = {
       dataSource: 'https://github.com/mitre-atlas/atlas-data',  // GitHub data
       aiCoverageScore: 0.90,  // 90/100 from detailed evaluation
       status: 'active' as const,
-      gaps: ['Limited response/remediation procedures', 'No temporal behavioral drift coverage'],
-      lastFrameworkUpdate: '2026-02'  // Jan 2026 update + OpenClaw investigation (Feb 2026). Version tag unconfirmed; latest tagged v5.1.1 Nov 2025
+      gaps: ['No temporal behavioral drift coverage'],
+      lastFrameworkUpdate: '2026-03'  // v5.5.0 released March 30, 2026
     },
     {
       id: 'cis-controls',
@@ -707,7 +714,7 @@ export const frameworkCoverageKnowledge = {
   
   insights: [
     'Two frameworks now lead: OWASP (100/100) and MITRE ATLAS (90/100) — up from one in mid-2025',
-    'ATLAS expanded massively: 14 agentic techniques (Oct 2025), MCP coverage + OpenClaw investigation (Feb 2026) — now 16 tactics, 84+ techniques',
+    'ATLAS v5.5.0 (Mar 2026): 4 major releases since Dec 2025 added Machine Compromise, MCP case studies, AI supply chain attacks, 56+ case studies total',
     'OWASP Top 10 for Agentic Applications (Dec 2025) created by 100+ experts is the definitive agentic security list',
     'NIST is building AI security infrastructure (Cyber AI Profile, COSAiS) but published docs still lack agentic content',
     'ISO/IEC 42001:2023 unchanged since 2023 — predates agentic AI era',
@@ -726,24 +733,24 @@ export const frameworkCoverageKnowledge = {
   ],
   
   sources: [
-    { name: 'OWASP GenAI Project Site', url: 'https://genai.owasp.org/', date: new Date('2026-02-20') },
+    { name: 'OWASP GenAI Project Site', url: 'https://genai.owasp.org/', date: new Date('2026-04-05') },
     { name: 'OWASP Top 10 for Agentic Applications 2026', url: 'https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/', date: new Date('2025-12-09') },
     { name: 'OWASP Agentic AI Threats and Mitigations v1.1', url: 'https://genai.owasp.org/resource/agentic-ai-threats-and-mitigations/', date: new Date('2025-12-09') },
     { name: 'OWASP Multi-Agentic System Threat Modeling Guide v1.0', url: 'https://genai.owasp.org/resource/multi-agentic-system-threat-modeling-guide-v1-0/', date: new Date('2025-04-01') },
     { name: 'OWASP MCP Top 10 (Beta v0.1)', url: 'https://owasp.org/www-project-mcp-top-10/', date: new Date('2025-12-01') },
-    { name: 'MITRE ATLAS CHANGELOG (Jan 2026 update)', url: 'https://github.com/mitre-atlas/atlas-data/blob/main/CHANGELOG.md', date: new Date('2026-01-15') },
+    { name: 'MITRE ATLAS CHANGELOG (v5.5.0)', url: 'https://github.com/mitre-atlas/atlas-data/blob/main/CHANGELOG.md', date: new Date('2026-03-30') },
     { name: 'MITRE ATLAS OpenClaw Investigation', url: 'https://ctid.mitre.org/blog/2026/02/09/mitre-atlas-openclaw-investigation/', date: new Date('2026-02-09') },
     { name: 'NIST AI Risk Management Framework 1.0', url: 'https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.100-1.pdf', date: new Date('2023-01-26') },
     { name: 'NIST Cyber AI Profile (IR 8596 Draft)', url: 'https://csrc.nist.gov/pubs/ir/8596/iprd', date: new Date('2025-12-16') },
-    { name: 'NIST COSAiS - Control Overlays for AI', url: 'https://csrc.nist.gov/projects/cosais', date: new Date('2025-08-14') }
+    { name: 'NIST COSAiS - Control Overlays for AI (annotated outline Jan 2026)', url: 'https://csrc.nist.gov/projects/cosais', date: new Date('2026-01-08') }
   ],
   
   // Detailed framework evaluations using our binary scoring methodology
   detailedEvaluations: {
     'owasp-agentic-threats-v1': {
       frameworkName: 'OWASP Top 10 for Agentic Applications 2026 + Threats & Mitigations v1.1',
-      evaluationDate: new Date('2026-02-20'),
-      evaluatedBy: '@tsynode',
+      evaluationDate: new Date('2026-04-05'),
+      evaluatedBy: '@claude',
 
       scores: {
         threatIdentification: 40,  // All 8 threats covered via ASI01-ASI10
@@ -830,8 +837,8 @@ export const frameworkCoverageKnowledge = {
     
     'nist-ai-rmf-v1': {
       frameworkName: 'NIST AI RMF 1.0 + GenAI Profile + Cyber AI Profile (Draft) + COSAiS (Draft)',
-      evaluationDate: new Date('2026-02-20'),
-      evaluatedBy: '@tsynode',
+      evaluationDate: new Date('2026-04-05'),
+      evaluatedBy: '@claude',
 
       scores: {
         threatIdentification: 0,   // No agentic-specific threats in published docs
@@ -920,8 +927,8 @@ export const frameworkCoverageKnowledge = {
     
     'iso-27090-draft': {
       frameworkName: 'ISO/IEC DIS 27090 - AI Cybersecurity (Draft)',
-      evaluationDate: new Date('2026-02-20'),
-      evaluatedBy: '@tsynode',
+      evaluationDate: new Date('2026-04-05'),
+      evaluatedBy: '@claude',
       
       scores: {
         threatIdentification: 0,   // Unknown - draft content not available
@@ -1008,8 +1015,8 @@ export const frameworkCoverageKnowledge = {
     
     'iso-42001-2023': {
       frameworkName: 'ISO/IEC 42001:2023 - AI Management Systems',
-      evaluationDate: new Date('2026-02-20'),
-      evaluatedBy: '@tsynode',
+      evaluationDate: new Date('2026-04-05'),
+      evaluatedBy: '@claude',
       
       scores: {
         threatIdentification: 0,   // No agentic-specific threats identified
@@ -1098,15 +1105,15 @@ export const frameworkCoverageKnowledge = {
     },
     
     'mitre-atlas-v4': {
-      frameworkName: 'MITRE ATLAS - Adversarial Threat Landscape for AI Systems (latest confirmed tag: v5.1.1, Nov 2025; Jan/Feb 2026 updates applied)',
-      evaluationDate: new Date('2026-02-20'),
-      evaluatedBy: '@tsynode',
+      frameworkName: 'MITRE ATLAS - Adversarial Threat Landscape for AI Systems (v5.5.0, March 2026)',
+      evaluationDate: new Date('2026-04-05'),
+      evaluatedBy: '@claude',
 
       scores: {
-        threatIdentification: 35,  // Now covers memory, agents, MCP; missing temporal drift
-        practicalGuidance: 25,     // New mitigations (M0032, M0033) + attack flows
-        evidenceQuality: 20,       // Excellent case studies including MCP/Cursor exfil
-        completeness: 10,          // Detection + new agent-specific mitigations
+        threatIdentification: 35,  // Covers memory, agents, MCP, supply chain; missing temporal drift
+        practicalGuidance: 25,     // Mitigations M0032-M0034 + attack flows; no prescriptive checklists
+        evidenceQuality: 20,       // 56+ case studies including MCP-specific attacks
+        completeness: 10,          // Detection + agent-specific mitigations
         total: 90
       },
 
@@ -1114,48 +1121,47 @@ export const frameworkCoverageKnowledge = {
       breakdown: {
         // THREAT IDENTIFICATION (35/40)
         'memory-attacks': true,           // AI Agent Memory manipulation technique (Oct 2025)
-        'tool-api-abuse': true,           // T0053 + T0098 Tool Credential Harvesting + T0099 Tool Data Poisoning
-        'privilege-escalation': true,      // T0054 LLM Jailbreak + T0105 Escape to Host
-        'multi-agent-threats': true,       // T0103 Deploy AI Agent + T0108 AI Agent techniques
+        'tool-api-abuse': true,           // T0053 + T0098 Tool Credential Harvesting + T0099 Tool Data Poisoning + T0108 AI Agent Tool Poisoning
+        'privilege-escalation': true,      // T0054 LLM Jailbreak + T0105 Escape to Host + T0106 Exploitation for Credential Access
+        'multi-agent-threats': true,       // T0103 Deploy AI Agent + T0108 AI Agent + T0112 Machine Compromise (Local AI Agent)
         'temporal-behaviors': false,       // No behavioral drift coverage
-        'human-manipulation': true,        // T0052 Phishing via LLM + T0100 Agent Clickbait
-        'communication-poisoning': true,   // T0070 RAG Poisoning + AI Agent Context Poisoning
-        'identity-auth-threats': true,    // T0056 System prompt extraction + agent identity
+        'human-manipulation': true,        // T0052 Phishing via LLM + T0100 Agent Clickbait + CS0055 AI ClickFix
+        'communication-poisoning': true,   // T0070 RAG Poisoning + AI Agent Context Poisoning + T0104 Publish Poisoned AI Agent Tool
+        'identity-auth-threats': true,    // T0056 System prompt extraction + agent identity + T0083.003 Discover AI Agent Configuration
 
         // PRACTICAL GUIDANCE (25/30)
-        'clear-patterns': true,           // Matrix of 16 tactics / 84+ techniques (incl. Lateral Movement AML.TA0015)
-        'specific-tools': true,           // 32+ mitigations incl. M0031 Memory Hardening; agent-specific mitigations expanding
-        'checklists': false,             // Tactics not prescriptive checklists
-        'architecture-diagrams': true,    // Attack flow diagrams + OpenClaw investigation
+        'clear-patterns': true,           // Matrix of 16 tactics with extensive technique coverage
+        'specific-tools': true,           // 34+ mitigations incl. M0031 Memory Hardening, M0032 Segmentation, M0033 Input/Output Validation, M0034 Deepfake Detection
+        'checklists': false,             // Tactics not prescriptive checklists (by design)
+        'architecture-diagrams': true,    // Attack flow diagrams + OpenClaw investigation + MCP attack chains
         'step-by-step-instructions': true, // Agent-specific mitigations with implementation detail
 
         // EVIDENCE QUALITY (20/20)
         'credible-research': true,        // Academic partnerships + CTID + Zenity collab
-        'real-incidents': true,           // 45+ case studies incl. CS0048-CS0051 (OpenClaw); MCP/Cursor exfil reported but CS0045 ID unverified
+        'real-incidents': true,           // 56+ case studies incl. CS0045-CS0056 covering MCP server attacks, AI agent hijacking, model distillation
         'attack-patterns': true,          // Detailed TTPs with procedures
         'detection-guidance': true,       // Mitigations documented per technique
 
         // COMPLETENESS (10/10)
         'detection-methods': true,        // Detection guidance per technique
-        'response-procedures': true       // 32+ mitigations incl. M0031 (Memory Hardening); M0032/M0033 IDs unverified but agent mitigations expanding
+        'response-procedures': true       // 34+ mitigations including agent-specific segmentation and I/O validation
       },
 
       strengths: [
-        'Most comprehensive AI/ML threat framework with 16 tactics, 84+ techniques, 56+ sub-techniques (as of v5.1.0 Nov 2025, plus Jan/Feb 2026 additions)',
-        'Oct 2025: 14 new agentic AI techniques added via Zenity Labs collaboration (v4.6.0/data v5.0.0)',
-        'Jan 2026: New agent techniques confirmed: T0098 (Tool Credential Harvesting), T0099 (Tool Data Poisoning), T0100 (Agent Clickbait), T0102 (Generate Malicious Commands)',
-        'Feb 2026: OpenClaw investigation discovered 7 new agent-specific techniques (CS0048-CS0051)',
-        'v5.1.0 added Lateral Movement tactic (AML.TA0015) and 32+ mitigations including M0031 (Memory Hardening)',
-        '45+ real-world case studies with growing MCP and agent coverage',
-        'Active development with monthly updates and strong industry partnerships (Zenity, CTID)'
+        'Most comprehensive AI/ML threat framework — 4 major releases since Dec 2025 (v5.2.0 through v5.5.0)',
+        'v5.5.0 (Mar 2026): Machine Compromise techniques (T0112) targeting local AI agents, AI Supply Chain Rug Pull (T0109), AI ClickFix case study (CS0055)',
+        'v5.4.0 (Feb 2026): OpenClaw investigation with 4 case studies (CS0048-CS0051), Escape to Host (T0105), Deploy AI Agent (T0103)',
+        'v5.2.0 (Dec 2025): 7 new agent techniques (T0096-T0102), 3 new mitigations (M0032-M0034), comprehensive mitigation overhaul (30 updates)',
+        'MCP-specific case studies: Poisoned Postmark MCP Server (CS0053), Remote Poisoned MCP Tool exfiltration (CS0054), Cursor MCP exfiltration (CS0045)',
+        '56+ real-world case studies with deep MCP and agent coverage',
+        'Active monthly releases with strong industry partnerships (Zenity, CTID)'
       ],
 
       weaknesses: [
         'No temporal drift or behavioral evolution coverage',
-        'Agent techniques still expanding - coverage not yet complete',
+        'Rapid release cadence means some technique IDs may shift between versions',
         'Focuses on attack patterns more than defensive implementation',
-        'No prescriptive checklists (by design - it\'s a threat framework)',
-        'Some Jan 2026 technique IDs (T0103-T0105) and mitigation IDs (M0032, M0033) unverified from primary sources'
+        'No prescriptive checklists (by design - it\'s a threat framework)'
       ],
 
       scoringRationale: [
@@ -1163,35 +1169,35 @@ export const frameworkCoverageKnowledge = {
           dimension: 'threatIdentification',
           score: 35,
           maxScore: 40,
-          reasoning: 'ATLAS now covers most agentic categories with strong technique mapping, but temporal drift coverage remains limited.'
+          reasoning: 'ATLAS covers all agentic categories except temporal drift. v5.5.0 added Machine Compromise and Supply Chain techniques. Score unchanged — temporal behaviors remain the only gap.'
         },
         {
           dimension: 'practicalGuidance',
           score: 25,
           maxScore: 30,
-          reasoning: 'Mitigations and attack-flow detail are strong, but prescriptive checklist-style implementation guidance is intentionally limited.'
+          reasoning: 'Mitigations expanded to 34+ with agent-specific segmentation (M0032) and I/O validation (M0033). Still no prescriptive checklists by design.'
         },
         {
           dimension: 'evidenceQuality',
           score: 20,
           maxScore: 20,
-          reasoning: 'The framework is backed by credible research partnerships and extensive case-study evidence.'
+          reasoning: '56+ case studies now include MCP-specific attacks (CS0053-CS0054) and AI agent hijacking (CS0055). Evidence base is the strongest of any framework.'
         },
         {
           dimension: 'completeness',
           score: 10,
           maxScore: 10,
-          reasoning: 'Both detection and response guidance are available across mapped techniques.'
+          reasoning: 'Both detection and response guidance available. Agent-specific mitigations expanding with each release.'
         }
       ],
 
-      verdict: 'MITRE ATLAS has transformed into a comprehensive AI agent security framework. The Oct 2025 Zenity collaboration added 14 agentic techniques, and Jan/Feb 2026 releases brought further agent and MCP coverage including the OpenClaw investigation. With 16 tactics, 84+ techniques, 45+ case studies and growing agent-specific mitigations, ATLAS now rivals OWASP for agentic threat coverage while providing the strongest evidence base of any framework.'
+      verdict: 'MITRE ATLAS v5.5.0 (March 2026) continues rapid expansion of agentic AI coverage. Four major releases since December 2025 added Machine Compromise techniques, MCP-specific case studies, AI supply chain attacks, and agent I/O validation mitigations. Score remains 90/100 — temporal behavioral drift is the only uncovered category. With 56+ case studies and monthly releases, ATLAS provides the strongest evidence-backed threat intelligence for AI agents.'
     },
     
     'cis-controls-v8': {
       frameworkName: 'CIS Critical Security Controls v8.1',
-      evaluationDate: new Date('2026-02-20'),
-      evaluatedBy: '@tsynode',
+      evaluationDate: new Date('2026-04-05'),
+      evaluatedBy: '@claude',
       
       scores: {
         threatIdentification: 0,   // No AI-specific threats
@@ -1281,8 +1287,8 @@ export const frameworkCoverageKnowledge = {
     
     'mitre-attack-v15': {
       frameworkName: 'MITRE ATT&CK v18.1',
-      evaluationDate: new Date('2026-02-20'),
-      evaluatedBy: '@tsynode',
+      evaluationDate: new Date('2026-04-05'),
+      evaluatedBy: '@claude',
       
       scores: {
         threatIdentification: 0,   // No AI threats

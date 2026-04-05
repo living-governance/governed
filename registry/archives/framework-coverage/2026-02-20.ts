@@ -15,6 +15,13 @@ export interface Framework {
 // Add type for detailed evaluations
 export type DetailedEvaluationKey = 'owasp-agentic-threats-v1' | 'nist-ai-rmf-v1' | 'iso-27090-draft' | 'iso-42001-2023' | 'mitre-atlas-v4' | 'cis-controls-v8' | 'mitre-attack-v15';
 
+export interface ScoringRationale {
+  dimension: 'threatIdentification' | 'practicalGuidance' | 'evidenceQuality' | 'completeness';
+  score: number;
+  maxScore: number;
+  reasoning: string;
+}
+
 export interface DetailedEvaluation {
   frameworkName: string;
   evaluationDate: Date;
@@ -31,6 +38,7 @@ export interface DetailedEvaluation {
   };
   strengths: string[];
   weaknesses: string[];
+  scoringRationale: ScoringRationale[];
   verdict: string;
 }
 
@@ -402,6 +410,46 @@ export const frameworkCoverageKnowledge = {
     
     6. Update insights and recommendations based on new findings
   `,
+
+  // Scope declaration (C-03)
+  scope: {
+    appliesTo: [
+      'Comparative coverage scoring for published AI security frameworks used in agentic AI programs',
+      'Framework content that maps to the 19 binary criteria defined in evaluation.methodology',
+      'Publicly available guidance from OWASP, MITRE, NIST, ISO, and CIS sources'
+    ],
+    doesNotApplyTo: [
+      'Implementation assurance or certification of any specific environment',
+      'Live control validation, red teaming, or penetration testing outcomes',
+      'Frameworks without enough public material to evaluate beyond draft-level assumptions',
+      'Legal interpretation of regulatory obligations across jurisdictions'
+    ]
+  },
+
+  // Dissent and uncertainty record (C-04)
+  dissent: {
+    knownLimitations: [
+      'Binary scoring compresses nuance and can understate partial but useful guidance',
+      'Most evidence is document-based, not longitudinal field performance data',
+      'Some Jan/Feb 2026 ATLAS additions are partially verified and may change after official tagging',
+      'Single-evaluator scoring increases the risk of interpretation bias'
+    ],
+    deliberateExclusions: [
+      {
+        what: 'Certification-readiness scoring and organizational maturity grading',
+        why: 'This artifact evaluates framework content quality, not organization-specific implementation maturity'
+      },
+      {
+        what: 'Regional regulatory controls as scored criteria',
+        why: 'The model intentionally scores cross-framework technical/security coverage, not legal compliance completeness'
+      }
+    ],
+    openQuestions: [
+      'Should future versions weight criteria differently by deployment context (single-agent vs multi-agent)?',
+      'Should the model split draft frameworks into a separate non-comparable track?',
+      'How should temporal drift coverage be measured as standards begin publishing behavioral controls?'
+    ]
+  },
   
   // Framework evolution timeline - HIGH CONFIDENCE dates only
   // Sources verified from official announcements, press releases, and documentation
@@ -750,6 +798,33 @@ export const frameworkCoverageKnowledge = {
         'Rapidly evolving space may outpace document updates'
       ],
 
+      scoringRationale: [
+        {
+          dimension: 'threatIdentification',
+          score: 40,
+          maxScore: 40,
+          reasoning: 'ASI01-ASI10 plus companion OWASP documents explicitly map to all eight threat-identification criteria in this model.'
+        },
+        {
+          dimension: 'practicalGuidance',
+          score: 30,
+          maxScore: 30,
+          reasoning: 'OWASP provides concrete patterns, checklists, implementation guidance, and architecture artifacts for agentic systems.'
+        },
+        {
+          dimension: 'evidenceQuality',
+          score: 20,
+          maxScore: 20,
+          reasoning: 'The corpus cites credible research and incident-informed attack patterns with detection guidance per category.'
+        },
+        {
+          dimension: 'completeness',
+          score: 10,
+          maxScore: 10,
+          reasoning: 'Detection and response guidance are both present across the documented threat set.'
+        }
+      ],
+
       verdict: 'OWASP\'s Agentic AI security suite is the definitive reference for AI agent security. The Dec 2025 Top 10 for Agentic Applications (ASI01-ASI10), backed by 100+ experts, combined with the Threats & Mitigations v1.1 taxonomy and MAESTRO-based threat modeling guide, provides the most comprehensive and actionable coverage available.'
     },
     
@@ -813,6 +888,33 @@ export const frameworkCoverageKnowledge = {
         'Multi-agent coverage only in concept papers, not published guidance'
       ],
 
+      scoringRationale: [
+        {
+          dimension: 'threatIdentification',
+          score: 0,
+          maxScore: 40,
+          reasoning: 'Published NIST AI documents still do not enumerate the agentic threat categories used in this evaluation.'
+        },
+        {
+          dimension: 'practicalGuidance',
+          score: 20,
+          maxScore: 30,
+          reasoning: 'NIST provides strong general AI governance process guidance but limited agent-specific implementation detail.'
+        },
+        {
+          dimension: 'evidenceQuality',
+          score: 10,
+          maxScore: 20,
+          reasoning: 'Sources are credible and include monitoring concepts, but lack agentic incident and attack-pattern depth.'
+        },
+        {
+          dimension: 'completeness',
+          score: 0,
+          maxScore: 10,
+          reasoning: 'Agent-specific detection and response procedures are not yet operationalized in published artifacts.'
+        }
+      ],
+
       verdict: 'NIST is expanding its AI security ecosystem with the Cyber AI Profile (IR 8596, Dec 2025 draft) and COSAiS control overlays (which plan to cover multi-agent systems). However, published guidance still lacks agentic AI content. The AI RMF revision is underway but not yet released. Watch this space - NIST is moving in the right direction but not yet actionable for agent security.'
     },
     
@@ -872,6 +974,33 @@ export const frameworkCoverageKnowledge = {
         'Unknown coverage of agentic AI and multi-agent systems',
         'Guidance only - no testable "shall" requirements',
         'May not address latest threats like MCP attacks or tool poisoning'
+      ],
+
+      scoringRationale: [
+        {
+          dimension: 'threatIdentification',
+          score: 0,
+          maxScore: 40,
+          reasoning: 'Draft content is not publicly available, so threat identification coverage cannot be verified.'
+        },
+        {
+          dimension: 'practicalGuidance',
+          score: 0,
+          maxScore: 30,
+          reasoning: 'No published text is available to validate practical controls, tools, or checklists.'
+        },
+        {
+          dimension: 'evidenceQuality',
+          score: 0,
+          maxScore: 20,
+          reasoning: 'Evidence cannot be assessed before publication and source transparency.'
+        },
+        {
+          dimension: 'completeness',
+          score: 0,
+          maxScore: 10,
+          reasoning: 'Lifecycle completeness is unknown until the final standard is released.'
+        }
       ],
 
       verdict: 'ISO/IEC 27090 publication is now expected May 2026 with comment resolution starting June 2026. As guidance (not certifiable requirements), it will provide best practices for AI cybersecurity throughout the lifecycle. Its relevance to agentic AI and MCP threats remains unknown. Track development but rely on OWASP and ATLAS for current actionable guidance.'
@@ -937,7 +1066,34 @@ export const frameworkCoverageKnowledge = {
         'Limited technical security controls',
         'Focuses on ethics/governance over security'
       ],
-      
+
+      scoringRationale: [
+        {
+          dimension: 'threatIdentification',
+          score: 0,
+          maxScore: 40,
+          reasoning: 'ISO 42001 does not directly identify agentic threat categories in the scoring model.'
+        },
+        {
+          dimension: 'practicalGuidance',
+          score: 25,
+          maxScore: 30,
+          reasoning: 'The standard provides solid management-system patterns and checklists but lacks agent-security specifics and tooling.'
+        },
+        {
+          dimension: 'evidenceQuality',
+          score: 10,
+          maxScore: 20,
+          reasoning: 'It references credible standards and monitoring concepts but not agentic incidents or attack chains.'
+        },
+        {
+          dimension: 'completeness',
+          score: 0,
+          maxScore: 10,
+          reasoning: 'Agent-focused detection and response are not addressed with operational specificity.'
+        }
+      ],
+
       verdict: 'ISO/IEC 42001:2023 provides solid AI governance foundations but lacks agentic AI security coverage. As a pre-MCP era standard, it addresses traditional AI risks (bias, transparency) rather than modern agent threats. Useful for general AI management but insufficient for securing autonomous agents or multi-agent systems.'
     },
     
@@ -1000,6 +1156,33 @@ export const frameworkCoverageKnowledge = {
         'Focuses on attack patterns more than defensive implementation',
         'No prescriptive checklists (by design - it\'s a threat framework)',
         'Some Jan 2026 technique IDs (T0103-T0105) and mitigation IDs (M0032, M0033) unverified from primary sources'
+      ],
+
+      scoringRationale: [
+        {
+          dimension: 'threatIdentification',
+          score: 35,
+          maxScore: 40,
+          reasoning: 'ATLAS now covers most agentic categories with strong technique mapping, but temporal drift coverage remains limited.'
+        },
+        {
+          dimension: 'practicalGuidance',
+          score: 25,
+          maxScore: 30,
+          reasoning: 'Mitigations and attack-flow detail are strong, but prescriptive checklist-style implementation guidance is intentionally limited.'
+        },
+        {
+          dimension: 'evidenceQuality',
+          score: 20,
+          maxScore: 20,
+          reasoning: 'The framework is backed by credible research partnerships and extensive case-study evidence.'
+        },
+        {
+          dimension: 'completeness',
+          score: 10,
+          maxScore: 10,
+          reasoning: 'Both detection and response guidance are available across mapped techniques.'
+        }
       ],
 
       verdict: 'MITRE ATLAS has transformed into a comprehensive AI agent security framework. The Oct 2025 Zenity collaboration added 14 agentic techniques, and Jan/Feb 2026 releases brought further agent and MCP coverage including the OpenClaw investigation. With 16 tactics, 84+ techniques, 45+ case studies and growing agent-specific mitigations, ATLAS now rivals OWASP for agentic threat coverage while providing the strongest evidence base of any framework.'
@@ -1065,7 +1248,34 @@ export const frameworkCoverageKnowledge = {
         'No guidance for AI development lifecycle',
         'Asset inventory doesn\'t include AI models'
       ],
-      
+
+      scoringRationale: [
+        {
+          dimension: 'threatIdentification',
+          score: 0,
+          maxScore: 40,
+          reasoning: 'CIS Controls do not identify agentic AI threat categories in current releases.'
+        },
+        {
+          dimension: 'practicalGuidance',
+          score: 15,
+          maxScore: 30,
+          reasoning: 'Implementation groups and control guidance are useful for baseline cyber hygiene but not agentic contexts.'
+        },
+        {
+          dimension: 'evidenceQuality',
+          score: 10,
+          maxScore: 20,
+          reasoning: 'The controls are consensus-driven and evidence-informed for IT security, but not AI-specific attack evidence.'
+        },
+        {
+          dimension: 'completeness',
+          score: 0,
+          maxScore: 10,
+          reasoning: 'No AI-specific detection or response procedures are documented.'
+        }
+      ],
+
       verdict: 'CIS Controls v8.1 provides excellent general cybersecurity guidance but contains zero AI-specific content. The 18 controls focus entirely on traditional IT security without recognizing AI systems as requiring distinct security measures. Organizations using AI must supplement CIS Controls with AI-specific frameworks like OWASP or ATLAS.'
     },
     
@@ -1128,7 +1338,34 @@ export const frameworkCoverageKnowledge = {
         'Traditional IT/enterprise focus by design',
         'No plans to expand AI coverage beyond resource development'
       ],
-      
+
+      scoringRationale: [
+        {
+          dimension: 'threatIdentification',
+          score: 0,
+          maxScore: 40,
+          reasoning: 'ATT&CK does not model the agentic security threat categories used here beyond a single AI-resource sub-technique.'
+        },
+        {
+          dimension: 'practicalGuidance',
+          score: 0,
+          maxScore: 30,
+          reasoning: 'There is no practical implementation guidance in ATT&CK for securing agentic AI systems.'
+        },
+        {
+          dimension: 'evidenceQuality',
+          score: 0,
+          maxScore: 20,
+          reasoning: 'ATT&CK evidence quality for enterprise threats is high, but it does not contain corresponding AI-security evidence in scope.'
+        },
+        {
+          dimension: 'completeness',
+          score: 0,
+          maxScore: 10,
+          reasoning: 'Agent-specific detection and response procedures are outside ATT&CK scope and delegated to ATLAS.'
+        }
+      ],
+
       verdict: 'MITRE ATT&CK contains minimal AI content — T1588.007 (Obtain Capabilities: AI, added March 2024) covers adversaries acquiring AI capabilities but provides no coverage of securing AI systems, agents, or MCP. ATT&CK explicitly directs users to MITRE ATLAS for AI/ML security. Score reflects zero agentic AI coverage, not absence of all AI recognition.'
     }
   } as Record<DetailedEvaluationKey, DetailedEvaluation>
