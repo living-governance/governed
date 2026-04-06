@@ -21,7 +21,8 @@
     "precheck:app": "npm run check:node",
     "check:app": "npm run build",
     "check:package:frameworks": "(cd packages/frameworks && npx tsc --noEmit)",
-    "check:ci": "npm run check:ontology && npm run check:knowledge && npm run check:app && npm run check:package:frameworks"
+    "check:package:threats": "(cd packages/threats && npx tsc --noEmit)",
+    "check:ci": "npm run check:ontology && npm run check:knowledge && npm run check:app && npm run check:package:frameworks && npm run check:package:threats"
   },
   "dependencies": {
     "@radix-ui/react-progress": "^1.1.7",
