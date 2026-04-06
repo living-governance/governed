@@ -1,0 +1,40 @@
+{
+  "name": "@governed/threats",
+  "version": "0.1.0",
+  "description": "Agentic AI threats with severity, taxonomy mappings, incidents, mitigations, and coverage gaps",
+  "engines": {
+    "node": ">=20.9.0 <23"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "ai-security",
+    "agentic-ai",
+    "threats",
+    "mitre-atlas",
+    "owasp",
+    "incidents",
+    "mitigations",
+    "governance"
+  ],
+  "author": "living-governance.com",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/living-governance/governed.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
