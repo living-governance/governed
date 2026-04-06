@@ -58,3 +58,11 @@ This is deliberate simplicity for current scope, not an oversight.
 - shadcn/ui alignment means distribution model is validated by our own usage
 - Vercel deployment is push-to-deploy with zero configuration
 - No pnpm/Turborepo overhead for current two-package setup
+- **TypeScript end-to-end means knowledge is directly exposable as MCP tools**.
+  Because knowledge artifacts are typed TypeScript exports with computed functions
+  (confidence decay, coverage summaries, threat queries), the MCP server is a thin
+  adapter — one `server.tool()` call per query, no transformation layer. Adding a
+  new knowledge artifact to the MCP server is a single function call, not a new
+  service. This was not planned but emerged from the C-01 decision (knowledge is
+  executable TypeScript). Most governance knowledge trapped in PDFs or databases
+  would need a serialization layer; ours doesn't.
