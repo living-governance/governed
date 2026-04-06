@@ -29,12 +29,12 @@ import type {
 import {
   AlertCircle, Clock, ExternalLink, Shield, ShieldAlert, ShieldX, ShieldCheck,
   Info, TrendingUp, Home, Link, Target, Wrench, Download, Check, Copy,
-  Calendar, ArrowRight, ChevronDown, ChevronUp, Linkedin,
+  Calendar, ArrowRight, ChevronDown, ChevronUp, Linkedin, GitCommit,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useState } from "react"
 
-type ViewType = 'incidents' | 'threats' | 'coverage' | 'mitigations' | 'evolution' | 'sources' | 'methodology' | 'download'
+type ViewType = 'incidents' | 'threats' | 'coverage' | 'mitigations' | 'evolution' | 'evaluations' | 'sources' | 'methodology' | 'download'
 
 interface ThreatsProps {
   initialView?: ViewType
@@ -109,6 +109,7 @@ export function Threats({ initialView = 'incidents' }: ThreatsProps = {}) {
         <IB icon={Wrench} v="mitigations" label="Mitigations" active={view === 'mitigations'} />
         <div className="w-px h-6 bg-border mx-1" />
         <IB icon={TrendingUp} v="evolution" label="Evolution" active={view === 'evolution'} />
+        <IB icon={GitCommit} v="evaluations" label="Evaluations" active={view === 'evaluations'} />
         <IB icon={Link} v="sources" label="Sources" active={view === 'sources'} />
         <IB icon={Info} v="methodology" label="Methodology" active={view === 'methodology'} />
         <IB icon={Download} v="download" label="Download" active={view === 'download'} />
@@ -145,8 +146,8 @@ export function Threats({ initialView = 'incidents' }: ThreatsProps = {}) {
 
   const viewTitle = {
     incidents: 'Incident Timeline', threats: 'Threat Catalog', coverage: 'Coverage & Gaps',
-    mitigations: 'Mitigations', evolution: 'Threat Evolution', sources: 'Sources',
-    methodology: 'Methodology', download: 'Download',
+    mitigations: 'Mitigations', evolution: 'Threat Evolution', evaluations: 'Evaluation History',
+    sources: 'Sources', methodology: 'Methodology', download: 'Download',
   }[view]
 
   // ===========================================================================
@@ -549,6 +550,86 @@ export function Threats({ initialView = 'incidents' }: ThreatsProps = {}) {
   )
 
   // ===========================================================================
+  // EVALUATIONS VIEW
+  // ===========================================================================
+  const [expandedRun, setExpandedRun] = useState<string | null>(null)
+
+  const EvaluationsView = () => {
+    // Archive metadata — threats has fewer archives than framework-coverage
+    const archiveEntries = [
+      { date: '2026-02-22', label: 'Initial evaluation', evaluatedBy: '@tsynode', verificationStatus: 'human-verified' as string, verifiedBy: undefined as string | undefined },
+    ]
+
+    return (
+      <div className="space-y-4">
+        {/* Current status */}
+        <div className="p-3 rounded-lg border bg-muted/50">
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-sm font-medium">Current Status</span>
+            <Badge variant="outline" className={cn(
+              "text-xs",
+              conf.confidence >= 0.7 ? 'border-green-300 dark:border-green-700' :
+              conf.confidence >= 0.5 ? 'border-yellow-300 dark:border-yellow-700' :
+              'border-red-300 dark:border-red-700'
+            )}>
+              {conf.status.split(' - ')[0]}
+            </Badge>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            {conf.daysUntilStale}d until review • {k.evaluation.validDays}d validity window
+          </p>
+        </div>
+
+        {/* Evaluation timeline */}
+        <div className="space-y-3">
+          {archiveEntries.slice().reverse().map((entry, idx) => (
+            <div key={entry.date} className="relative pl-6 pb-3 border-l border-border last:border-l-0">
+              <div className={cn(
+                "absolute left-[-5px] top-1 w-[9px] h-[9px] rounded-full border-2",
+                idx === 0 ? "bg-primary border-primary" : "bg-background border-muted-foreground"
+              )} />
+              <div className="space-y-1">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-sm font-medium">{entry.date}</span>
+                  <Badge variant="outline" className={cn(
+                    "text-[10px]",
+                    entry.evaluatedBy === '@agent'
+                      ? 'border-yellow-400 dark:border-yellow-600'
+                      : 'border-blue-300 dark:border-blue-700'
+                  )}>
+                    {entry.evaluatedBy === '@agent' ? 'Agent-evaluated' : 'Human-evaluated'}
+                  </Badge>
+                  {entry.verificationStatus === 'human-verified' && (
+                    <Badge variant="outline" className="text-[10px] border-green-300 dark:border-green-700">
+                      Human-verified
+                    </Badge>
+                  )}
+                  {entry.verificationStatus === 'agent-evaluated' && (
+                    <Badge variant="outline" className="text-[10px] border-yellow-400/50 dark:border-yellow-600/50 text-muted-foreground">
+                      Pending review
+                    </Badge>
+                  )}
+                  {entry.verificationStatus === 'human-verified' && (
+                    <span className="text-xs text-muted-foreground">
+                      by {entry.evaluatedBy === '@agent' ? (entry.verifiedBy || 'human') : entry.evaluatedBy}
+                    </span>
+                  )}
+                </div>
+                <p className="text-xs text-muted-foreground">{entry.label}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Archive info */}
+        <div className="border-t pt-3 text-xs text-muted-foreground">
+          <p>{archiveEntries.length} evaluation{archiveEntries.length !== 1 ? 's' : ''} archived • No run logs yet</p>
+          <p className="mt-1">Run logs will appear here after the first autonomous re-evaluation.</p>
+        </div>
+      </div>
+    )
+  }
+
   // DOWNLOAD VIEW
   // ===========================================================================
   const DownloadView = () => (
@@ -617,6 +698,7 @@ export function Threats({ initialView = 'incidents' }: ThreatsProps = {}) {
       case 'coverage': return <CoverageView />
       case 'mitigations': return <MitigationsView />
       case 'evolution': return <EvolutionView />
+      case 'evaluations': return <EvaluationsView />
       case 'sources': return <SourcesView />
       case 'methodology': return <MethodologyView />
       case 'download': return <DownloadView />
