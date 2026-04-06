@@ -1,5 +1,5 @@
 ---
-status: claimed
+status: done
 ---
 
 # MCP Knowledge Server
