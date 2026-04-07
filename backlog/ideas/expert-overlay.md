@@ -123,6 +123,10 @@ updates underneath the commentary. Every evaluation makes the `/by/xrae`
 surface richer. Blog posts don't connect to each other. Expert
 evaluations compose into a body of work.
 
+And every evaluation they add makes their `/by/xrae` surface richer.
+Medium posts don't connect to each other. Expert evaluations compose
+into a body of work.
+
 The expert still writes the blog post for long-form narrative. But they
 link to their deep link as the evidence. The blog is the story. The
 overlay is the proof.
