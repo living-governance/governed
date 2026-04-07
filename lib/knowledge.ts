@@ -30,6 +30,8 @@ import {
   getFrameworkCoverage as getThreatFrameworkCoverage,
 } from '@/registry/knowledge/threats'
 
+import { evaluationRuns } from '@/registry/archives/framework-coverage/RUNS'
+
 // Re-export types for layout components
 export type { Framework, DetailedEvaluationKey, ScoringRationale, DetailedEvaluation } from '@/registry/knowledge/framework-coverage'
 export type {
@@ -43,6 +45,7 @@ export type {
   ThreatSourceMapping,
   ThreatEvolutionEvent,
 } from '@/registry/knowledge/threats'
+export type { EvaluationRun, VerificationStatus } from '@/lib/types'
 
 // =============================================================================
 // TYPES
@@ -68,6 +71,10 @@ export function getFrameworkCoverage() {
 
 export function getThreats() {
   return threatsKnowledge
+}
+
+export function getEvaluationRuns() {
+  return evaluationRuns
 }
 
 // =============================================================================
