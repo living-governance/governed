@@ -21,14 +21,21 @@ import { Badge } from "@/components/ui/badge"
 import { getFrameworkCoverage, getThreats } from "@/lib/knowledge"
 import { cn } from "@/lib/utils"
 
+// OODA loop ordering (ADR-015):
+// Observe → Orient → Decide → Assess → Integrate
 const COP_SECTIONS: NavSection[] = [
   { id: "status", label: "Status" },
+  // Observe
   { id: "incidents", label: "Incidents" },
-  { id: "framework-coverage", label: "Coverage" },
   { id: "threats", label: "Threats" },
+  // Orient
   { id: "coverage-gaps", label: "Gaps" },
-  { id: "evaluation-history", label: "History" },
+  { id: "framework-coverage", label: "Coverage" },
+  // Decide
   { id: "cloud", label: "Cloud" },
+  // Assess
+  { id: "evaluation-history", label: "History" },
+  // Integrate
   { id: "mcp", label: "MCP" },
 ]
 
@@ -118,8 +125,9 @@ function DashboardView({ onChatToggle }: { onChatToggle: () => void }) {
         onSectionChange={handleSectionChange}
       />
 
-      {/* COP sections */}
+      {/* COP sections — OODA loop ordering (ADR-015) */}
       <div className="space-y-6 px-4 py-6 lg:px-6">
+        {/* ── Observe ─────────────────────────────────────────── */}
         <CopSection
           id="incidents"
           title="Incident Feed"
@@ -127,15 +135,6 @@ function DashboardView({ onChatToggle }: { onChatToggle: () => void }) {
           sourcesAndMethodology={threats.evaluation.methodology}
         >
           <CopIncidentFeed />
-        </CopSection>
-
-        <CopSection
-          id="framework-coverage"
-          title="Framework Coverage"
-          credibilityLine={`7 frameworks \u00b7 Evaluated by ${fc.evaluation.by} \u00b7 ${fcDate}`}
-          sourcesAndMethodology={fc.evaluation.methodology}
-        >
-          <CopFrameworkCoverage />
         </CopSection>
 
         <CopSection
@@ -147,6 +146,7 @@ function DashboardView({ onChatToggle }: { onChatToggle: () => void }) {
           <CopThreats />
         </CopSection>
 
+        {/* ── Orient ──────────────────────────────────────────── */}
         <CopSection
           id="coverage-gaps"
           title="Coverage Gaps"
@@ -157,14 +157,15 @@ function DashboardView({ onChatToggle }: { onChatToggle: () => void }) {
         </CopSection>
 
         <CopSection
-          id="evaluation-history"
-          title="Evaluation History"
-          credibilityLine="ADR-014 autonomous re-evaluation"
-          sourcesAndMethodology="Evaluations are triggered by knowledge decay (90-day cycle), source changes detected during monitoring, or manual trigger. Agent evaluations check all sources and compute score deltas. Human verification confirms or disputes agent findings."
+          id="framework-coverage"
+          title="Framework Coverage"
+          credibilityLine={`7 frameworks \u00b7 Evaluated by ${fc.evaluation.by} \u00b7 ${fcDate}`}
+          sourcesAndMethodology={fc.evaluation.methodology}
         >
-          <CopEvaluationHistory />
+          <CopFrameworkCoverage />
         </CopSection>
 
+        {/* ── Decide ──────────────────────────────────────────── */}
         <CopSection
           id="cloud"
           title="Cloud Guidance"
@@ -174,6 +175,17 @@ function DashboardView({ onChatToggle }: { onChatToggle: () => void }) {
           <CopCloudGuidance />
         </CopSection>
 
+        {/* ── Assess ──────────────────────────────────────────── */}
+        <CopSection
+          id="evaluation-history"
+          title="Evaluation History"
+          credibilityLine="ADR-014 autonomous re-evaluation"
+          sourcesAndMethodology="Evaluations are triggered by knowledge decay (90-day cycle), source changes detected during monitoring, or manual trigger. Agent evaluations check all sources and compute score deltas. Human verification confirms or disputes agent findings."
+        >
+          <CopEvaluationHistory />
+        </CopSection>
+
+        {/* ── Integrate ───────────────────────────────────────── */}
         <CopSection
           id="mcp"
           title="MCP Integration"
