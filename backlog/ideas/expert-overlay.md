@@ -224,6 +224,27 @@ want to build reputation.
 The substrate is the moat. The expert overlay is the network effect.
 The domain is the variable.
 
+## Ontology work needed at implementation time
+
+The constitution already supports this — C-02 (self-awareness), C-04
+(preserves dissent), C-08 (stranger test) provide the foundation. No
+constitutional changes needed.
+
+The ontology needs three new entities when this becomes an intent:
+
+- **Expert** — identity, handle, domain, affiliation, evaluation cadence,
+  methodology. Currently evaluators are just strings (`@tsynode`, `@agent`).
+  Must become a first-class entity with its own metadata.
+- **Expert Evaluation** — an evaluation tied to an expert, attached to a
+  specific knowledge artifact, with the expert's divergence from consensus.
+  Distinct from the artifact's own evaluation metadata.
+- **Overlay** — same knowledge, different interpretation lens,
+  URL-addressable. The relationship between an expert and the knowledge
+  substrate they react to.
+
+Do not update the ontology until implementation starts. The ontology
+describes what exists, not what's planned.
+
 ## Open questions
 
 - How does an expert submit evaluations? (PR workflow? Dedicated tool?)
