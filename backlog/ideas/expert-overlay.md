@@ -171,6 +171,43 @@ post, not anonymous committee input, not invisible enterprise analysis —
 a growing, structured, evidence-backed portfolio of judgment under
 their own name that compounds over time and is shareable at every level.
 
+## Why this doesn't exist — the incentive split
+
+**Platforms with structured data don't share attribution.** Recorded
+Future, Mandiant, CrowdStrike — analysts produce incredible work, but
+the platform owns it. The analyst leaves, their body of work stays
+behind. Platforms have no incentive to make individuals famous because
+that makes them recruitible.
+
+**Platforms with attribution don't have structured data.** Medium,
+Substack, LinkedIn — the expert gets their name on it, but the content
+is prose. No linked evidence, no composability, no compounding.
+
+**Standards bodies that have both chose consensus over attribution.**
+OWASP, NIST, CIS — structured data and named contributors, but output
+is deliberately anonymized into committee consensus. The expert who
+pushed hardest for MCP coverage in OWASP gets the same credit as
+everyone else. Standards need to feel authoritative, not contested.
+
+The middle ground — structured data with individual attribution with
+shareable URLs — requires three layers simultaneously:
+
+1. A substrate worth reacting to (expensive to build)
+2. A trust architecture that makes attribution meaningful (hard to design)
+3. A distribution model that rewards the expert, not just the platform
+   (against platform incentives)
+
+Enterprise vendors won't build it because it empowers individuals over
+the platform. Publishing tools can't build it because they lack the
+substrate. Standards bodies won't build it because consensus is their
+product.
+
+Living Governance is in position because it has the substrate (executable
+knowledge with C-02 self-awareness), the trust architecture (evaluation
+metadata, verification status, confidence decay), and no incentive to
+hide the expert behind the platform — the expert's visibility is the
+growth model.
+
 ## Blueprint for other domains
 
 The pattern is domain-independent:
