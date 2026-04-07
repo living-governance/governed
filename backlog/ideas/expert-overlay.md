@@ -1,5 +1,12 @@
 # Expert Overlay — URL-addressable expert lens
 
+The key insight: create enough substrate for experts to interact with.
+The platform's job is to build the structured, live, verifiable
+intelligence surface. The experts' job is to react to it. The richer
+the substrate, the more there is to evaluate, disagree with, annotate,
+and share. Network effects follow from substrate density, not from
+asking people to contribute from scratch.
+
 Network effect mechanism: security experts get a personal URL on
 living-governance.com that shows the COP through their evaluation lens.
 
