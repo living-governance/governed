@@ -9,6 +9,7 @@ import { StatusStrip } from "@/components/layout/status-strip"
 import { AlertBanner } from "@/components/layout/alert-banner"
 import { SectionNav, type NavSection } from "@/components/layout/section-nav"
 import { CopSection } from "@/components/layout/cop-section"
+import { ChatPanel } from "@/components/layout/chat-panel"
 import { Badge } from "@/components/ui/badge"
 import { getFrameworkCoverage, getThreats } from "@/lib/knowledge"
 import { cn } from "@/lib/utils"
@@ -266,10 +267,8 @@ export default function Home() {
         {activeView === "dashboard" ? <DashboardView /> : <ComponentsView />}
       </main>
 
-      {/* Chat slot — empty until Prompt 7 */}
-      {chatOpen && (
-        <div className="hidden lg:block w-[300px] border-l" />
-      )}
+      {/* Chat panel — reflow, not overlay (desktop) */}
+      <ChatPanel isOpen={chatOpen} onClose={() => setChatOpen(false)} />
 
       {/* Mobile bottom tab bar */}
       <MobileTabBar
