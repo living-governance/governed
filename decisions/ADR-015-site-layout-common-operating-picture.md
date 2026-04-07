@@ -232,6 +232,22 @@ Further phases will be documented in separate ADRs as they are designed.
 
 ## Consequences
 
+### Section ordering follows the OODA loop
+
+The COP sections are ordered to match the Observe-Orient-Decide-Act decision
+cycle used in military C2 and enterprise security operations:
+
+1. **Observe** — Incident Feed (what attacks exist, with inline threat/coverage/mitigation chain), Threat Landscape (full threat picture)
+2. **Orient** — Coverage Gaps (where frameworks fail), Framework Coverage (posture scorecard)
+3. **Decide** — Cloud Guidance (deploy mitigations on AWS)
+4. **Assess** — Evaluation History (freshness, who evaluated, what changed)
+5. **Integrate** — MCP Integration (connect AI tools)
+
+A CISO seeing "MCP Tool Server Data Exfiltration" needs "what do I do?" before
+"which frameworks score highest." Gaps before scorecard because blind spots are
+more urgent than rankings. Cloud Guidance near Gaps because it answers the
+deployment question that Gaps raise.
+
 ### Positive
 - All primary intelligence visible without clicking
 - Credibility metadata accessible inline with named expert attribution

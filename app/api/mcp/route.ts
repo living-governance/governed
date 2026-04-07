@@ -1,21 +1,19 @@
 import { z } from 'zod';
 import { createMcpHandler } from 'mcp-handler';
 import {
-  frameworkCoverageKnowledge,
-  getConfidenceStatus as getFrameworkConfidence,
-  isStale as isFrameworkStale,
-} from '../../../registry/knowledge/framework-coverage';
-import {
-  threatsKnowledge,
-  getConfidenceStatus as getThreatConfidence,
-  isStale as isThreatStale,
+  getFrameworkCoverage,
+  getThreats,
+  getFrameworkConfidenceStatus,
+  isFrameworkStale,
+  getThreatConfidenceStatus,
+  isThreatStale,
   computeCoverageSummary,
   getIncidentsForThreat,
   getMitigationsForThreat,
   getThreatsByCategory,
   getAllGaps,
-} from '../../../registry/knowledge/threats';
-import type { ThreatCategory } from '../../../registry/knowledge/threats';
+} from '@/lib/knowledge';
+import type { ThreatCategory } from '@/lib/knowledge';
 
 const handler = createMcpHandler(
   (server) => {
@@ -27,8 +25,10 @@ const handler = createMcpHandler(
       'Check freshness and confidence status of all knowledge artifacts. Returns evaluation date, days until stale, verification status, and whether re-evaluation is needed.',
       {},
       async () => {
-        const fc = getFrameworkConfidence(frameworkCoverageKnowledge);
-        const tc = getThreatConfidence(threatsKnowledge);
+        const frameworkCoverage = getFrameworkCoverage();
+        const threats = getThreats();
+        const fc = getFrameworkConfidenceStatus(frameworkCoverage);
+        const tc = getThreatConfidenceStatus(threats);
 
         return {
           content: [{
@@ -38,19 +38,19 @@ const handler = createMcpHandler(
                 {
                   id: 'framework-coverage',
                   ...fc,
-                  isStale: isFrameworkStale(frameworkCoverageKnowledge),
-                  evaluatedAt: frameworkCoverageKnowledge.evaluation.date,
-                  evaluatedBy: frameworkCoverageKnowledge.evaluation.by,
-                  verificationStatus: (frameworkCoverageKnowledge.evaluation as any).verificationStatus,
-                  validDays: frameworkCoverageKnowledge.evaluation.validDays,
+                  isStale: isFrameworkStale(frameworkCoverage),
+                  evaluatedAt: frameworkCoverage.evaluation.date,
+                  evaluatedBy: frameworkCoverage.evaluation.by,
+                  verificationStatus: (frameworkCoverage.evaluation as any).verificationStatus,
+                  validDays: frameworkCoverage.evaluation.validDays,
                 },
                 {
                   id: 'threats',
                   ...tc,
-                  isStale: isThreatStale(threatsKnowledge),
-                  evaluatedAt: threatsKnowledge.evaluation.date,
-                  evaluatedBy: threatsKnowledge.evaluation.by,
-                  validDays: threatsKnowledge.evaluation.validDays,
+                  isStale: isThreatStale(threats),
+                  evaluatedAt: threats.evaluation.date,
+                  evaluatedBy: threats.evaluation.by,
+                  validDays: threats.evaluation.validDays,
                 },
               ],
             }, null, 2),
@@ -67,7 +67,8 @@ const handler = createMcpHandler(
       'Get AI security framework coverage scores. Returns all 7 frameworks scored on agentic AI threat coverage (0-100), with gaps, status, and evaluation methodology.',
       {},
       async () => {
-        const frameworks = frameworkCoverageKnowledge.frameworks.map(f => ({
+        const frameworkCoverage = getFrameworkCoverage();
+        const frameworks = frameworkCoverage.frameworks.map(f => ({
           id: f.id,
           name: f.name,
           organization: f.organization,
@@ -81,11 +82,11 @@ const handler = createMcpHandler(
           content: [{
             type: 'text',
             text: JSON.stringify({
-              evaluatedAt: frameworkCoverageKnowledge.evaluation.date,
+              evaluatedAt: frameworkCoverage.evaluation.date,
               methodology: 'Binary scoring across 19 criteria (threat identification, practical guidance, evidence quality, completeness). 100 points total.',
               frameworks,
-              insights: frameworkCoverageKnowledge.insights,
-              recommendations: frameworkCoverageKnowledge.recommendations,
+              insights: frameworkCoverage.insights,
+              recommendations: frameworkCoverage.recommendations,
             }, null, 2),
           }],
         };
@@ -106,9 +107,10 @@ const handler = createMcpHandler(
         ]).optional(),
       },
       async ({ category }) => {
+        const threatsData = getThreats();
         const threats = category
-          ? getThreatsByCategory(threatsKnowledge, category as ThreatCategory['primary'])
-          : threatsKnowledge.threats;
+          ? getThreatsByCategory(threatsData, category as ThreatCategory['primary'])
+          : threatsData.threats;
 
         return {
           content: [{
@@ -145,9 +147,10 @@ const handler = createMcpHandler(
         threatId: z.string().optional(),
       },
       async ({ threatId }) => {
+        const threatsData = getThreats();
         const mitigations = threatId
-          ? getMitigationsForThreat(threatsKnowledge, threatId)
-          : threatsKnowledge.mitigations;
+          ? getMitigationsForThreat(threatsData, threatId)
+          : threatsData.mitigations;
 
         return {
           content: [{
@@ -176,8 +179,9 @@ const handler = createMcpHandler(
       'Get gaps in security framework coverage of agentic AI threats. Shows which incidents lack framework coverage and where frameworks fall short.',
       {},
       async () => {
-        const gaps = getAllGaps(threatsKnowledge);
-        const summary = computeCoverageSummary(threatsKnowledge);
+        const threatsData = getThreats();
+        const gaps = getAllGaps(threatsData);
+        const summary = computeCoverageSummary(threatsData);
 
         return {
           content: [{
@@ -206,17 +210,19 @@ const handler = createMcpHandler(
       'Get what this knowledge covers and does not cover. Use this to understand the boundaries and limitations of the governance data before relying on it.',
       {},
       async () => {
+        const frameworkCoverage = getFrameworkCoverage();
+        const threatsData = getThreats();
         return {
           content: [{
             type: 'text',
             text: JSON.stringify({
               'framework-coverage': {
-                scope: frameworkCoverageKnowledge.scope,
-                dissent: frameworkCoverageKnowledge.dissent,
+                scope: frameworkCoverage.scope,
+                dissent: frameworkCoverage.dissent,
               },
               threats: {
-                scope: threatsKnowledge.scope,
-                dissent: threatsKnowledge.dissent,
+                scope: threatsData.scope,
+                dissent: threatsData.dissent,
               },
             }, null, 2),
           }],
