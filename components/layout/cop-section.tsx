@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils"
 interface CopSectionProps {
   id: string
   title: string
+  phase?: string
   credibilityLine: string
   sourcesAndMethodology?: string
   variant?: "full" | "half"
@@ -15,6 +16,7 @@ interface CopSectionProps {
 export function CopSection({
   id,
   title,
+  phase,
   credibilityLine,
   sourcesAndMethodology,
   variant = "full",
@@ -31,6 +33,11 @@ export function CopSection({
       )}
     >
       <div className="px-4 pt-4 pb-2">
+        {phase && (
+          <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
+            {phase}
+          </span>
+        )}
         <h2 className="text-base font-medium">{title}</h2>
         <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
           <span>{credibilityLine}</span>

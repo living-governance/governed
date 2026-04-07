@@ -130,6 +130,7 @@ function DashboardView({ onChatToggle }: { onChatToggle: () => void }) {
         {/* ── Observe ─────────────────────────────────────────── */}
         <CopSection
           id="incidents"
+          phase="Observe"
           title="Incident Feed"
           credibilityLine={`${threats.incidents.length} incidents \u00b7 ${threats.threats.length} linked threats \u00b7 Evaluated by ${threats.evaluation.by} \u00b7 ${tDate}`}
           sourcesAndMethodology={threats.evaluation.methodology}
@@ -149,6 +150,7 @@ function DashboardView({ onChatToggle }: { onChatToggle: () => void }) {
         {/* ── Orient ──────────────────────────────────────────── */}
         <CopSection
           id="coverage-gaps"
+          phase="Orient"
           title="Coverage Gaps"
           credibilityLine={`${totalGaps} gaps across ${frameworksWithGaps} frameworks \u00b7 Derived from ${threats.incidents.length} incidents`}
           sourcesAndMethodology="Gaps are identified by mapping each incident's attack vector against each framework's coverage. A 'none' rating means the framework has no applicable guidance for that incident's attack pattern."
@@ -168,6 +170,7 @@ function DashboardView({ onChatToggle }: { onChatToggle: () => void }) {
         {/* ── Decide ──────────────────────────────────────────── */}
         <CopSection
           id="cloud"
+          phase="Decide"
           title="Cloud Guidance"
           credibilityLine={`AWS implementation \u00b7 ${fc.cloudImplementation.aws.frameworkMappings.length} framework mappings`}
           sourcesAndMethodology="Mappings are based on official AWS documentation and service capabilities. Quick-deploy commands use AWS CLI and are verified against current API versions. GCP and Azure mappings are planned."
@@ -178,6 +181,7 @@ function DashboardView({ onChatToggle }: { onChatToggle: () => void }) {
         {/* ── Assess ──────────────────────────────────────────── */}
         <CopSection
           id="evaluation-history"
+          phase="Assess"
           title="Evaluation History"
           credibilityLine="ADR-014 autonomous re-evaluation"
           sourcesAndMethodology="Evaluations are triggered by knowledge decay (90-day cycle), source changes detected during monitoring, or manual trigger. Agent evaluations check all sources and compute score deltas. Human verification confirms or disputes agent findings."
@@ -188,6 +192,7 @@ function DashboardView({ onChatToggle }: { onChatToggle: () => void }) {
         {/* ── Integrate ───────────────────────────────────────── */}
         <CopSection
           id="mcp"
+          phase="Integrate"
           title="MCP Integration"
           credibilityLine={`6 tools \u00b7 MCP protocol \u00b7 Compatible with Claude Desktop, Cursor, Windsurf`}
         >
