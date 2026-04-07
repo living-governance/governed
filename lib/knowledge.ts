@@ -42,6 +42,7 @@ export type {
   MitigationReference,
   Incident,
   IncidentGap,
+  IncidentCoverageMapping,
   ThreatSourceMapping,
   ThreatEvolutionEvent,
 } from '@/registry/knowledge/threats'

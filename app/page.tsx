@@ -11,6 +11,7 @@ import { SectionNav, type NavSection } from "@/components/layout/section-nav"
 import { CopSection } from "@/components/layout/cop-section"
 import { CopFrameworkCoverage } from "@/components/layout/cop-framework-coverage"
 import { CopThreats } from "@/components/layout/cop-threats"
+import { CopIncidentFeed } from "@/components/layout/cop-incident-feed"
 import { CopCoverageGaps } from "@/components/layout/cop-coverage-gaps"
 import { CopEvaluationHistory } from "@/components/layout/cop-evaluation-history"
 import { CopCloudGuidance } from "@/components/layout/cop-cloud-guidance"
@@ -22,6 +23,7 @@ import { cn } from "@/lib/utils"
 
 const COP_SECTIONS: NavSection[] = [
   { id: "status", label: "Status" },
+  { id: "incidents", label: "Incidents" },
   { id: "framework-coverage", label: "Coverage" },
   { id: "threats", label: "Threats" },
   { id: "coverage-gaps", label: "Gaps" },
@@ -118,6 +120,15 @@ function DashboardView({ onChatToggle }: { onChatToggle: () => void }) {
 
       {/* COP sections */}
       <div className="space-y-6 px-4 py-6 lg:px-6">
+        <CopSection
+          id="incidents"
+          title="Incident Feed"
+          credibilityLine={`${threats.incidents.length} incidents \u00b7 ${threats.threats.length} linked threats \u00b7 Evaluated by ${threats.evaluation.by} \u00b7 ${tDate}`}
+          sourcesAndMethodology={threats.evaluation.methodology}
+        >
+          <CopIncidentFeed />
+        </CopSection>
+
         <CopSection
           id="framework-coverage"
           title="Framework Coverage"
