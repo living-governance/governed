@@ -11,6 +11,10 @@ import { SectionNav, type NavSection } from "@/components/layout/section-nav"
 import { CopSection } from "@/components/layout/cop-section"
 import { CopFrameworkCoverage } from "@/components/layout/cop-framework-coverage"
 import { CopThreats } from "@/components/layout/cop-threats"
+import { CopCoverageGaps } from "@/components/layout/cop-coverage-gaps"
+import { CopEvaluationHistory } from "@/components/layout/cop-evaluation-history"
+import { CopCloudGuidance } from "@/components/layout/cop-cloud-guidance"
+import { CopMcpIntegration } from "@/components/layout/cop-mcp-integration"
 import { ChatPanel } from "@/components/layout/chat-panel"
 import { Badge } from "@/components/ui/badge"
 import { getFrameworkCoverage, getThreats } from "@/lib/knowledge"
@@ -66,7 +70,7 @@ function ComponentsView() {
 
 // ─── Dashboard (COP) view ───────────────────────────────────────────────────
 
-function DashboardView() {
+function DashboardView({ onChatToggle }: { onChatToggle: () => void }) {
   const [activeSection, setActiveSection] = useState("status")
   const [bannerDismissed, setBannerDismissed] = useState(false)
 
@@ -79,6 +83,9 @@ function DashboardView() {
 
   const fcDate = formatDate(new Date(fc.evaluation.date))
   const tDate = formatDate(new Date(threats.evaluation.date))
+
+  const totalGaps = threats.incidents.reduce((sum, inc) => sum + inc.gaps.length, 0)
+  const frameworksWithGaps = new Set(threats.incidents.flatMap(inc => inc.gaps.map(g => g.frameworkId))).size
 
   return (
     <>
@@ -129,53 +136,40 @@ function DashboardView() {
           <CopThreats />
         </CopSection>
 
-        <div className="grid gap-6 lg:grid-cols-2">
-          <CopSection
-            id="coverage-gaps"
-            title="Coverage Gaps"
-            credibilityLine="Coming in Layer 1"
-            variant="half"
-          >
-            <p className="text-sm text-muted-foreground py-8 text-center">
-              Coverage gap analysis coming soon
-            </p>
-          </CopSection>
+        <CopSection
+          id="coverage-gaps"
+          title="Coverage Gaps"
+          credibilityLine={`${totalGaps} gaps across ${frameworksWithGaps} frameworks \u00b7 Derived from ${threats.incidents.length} incidents`}
+          sourcesAndMethodology="Gaps are identified by mapping each incident's attack vector against each framework's coverage. A 'none' rating means the framework has no applicable guidance for that incident's attack pattern."
+        >
+          <CopCoverageGaps />
+        </CopSection>
 
-          <CopSection
-            id="evaluation-history"
-            title="Evaluation History"
-            credibilityLine="Coming in Layer 1"
-            variant="half"
-          >
-            <p className="text-sm text-muted-foreground py-8 text-center">
-              Re-evaluation timeline coming soon
-            </p>
-          </CopSection>
-        </div>
+        <CopSection
+          id="evaluation-history"
+          title="Evaluation History"
+          credibilityLine="ADR-014 autonomous re-evaluation"
+          sourcesAndMethodology="Evaluations are triggered by knowledge decay (90-day cycle), source changes detected during monitoring, or manual trigger. Agent evaluations check all sources and compute score deltas. Human verification confirms or disputes agent findings."
+        >
+          <CopEvaluationHistory />
+        </CopSection>
 
-        <div className="grid gap-6 lg:grid-cols-2">
-          <CopSection
-            id="cloud"
-            title="Cloud Guidance"
-            credibilityLine="Coming in Layer 1"
-            variant="half"
-          >
-            <p className="text-sm text-muted-foreground py-8 text-center">
-              AWS / GCP / Azure guidance coming soon
-            </p>
-          </CopSection>
+        <CopSection
+          id="cloud"
+          title="Cloud Guidance"
+          credibilityLine={`AWS implementation \u00b7 ${fc.cloudImplementation.aws.frameworkMappings.length} framework mappings`}
+          sourcesAndMethodology="Mappings are based on official AWS documentation and service capabilities. Quick-deploy commands use AWS CLI and are verified against current API versions. GCP and Azure mappings are planned."
+        >
+          <CopCloudGuidance />
+        </CopSection>
 
-          <CopSection
-            id="mcp"
-            title="MCP Integration"
-            credibilityLine="6 tools available"
-            variant="half"
-          >
-            <p className="text-sm text-muted-foreground py-8 text-center">
-              MCP integration details coming soon
-            </p>
-          </CopSection>
-        </div>
+        <CopSection
+          id="mcp"
+          title="MCP Integration"
+          credibilityLine={`6 tools \u00b7 MCP protocol \u00b7 Compatible with Claude Desktop, Cursor, Windsurf`}
+        >
+          <CopMcpIntegration onChatToggle={onChatToggle} />
+        </CopSection>
       </div>
     </>
   )
@@ -263,7 +257,11 @@ export default function Home() {
 
       {/* Main content */}
       <main className="flex-1 overflow-y-auto pb-16 lg:pb-0">
-        {activeView === "dashboard" ? <DashboardView /> : <ComponentsView />}
+        {activeView === "dashboard" ? (
+          <DashboardView onChatToggle={() => setChatOpen(!chatOpen)} />
+        ) : (
+          <ComponentsView />
+        )}
       </main>
 
       {/* Chat panel — reflow, not overlay (desktop) */}
