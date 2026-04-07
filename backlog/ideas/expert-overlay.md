@@ -105,6 +105,38 @@ page updates immediately. No browser needed. Fits into existing workflow.
 Both paths keep the flow going. No PRs, no review queues, no forms.
 The expert reacts and publishes. The platform structures and distributes.
 
+## Distribution — why this beats a blog post
+
+**Speed.** A Medium post about RAG poisoning takes hours. Here the expert
+reacts to structured data that already exists. They add judgment, not
+context. Five minutes, not five hours.
+
+**Credibility.** A blog post is prose. This is a structured assessment
+backed by linked incidents, framework coverage mappings, and specific
+AWS mitigations — all verifiable. A CISO can click through to the
+incident, check which frameworks agree, verify the sources. Opinion
+layered on evidence, not floating next to it.
+
+**Compounding.** A blog post is a snapshot that decays. The overlay is
+a living surface — when new incidents validate the assessment, the data
+updates underneath the commentary. Every evaluation makes the `/by/xrae`
+surface richer. Blog posts don't connect to each other. Expert
+evaluations compose into a body of work.
+
+The expert still writes the blog post for long-form narrative. But they
+link to their deep link as the evidence. The blog is the story. The
+overlay is the proof.
+
+## Sharing flow
+
+Deep link URLs carry OpenGraph metadata: expert name, threat title,
+severity badge, their take as the description, COP visual as the image.
+Paste the URL on LinkedIn and the preview card renders itself.
+
+The annotation flow ends with: "Published → Share on LinkedIn?" and
+pre-composes the post with the deep link. One click to evaluate, one
+click to distribute.
+
 ## Open questions
 
 - How does an expert submit evaluations? (PR workflow? Dedicated tool?)
