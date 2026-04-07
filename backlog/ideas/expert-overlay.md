@@ -52,9 +52,38 @@ That's what creates the network effect.
 - The [+] button in the expert lens selector links to "become an expert"
   contribution guide
 
+## Deep links — expert as publication channel
+
+A single overlay URL is a business card. A stream of threat-specific
+URLs is a publication channel.
+
+URL hierarchy:
+- `/by/xrae` — full COP overlay (the lens)
+- `/by/xrae/threat/rag-poisoning` — deep dive on one threat
+- `/by/xrae/incident/mcp-tool-server-data-exfiltration` — their analysis of a specific incident
+
+Each deep link is self-contained, shareable, citable. An expert publishes
+`/by/xrae/threat/rag-poisoning` the day the threat drops — their severity
+assessment, which frameworks cover it, which incidents demonstrate it,
+what to do on AWS. That URL gets shared in Slack channels, linked in
+incident response threads, cited in board reports.
+
+This is an expert blog with structured intelligence underneath instead
+of prose. The expert doesn't write markdown — they evaluate structured
+data, and the platform renders it as a shareable page with full context.
+
+A CISO bookmarks the expert, not the platform — but the platform is
+where the data lives. RSS-able. Quotable. Continuous.
+
+URL naming uses human-readable slugs derived from the threat/incident
+name, never internal IDs. The slug is the SEO surface and the thing
+people read in Slack previews.
+
 ## Open questions
 
 - How does an expert submit evaluations? (PR workflow? Dedicated tool?)
 - Do experts see each other's overlays? (builds healthy competition)
 - Minimum evaluation cadence to keep the URL active?
 - How to handle expert disagreement on the same section?
+- Slug generation: auto from title or expert-chosen?
+- Do deep links show the full OODA context or just the relevant section?
