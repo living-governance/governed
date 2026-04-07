@@ -1,5 +1,5 @@
 ---
-status: claimed
+status: done
 ---
 
 # Common Operating Picture layout for living-governance.com
