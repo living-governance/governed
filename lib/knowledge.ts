@@ -77,6 +77,10 @@ export function getEvaluationRuns() {
   return evaluationRuns
 }
 
+export function getCloudGuidance() {
+  return frameworkCoverageKnowledge.cloudImplementation
+}
+
 // =============================================================================
 // COMPUTED
 // =============================================================================
