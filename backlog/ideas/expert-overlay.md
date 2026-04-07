@@ -148,6 +148,45 @@ The annotation flow ends with: "Published → Share on LinkedIn?" and
 pre-composes the post with the deep link. One click to evaluate, one
 click to distribute.
 
+## The gap — no platform lets experts build a body of work
+
+Threat intelligence platforms (Recorded Future, Mandiant, CrowdStrike)
+are enterprise products. Analysts work inside them, output goes to their
+organization. The analyst is invisible. No personal URL, no public
+sharing, no expert identity.
+
+Open-source TIPs (OpenCTI, MISP) are infrastructure, not a publication
+surface. An expert can't say "here's my take" with a shareable link.
+
+Individual experts today write Medium posts and LinkedIn articles.
+Unstructured prose, no linked evidence, no compounding. Each post
+starts from scratch.
+
+NIST/OWASP/CIS publish frameworks as committees. Individual expert
+judgment is anonymized into consensus. The expert who pushed for a
+specific control gets no attribution, no URL, no distribution.
+
+The idea is to enable experts to create a body of work. Not a single
+post, not anonymous committee input, not invisible enterprise analysis —
+a growing, structured, evidence-backed portfolio of judgment under
+their own name that compounds over time and is shareable at every level.
+
+## Blueprint for other domains
+
+The pattern is domain-independent:
+1. Build a structured knowledge substrate in domain X
+2. Let experts overlay their judgment with attribution
+3. Give them URLs that compound into a body of work
+4. Make sharing frictionless
+
+Healthcare (clinical guidelines), legal (regulatory interpretation),
+finance (risk assessment), engineering (architecture review) — any
+domain where expert judgment on structured data has value and experts
+want to build reputation.
+
+The substrate is the moat. The expert overlay is the network effect.
+The domain is the variable.
+
 ## Open questions
 
 - How does an expert submit evaluations? (PR workflow? Dedicated tool?)
