@@ -79,6 +79,32 @@ URL naming uses human-readable slugs derived from the threat/incident
 name, never internal IDs. The slug is the SEO surface and the thing
 people read in Slack previews.
 
+## Expert input — two paths, same structured output
+
+Both paths produce the same thing: an ExpertEvaluation attached to a
+knowledge artifact. Severity, rationale, framework coverage opinion,
+recommended mitigations — typed data, not prose.
+
+**Site path (low-friction onramp):**
+Expert sees a threat or incident on the COP. Clicks an annotation icon
+next to it. Chat panel opens with context ("You're looking at TM-001:
+Memory & Context Poisoning"). Expert types their take in natural language.
+The system structures it into an evaluation. Published immediately to
+their `/by/{handle}` surface.
+
+Friction level: same as posting on LinkedIn. Output: structured
+intelligence instead of prose.
+
+**MCP path (power path):**
+Expert has Claude Desktop / Cursor connected to the living-governance
+MCP server. A new ATLAS technique drops. Their AI surfaces it, they
+discuss it, and say "publish my assessment." The MCP server receives
+a structured evaluation via `submit_evaluation` tool. Their deep link
+page updates immediately. No browser needed. Fits into existing workflow.
+
+Both paths keep the flow going. No PRs, no review queues, no forms.
+The expert reacts and publishes. The platform structures and distributes.
+
 ## Open questions
 
 - How does an expert submit evaluations? (PR workflow? Dedicated tool?)
