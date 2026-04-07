@@ -74,3 +74,9 @@ LIVING_KNOWLEDGE_UPDATE_PROTOCOL.md
 *.temp
 .cache/
 *.tgz
+
+# =============================================================================
+# INTERNAL — Commercial strategy, monetization architecture, CPN bridge
+# Never committed to the public repo. See ADR-016.
+# =============================================================================
+/internal/
