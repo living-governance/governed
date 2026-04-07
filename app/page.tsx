@@ -9,6 +9,8 @@ import { StatusStrip } from "@/components/layout/status-strip"
 import { AlertBanner } from "@/components/layout/alert-banner"
 import { SectionNav, type NavSection } from "@/components/layout/section-nav"
 import { CopSection } from "@/components/layout/cop-section"
+import { CopFrameworkCoverage } from "@/components/layout/cop-framework-coverage"
+import { CopThreats } from "@/components/layout/cop-threats"
 import { ChatPanel } from "@/components/layout/chat-panel"
 import { Badge } from "@/components/ui/badge"
 import { getFrameworkCoverage, getThreats } from "@/lib/knowledge"
@@ -31,35 +33,32 @@ function formatDate(date: Date): string {
 // ─── Components view ────────────────────────────────────────────────────────
 
 function ComponentsView() {
-  const components = [
-    {
-      name: "Framework Coverage",
-      description: "AI security framework analysis with scoring methodology",
-      command: "npx @governed/cli add framework-coverage",
-    },
-    {
-      name: "Threats",
-      description: "Agentic AI threat catalog with cross-taxonomy mapping",
-      command: "npx @governed/cli add threats",
-    },
-  ]
-
   return (
     <div className="p-6">
       <h2 className="text-lg font-medium mb-1">Components</h2>
       <p className="text-sm text-muted-foreground mb-6">
         Copy into your project. Self-contained, no dependencies on each other.
+        This is what you get with <code className="text-xs bg-muted px-1 rounded">npx @governed/cli add</code>.
       </p>
-      <div className="grid gap-4 sm:grid-cols-2">
-        {components.map((c) => (
-          <div key={c.name} className="rounded-lg border p-4">
-            <h3 className="font-medium">{c.name}</h3>
-            <p className="mt-1 text-sm text-muted-foreground">{c.description}</p>
-            <code className="mt-3 block rounded bg-muted px-3 py-2 text-xs font-mono">
-              {c.command}
+      <div className="space-y-8">
+        <div>
+          <div className="mb-2 flex items-center justify-between">
+            <h3 className="text-sm font-medium">Framework Coverage</h3>
+            <code className="text-xs bg-muted px-2 py-1 rounded font-mono">
+              npx @governed/cli add framework-coverage
             </code>
           </div>
-        ))}
+          <FrameworkCoverage />
+        </div>
+        <div>
+          <div className="mb-2 flex items-center justify-between">
+            <h3 className="text-sm font-medium">Threats</h3>
+            <code className="text-xs bg-muted px-2 py-1 rounded font-mono">
+              npx @governed/cli add threats
+            </code>
+          </div>
+          <Threats />
+        </div>
       </div>
     </div>
   )
@@ -118,7 +117,7 @@ function DashboardView() {
           credibilityLine={`7 frameworks \u00b7 Evaluated by ${fc.evaluation.by} \u00b7 ${fcDate}`}
           sourcesAndMethodology={fc.evaluation.methodology}
         >
-          <FrameworkCoverage />
+          <CopFrameworkCoverage />
         </CopSection>
 
         <CopSection
@@ -127,7 +126,7 @@ function DashboardView() {
           credibilityLine={`${threats.threats.length} threats \u00b7 Evaluated by ${threats.evaluation.by} \u00b7 ${tDate}`}
           sourcesAndMethodology={threats.evaluation.methodology}
         >
-          <Threats />
+          <CopThreats />
         </CopSection>
 
         <div className="grid gap-6 lg:grid-cols-2">
